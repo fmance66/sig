@@ -1,0 +1,91 @@
+import { useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Menubar } from 'primereact/menubar';
+import { MODULES, ADMIN_MODULES } from './modules';
+import AppHeader from './AppHeader';
+import { useEmpresa } from '../context/EmpresaContext';
+import './AppLayout.css';
+
+const ALL_MODULES = [...MODULES, ...ADMIN_MODULES];
+
+export default function AppLayout() {
+  const [activeModuleId, setActiveModuleId] = useState(null);
+  const navigate = useNavigate();
+  const { empresa } = useEmpresa();
+
+  const activeModule = ALL_MODULES.find(m => m.id === activeModuleId);
+
+  function handleHomeClick() {
+    setActiveModuleId(null);
+    navigate('/');
+  }
+
+  function handleModuleClick(moduleId) {
+    const newId = activeModuleId === moduleId ? null : moduleId;
+    setActiveModuleId(newId);
+    const mod = ALL_MODULES.find(m => m.id === newId);
+    navigate(mod?.path ?? '/', { state: { moduleId: newId } });
+  }
+
+  function buildMenuItems(items) {
+    return items.map(item => ({
+      ...item,
+      items: item.items?.length ? buildMenuItems(item.items) : undefined,
+      command: item.items?.length ? undefined : () => item.path && navigate(item.path),
+    }));
+  }
+
+  function ModuleButton({ mod }) {
+    const isActive = activeModuleId === mod.id;
+    return (
+      <button
+        className={`module-btn${isActive ? ' active' : ''}`}
+        onClick={() => handleModuleClick(mod.id)}
+        title={mod.label}
+      >
+        <i className={`${mod.icon} module-icon`} />
+        <span className="module-label">{mod.label}</span>
+      </button>
+    );
+  }
+
+  return (
+    <div className="app-root">
+      <AppHeader />
+
+      <div className="app-body">
+        <aside className="app-sidebar">
+          <nav className="sidebar-nav">
+
+            <button className="sidebar-home-btn" onClick={handleHomeClick}>
+              <i className="fa-solid fa-house sidebar-home-icon" />
+              <span className="sidebar-home-label">Inicio</span>
+            </button>
+
+            {empresa && (
+              <div className="nav-group">
+                {MODULES.map(mod => <ModuleButton key={mod.id} mod={mod} />)}
+              </div>
+            )}
+            <div className="nav-spacer" />
+            <div className="nav-group nav-group-admin">
+              {ADMIN_MODULES.map(mod => <ModuleButton key={mod.id} mod={mod} />)}
+            </div>
+          </nav>
+        </aside>
+
+        <div className="app-main">
+          {activeModule?.menu?.length > 0 && (
+            <div className="app-menubar">
+              <Menubar model={buildMenuItems(activeModule.menu)} />
+            </div>
+          )}
+
+          <main className="app-content">
+            <Outlet />
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}

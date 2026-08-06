@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>DER — Módulo Sueldos</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      color: #222;
+    }
+    h1 { font-size: 22px; margin-bottom: 4px; }
+    h2 { font-size: 16px; color: #555; margin: 24px 0 8px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+    .subtitle { color: #777; font-size: 13px; margin-bottom: 20px; }
+    .diagram-container {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      overflow: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+    th {
+      background: #3b5bdb;
+      color: white;
+      padding: 7px 10px;
+      text-align: left;
+    }
+    td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #eee;
+    }
+    tr:nth-child(even) td { background: #f9f9f9; }
+    code { font-family: 'Cascadia Code', Consolas, monospace; background: #eef; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+    .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 10px 14px; margin: 12px 0; font-size: 13px; }
+    @media print {
+      body { background: white; padding: 0; }
+      .diagram-container { border: none; }
+      h2 { page-break-before: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>DER — Sistema de Sueldos (módulo sld_)</h1>
+<p class="subtitle">Origen: MySQL 5.5 &nbsp;|&nbsp; Destino: PostgreSQL 16 &nbsp;|&nbsp; Análisis: 2026-03-30</p>
+
+<div class="note">
+  Para exportar a PDF: abrir este archivo en Chrome o Edge → Ctrl+P → Guardar como PDF → Sin márgenes.
+</div>
+
+<h2>Diagrama Entidad-Relación — Módulo SLD</h2>
+<div class="diagram-container">
+  <div class="mermaid">
+erDiagram
+
+    bas_moneda {
+        varchar id PK
+        varchar nombre
+        char simbolo
+        decimal cotizacion
+    }
+
+    sys_empresa {
+        varchar id PK
+        varchar razon_social
+        varchar cuit
+    }
+
+    sld_obra_social {
+        varchar id PK
+        varchar descripcion
+        decimal aporte_porcentaje
+        decimal retencion_porcentaje
+    }
+
+    sld_sindicato {
+        varchar id PK
+        varchar descripcion
+        decimal aporte_porcentaje
+        decimal retencion_porcentaje
+    }
+
+    sld_grupo_de_conceptos {
+        varchar id PK
+        varchar descripcion
+    }
+
+    sld_grupo {
+        varchar id PK
+        varchar descripcion
+    }
+
+    sld_actividad_laboral {
+        varchar id PK
+        varchar descripcion
+    }
+
+    sld_condicion_laboral {
+        varchar id PK
+        varchar descripcion
+    }
+
+    sld_modalidad_contrato {
+        varchar id PK
+        varchar descripcion
+    }
+
+    sld_situacion_revista {
+        varchar id PK
+        varchar descripcion
+    }
+
+    sld_incapacidad {
+        varchar id PK
+        varchar descripcion
+    }
+
+    sld_codigo_zona {
+        varchar id PK
+        varchar descripcion
+    }
+
+    sld_motivo_ausentismo {
+        varchar id PK
+        varchar tipo
+        varchar descripcion
+    }
+
+    sld_tipo_novedad {
+        varchar id PK
+        varchar descripcion
+        varchar data_type
+    }
+
+    sld_campo_historial {
+        varchar id PK
+        varchar descripcion
+        varchar data_type
+    }
+
+    sld_concepto {
+        varchar id PK
+        varchar id_afip
+        varchar descripcion
+        varchar columna
+        varchar formula_unidad
+        varchar formula_importe
+        boolean activo
+    }
+
+    sld_concepto_lsd {
+        varchar concepto PK
+        boolean aporte_sipa
+        boolean aporte_obrasocial
+        boolean contribucion_sipa
+        boolean contribucion_obrasocial
+        boolean contribucion_aaff
+        boolean contribucion_fne
+        boolean contribucion_lrt
+    }
+
+    sld_convenio {
+        varchar id PK
+        varchar descripcion
+        varchar liquidacion
+        numeric dias
+        numeric horas
+        varchar moneda FK
+        varchar obra_social FK
+        varchar grupo_conceptos FK
+    }
+
+    sld_categoria {
+        varchar convenio FK
+        varchar id PK
+        varchar descripcion
+        numeric sueldo
+        varchar jornada
+        varchar liquidacion
+    }
+
+    sld_categoria_periodo {
+        varchar convenio FK
+        varchar categoria FK
+        date fecha PK
+        numeric sueldo
+    }
+
+    sld_empleado {
+        varchar id PK
+        varchar apellido
+        varchar nombre
+        varchar cuil
+        date fecha_ingreso
+        date fecha_egreso
+        varchar sexo
+        varchar estado_civil
+        varchar convenio FK
+        varchar categoria FK
+        numeric sueldo
+        varchar moneda FK
+        varchar obra_social FK
+        varchar sindicato FK
+        varchar empresa FK
+        varchar grupo_conceptos FK
+        varchar banco
+        varchar cbu
+    }
+
+    sld_empleado_afip {
+        varchar empleado PK
+        varchar situacion FK
+        varchar condicion FK
+        varchar actividad FK
+        varchar modalidad FK
+        varchar incapacidad FK
+        varchar codigo_zona FK
+    }
+
+    sld_familiar {
+        varchar empleado FK
+        varchar id PK
+        varchar parentesco
+        varchar apellido
+        varchar nombre
+        date fecha_nacimiento
+        varchar discapacidad
+        varchar deducible
+    }
+
+    sld_jornada_laboral {
+        varchar empleado PK
+        varchar horario
+    }
+
+    sld_horario {
+        varchar empleado FK
+        varchar dia PK
+        time entrada
+        time salida
+    }
+
+    sld_ausentismo {
+        varchar empleado FK
+        varchar motivo FK
+        date fecha_desde PK
+        date fecha_hasta
+    }
+
+    sld_presentismo {
+        varchar empleado FK
+        date fecha PK
+        time hora PK
+        varchar tipo
+    }
+
+    sld_novedad {
+        varchar empleado FK
+        varchar tipo_novedad FK
+        date fecha PK
+        varchar value
+    }
+
+    sld_empleado_concepto {
+        varchar empleado FK
+        varchar concepto FK
+        varchar liquidacion PK
+        int recibo PK
+        numeric unidad_manual
+        numeric importe_manual
+    }
+
+    sld_liquidacion {
+        varchar periodo PK
+        varchar tipo
+        varchar estado
+        date fecha
+        date fecha_desde
+        date fecha_hasta
+        date fecha_pago
+    }
+
+    sld_recibo {
+        varchar periodo FK
+        varchar empleado FK
+        int numero PK
+        numeric remunerativo
+        numeric no_remunerativo
+        numeric descuento
+        numeric sueldo_neto
+        numeric sueldo_bruto
+        numeric contribucion
+        numeric costo_laboral
+        varchar moneda FK
+    }
+
+    sld_recibo_concepto {
+        varchar periodo FK
+        varchar empleado FK
+        int numero FK
+        varchar concepto FK
+        numeric unidad
+        numeric importe
+        numeric unitario
+        boolean condicion
+    }
+
+    sld_recibo_empleado {
+        varchar empleado FK
+        date fecha PK
+        varchar convenio FK
+        varchar categoria FK
+        numeric sueldo
+        varchar obra_social FK
+        varchar sindicato FK
+    }
+
+    bas_moneda ||--o{ sld_convenio : "moneda"
+    bas_moneda ||--o{ sld_empleado : "moneda"
+    bas_moneda ||--o{ sld_recibo : "moneda"
+    sys_empresa ||--o{ sld_empleado : "empresa"
+    sld_obra_social ||--o{ sld_convenio : "obra_social"
+    sld_grupo_de_conceptos ||--o{ sld_convenio : "grupo_de_conceptos"
+    sld_convenio ||--o{ sld_categoria : "convenio"
+    sld_categoria ||--o{ sld_categoria_periodo : "convenio+categoria"
+    sld_categoria ||--o{ sld_empleado : "convenio+categoria"
+    sld_obra_social ||--o{ sld_empleado : "obra_social"
+    sld_sindicato ||--o{ sld_empleado : "sindicato"
+    sld_grupo_de_conceptos ||--o{ sld_empleado : "grupo_de_conceptos"
+    sld_concepto ||--|| sld_concepto_lsd : "concepto"
+    sld_empleado ||--|| sld_empleado_afip : "empleado"
+    sld_empleado ||--o{ sld_familiar : "empleado"
+    sld_empleado ||--|| sld_jornada_laboral : "empleado"
+    sld_jornada_laboral ||--o{ sld_horario : "empleado"
+    sld_empleado ||--o{ sld_ausentismo : "empleado"
+    sld_empleado ||--o{ sld_presentismo : "empleado"
+    sld_empleado ||--o{ sld_novedad : "empleado"
+    sld_empleado ||--o{ sld_empleado_concepto : "empleado"
+    sld_empleado ||--o{ sld_recibo_empleado : "empleado"
+    sld_motivo_ausentismo ||--o{ sld_ausentismo : "motivo"
+    sld_situacion_revista ||--o{ sld_empleado_afip : "situacion"
+    sld_condicion_laboral ||--o{ sld_empleado_afip : "condicion"
+    sld_actividad_laboral ||--o{ sld_empleado_afip : "actividad"
+    sld_modalidad_contrato ||--o{ sld_empleado_afip : "modalidad"
+    sld_incapacidad ||--o{ sld_empleado_afip : "incapacidad"
+    sld_codigo_zona ||--o{ sld_empleado_afip : "codigo_zona"
+    sld_tipo_novedad ||--o{ sld_novedad : "tipo_novedad"
+    sld_liquidacion ||--o{ sld_recibo : "periodo"
+    sld_empleado ||--o{ sld_recibo : "empleado"
+    sld_recibo ||--o{ sld_recibo_concepto : "periodo+empleado+numero"
+    sld_concepto ||--o{ sld_recibo_concepto : "concepto"
+    sld_concepto ||--o{ sld_empleado_concepto : "concepto"
+    sld_empleado ||--o{ sld_recibo_empleado : "recibo_empleado"
+    sld_categoria ||--o{ sld_recibo_empleado : "convenio+categoria"
+    sld_obra_social ||--o{ sld_recibo_empleado : "obra_social"
+    sld_sindicato ||--o{ sld_recibo_empleado : "sindicato"
+  </div>
+</div>
+
+<h2>Módulos del sistema original</h2>
+<table>
+  <tr><th>Prefijo</th><th>Módulo</th><th>Tablas</th><th>Migración</th></tr>
+  <tr><td><code>sld_</code></td><td>Sueldos / Nómina</td><td>38</td><td>✅ Completo</td></tr>
+  <tr><td><code>bas_</code></td><td>Catálogos base</td><td>17</td><td>✅ Parcial (moneda, proyecto, provincia, localidad)</td></tr>
+  <tr><td><code>sys_</code></td><td>Sistema</td><td>10</td><td>✅ Parcial (empresa, usuario)</td></tr>
+  <tr><td><code>cnt_</code></td><td>Contabilidad</td><td>15</td><td>⬜ Solo referencia FK (asientos)</td></tr>
+  <tr><td><code>fac_</code></td><td>Facturación</td><td>16</td><td>⬜ No</td></tr>
+  <tr><td><code>cmp_</code></td><td>Compras</td><td>30</td><td>⬜ No</td></tr>
+  <tr><td><code>vta_</code></td><td>Ventas</td><td>55</td><td>⬜ No</td></tr>
+  <tr><td><code>iva_</code></td><td>IVA / Libro</td><td>28</td><td>⬜ No</td></tr>
+  <tr><td><code>stk_</code></td><td>Stock</td><td>45</td><td>⬜ No</td></tr>
+  <tr><td><code>fnd_</code></td><td>Fondos</td><td>16</td><td>⬜ No</td></tr>
+</table>
+
+<h2>Conversiones MySQL → PostgreSQL</h2>
+<table>
+  <tr><th>MySQL</th><th>PostgreSQL</th><th>Nota</th></tr>
+  <tr><td><code>tinyint(1)</code></td><td><code>BOOLEAN</code></td><td>0 → false, 1 → true</td></tr>
+  <tr><td><code>bit(1)</code></td><td><code>BOOLEAN</code></td><td>b'0' → false</td></tr>
+  <tr><td><code>datetime</code></td><td><code>TIMESTAMP</code></td><td></td></tr>
+  <tr><td><code>blob / longblob / mediumblob</code></td><td><code>BYTEA</code></td><td>Fotos, logos, archivos</td></tr>
+  <tr><td><code>int(n)</code></td><td><code>INTEGER</code></td><td>El n es solo display hint</td></tr>
+  <tr><td><code>decimal(p,s)</code></td><td><code>NUMERIC(p,s)</code></td><td>Preciso, no float</td></tr>
+  <tr><td><code>enum('A','B')</code></td><td><code>VARCHAR(n) CHECK (col IN ('A','B'))</code></td><td>Más fácil de alterar</td></tr>
+  <tr><td><code>'0000-00-00'</code></td><td><code>NULL</code></td><td>Fecha inválida MySQL</td></tr>
+  <tr><td><code>DEFAULT CHARSET=latin1</code></td><td><code>ENCODING 'UTF8'</code></td><td>Reconvertir export</td></tr>
+</table>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    er: { diagramPadding: 20, layoutDirection: 'TB', minEntityWidth: 100 }
+  });
+</script>
+</body>
+</html>

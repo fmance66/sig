@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "Proyectos propios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001/api"
+    }
+  ],
+  "item": [
+    {
+      "name": "Sueldos",
+      "item": [
+        {
+          "name": "Estado",
+          "item": [
+            {
+              "name": "GET Estado",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/estado"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Empresas",
+          "item": [
+            {
+              "name": "GET Empresas",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/empresas"
+              }
+            },
+            {
+              "name": "GET Empresa por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/empresas/icp_sa"
+              }
+            },
+            {
+              "name": "POST Empresa",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/empresas",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"nueva_empresa\",\n  \"razon_social\": \"Nueva Empresa S.R.L.\",\n  \"cuit\": \"30-12345678-9\",\n  \"condicion_iva\": \"INSCRIPTO\",\n  \"direccion\": \"Av. Corrientes 1234\",\n  \"localidad\": \"CABA\",\n  \"provincia\": \"Buenos Aires\",\n  \"cpa\": \"1043\",\n  \"telefono\": \"11-1234-5678\",\n  \"email\": \"info@nueva.com\",\n  \"login\": true,\n  \"orden\": 10\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Empresa",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/empresas/nueva_empresa",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"razon_social\": \"Nombre Actualizado S.A.\",\n  \"telefono\": \"11-9999-0000\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Empresa",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/empresas/nueva_empresa"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Empleados",
+          "item": [
+            {
+              "name": "GET Empleados",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/empleados"
+              }
+            },
+            {
+              "name": "GET Empleados por Empresa",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/empleados?empresa=thompson_y_french_sa",
+                  "query": [
+                    { "key": "empresa", "value": "thompson_y_french_sa" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "GET Empleado por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/empleados/018"
+              }
+            },
+            {
+              "name": "POST Empleado",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/empleados",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"999\",\n  \"apellido\": \"PRUEBA\",\n  \"nombre\": \"Test\",\n  \"cuil\": \"20-33445566-7\",\n  \"sexo\": \"M\",\n  \"estado_civil\": \"SOLTERO\",\n  \"tipo_documento\": \"DNI\",\n  \"numero_documento\": \"33445566\",\n  \"fecha_ingreso\": \"2024-03-01\",\n  \"empresa\": \"icp_sa\",\n  \"liquidacion\": \"MENSUAL\",\n  \"orden\": 999\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Empleado",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/empleados/999",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sueldo\": 280000,\n  \"observaciones\": \"Actualización de prueba\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Empleado",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/empleados/999"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

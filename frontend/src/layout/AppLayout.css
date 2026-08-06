@@ -1,0 +1,267 @@
+/* Reset base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Root layout */
+.app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Sidebar ──────────────────────────────────────────── */
+.app-sidebar {
+  width: 92px;
+  background: #1a365d;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 10;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-logo {
+  font-size: 2rem;
+  color: #60a5fa;
+}
+
+.sidebar-title {
+  font-size: 0.58rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  line-height: 1.4;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Botón Home */
+.sidebar-home-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px 12px;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  transition: background 0.15s, color 0.15s;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.sidebar-home-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.sidebar-home-icon {
+  font-size: 1.1rem;
+}
+
+.sidebar-home-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sidebar-home-desc {
+  font-size: 0.52rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.3;
+  text-align: center;
+  font-weight: 400;
+  white-space: normal;
+}
+
+.nav-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-spacer {
+  flex: 1;
+}
+
+.nav-group-admin {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 4px;
+}
+
+.module-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 6px;
+  border: none;
+  border-left: 3px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.55);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-align: center;
+}
+
+.module-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.module-btn.active {
+  background: #2b6cb0;
+  color: #ffffff;
+  border-left-color: #90cdf4;
+}
+
+.sidebar-no-empresa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 8px;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
+.sidebar-no-empresa i {
+  font-size: 1.4rem;
+}
+
+.module-icon {
+  font-size: 1.25rem;
+}
+
+.module-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ── Main area ────────────────────────────────────────── */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+/* PrimeReact Menubar overrides */
+.app-menubar .p-menubar {
+  border-radius: 0;
+  border: none;
+  border-bottom: 2px solid #1a365d;
+  background: #2b6cb0;
+  padding: 0 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.app-menubar .p-menubar .p-menubar-root-list {
+  gap: 0;
+}
+
+.app-menubar .p-menubar .p-menuitem-link {
+  padding: 0.45rem 0.75rem;
+  border-radius: 6px;
+  gap: 0.4rem;
+  transition: background 0.15s;
+}
+
+.app-menubar .p-menubar .p-menuitem-link:hover {
+  background: #2c5282;
+}
+
+.app-menubar .p-menubar .p-menuitem-active > .p-menuitem-link {
+  background: #2c5282;
+}
+
+.app-menubar .p-menubar .p-menuitem-link .p-menuitem-icon {
+  font-size: 0.72rem;
+  color: #bee3f8;
+}
+
+.app-menubar .p-menubar .p-menuitem-link .p-menuitem-text {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.1px;
+}
+
+.app-menubar .p-menubar .p-menuitem-link .p-submenu-icon {
+  font-size: 0.6rem;
+  color: #bee3f8;
+}
+
+/* Submenú desplegable */
+.app-menubar .p-menubar .p-submenu-list {
+  border: 1px solid #2c5282;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+}
+
+.app-menubar .p-menubar .p-submenu-list .p-menuitem-link .p-menuitem-text {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: #1a365d;
+}
+
+.app-menubar .p-menubar .p-submenu-list .p-menuitem-link .p-menuitem-icon {
+  font-size: 0.7rem;
+  color: #2b6cb0;
+}
+
+.app-menubar .p-menubar .p-submenu-list .p-menuitem-link:hover {
+  background: #ebf8ff;
+}
+
+/* Content area */
+.app-content {
+  flex: 1;
+  overflow: auto;
+  padding: 1.5rem;
+}
+

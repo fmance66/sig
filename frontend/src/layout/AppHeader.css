@@ -1,0 +1,191 @@
+.app-header {
+  height: 52px;
+  flex-shrink: 0;
+  background: #0f2744;
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  z-index: 20;
+}
+
+/* ── Brand ── */
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 160px;
+}
+
+.header-logo {
+  font-size: 1.4rem;
+  color: #60a5fa;
+}
+
+.header-brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.header-brand-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.header-brand-sub {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* ── Center ── */
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.header-system-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.3px;
+}
+
+/* ── Empresa ── */
+.header-empresa {
+  min-width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.header-empresa-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.3;
+}
+
+.header-empresa-nombre {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ffffff;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-empresa-cuit {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.2px;
+}
+
+.header-empresa-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.header-empresa-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.header-empresa-btn-select.p-button {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.75rem;
+}
+
+.header-empresa-btn-select.p-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+}
+
+/* ── Dialog lista de empresas ── */
+.empresa-dialog-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.empresa-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.empresa-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.empresa-item:hover {
+  background: #eff6ff;
+}
+
+.empresa-item.selected {
+  background: #dbeafe;
+}
+
+.empresa-item-icon {
+  font-size: 1rem;
+  color: #3b82f6;
+  width: 20px;
+  text-align: center;
+}
+
+.empresa-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.empresa-item-nombre {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e3a5f;
+}
+
+.empresa-item-cuit {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.empresa-item-check {
+  color: #3b82f6;
+  font-size: 0.85rem;
+}

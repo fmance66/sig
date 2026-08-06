@@ -1,0 +1,255 @@
+.ayuda-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+/* Header */
+.ayuda-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.ayuda-header-icon {
+  font-size: 2rem;
+  color: #1a365d;
+  opacity: 0.7;
+}
+
+.ayuda-header-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a365d;
+  margin: 0;
+}
+
+.ayuda-header-sub {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin: 0.1rem 0 0;
+}
+
+/* Secciones */
+.ayuda-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.ayuda-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ayuda-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1a365d;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ayuda-section-title i {
+  font-size: 0.82rem;
+  opacity: 0.7;
+}
+
+/* Pasos */
+.ayuda-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ayuda-steps li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1a365d;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.ayuda-steps li div strong {
+  font-size: 0.82rem;
+  color: #1e293b;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.ayuda-steps li div p {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Tarjetas de módulos */
+.modulos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.modulo-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.modulo-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.modulo-card-header i {
+  font-size: 0.85rem;
+  color: #1a365d;
+  width: 16px;
+  text-align: center;
+}
+
+.modulo-card-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.modulo-card-badge {
+  font-size: 0.68rem;
+  background: #f1f5f9;
+  color: #64748b;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  margin-left: auto;
+}
+
+.modulo-card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.modulo-card-list li {
+  font-size: 0.76rem;
+  color: #64748b;
+  padding-left: 0.75rem;
+  position: relative;
+}
+
+.modulo-card-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: #94a3b8;
+}
+
+/* Configuración */
+.ayuda-config-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ayuda-config-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.6rem 0.75rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.ayuda-config-item i {
+  font-size: 0.85rem;
+  color: #1a365d;
+  opacity: 0.6;
+  margin-top: 2px;
+  width: 16px;
+  text-align: center;
+}
+
+.ayuda-config-item strong {
+  font-size: 0.8rem;
+  color: #1e293b;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.ayuda-config-item p {
+  font-size: 0.76rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.ayuda-config-item em {
+  color: #1a365d;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Tips */
+.ayuda-tips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ayuda-tips li {
+  font-size: 0.78rem;
+  color: #64748b;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.ayuda-tips li i {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ayuda-tips li strong {
+  color: #1e293b;
+}
+
+.ayuda-tips li em {
+  color: #94a3b8;
+  font-style: normal;
+}

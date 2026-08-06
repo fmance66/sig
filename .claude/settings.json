@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"\" > \"c:\\\\_proyectos\\\\Personales\\\\sueldos\\\\frontend\\\\src\\\\api\\\\empresas.js\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\_proyectos\\\\Personales\\\\sueldos\\\\frontend\\\\src\\\\pages\\\\configuracion\")",
+      "PowerShell(docker exec -i sueldos_db psql -U sueldos -d sueldos)",
+      "Bash(git --version)",
+      "PowerShell(Get-Command gh -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Command git -ErrorAction SilentlyContinue)",
+      "PowerShell(ssh -T git@github.com -o BatchMode=yes -o ConnectTimeout=5 2>&1)",
+      "PowerShell(git config --global --get credential.helper)",
+      "PowerShell(git config --global credential.helper)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ],
+    "additionalDirectories": [
+      "c:\\_proyectos\\Personales\\sueldos\\frontend\\src\\api"
+    ]
+  }
+}
