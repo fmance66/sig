@@ -20,6 +20,7 @@ Thumbs.db
 
 # Claude Code
 .claude/
+CLAUDE.md
 
 # Dumps reales de sueldos / datos de empresas (sensibles, no van al repo)
 db/mysql/data/
