@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS sys_empresa (
     mail_password   VARCHAR(100),
     smtp_host       VARCHAR(100),
     smtp_port       INTEGER,
-    empresa         VARCHAR(30) REFERENCES sys_empresa(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empresa         VARCHAR(30) REFERENCES sys_empresa(id) ON DELETE SET NULL ON UPDATE CASCADE,
     login           BOOLEAN,
     cloud           BOOLEAN,
     workspace       VARCHAR(30),

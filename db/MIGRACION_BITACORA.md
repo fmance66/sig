@@ -206,3 +206,31 @@ alcance de la migración inicial.
 El **único efecto negativo** del mojibake sobre los constraints es que ciertos valores
 ocupan 1-2 chars más de lo esperado (cada vocal acentuada pasa de 1 char a 2 chars).
 Todos esos casos quedaron cubiertos con las ampliaciones de VARCHAR documentadas en la sección 3.
+
+---
+
+## 8. Bug: borrar una empresa borraba otra (self-referencing FK con CASCADE)
+
+**Síntoma**: al borrar la empresa duplicada "Thompson y French" (la fila sin empleados,
+id `thompson y french sa` con espacios) desde el listado, el sistema borró también la
+fila real `thompson_y_french_sa` (la que tenía los 95 empleados vinculados).
+
+**Causa**: `sys_empresa.empresa` es una FK auto-referenciada a `sys_empresa(id)`. En el
+dump original de MySQL, la fila real (`thompson_y_french_sa`) tenía esa columna apuntando
+a la fila duplicada (`thompson y french sa`) — probablemente un campo de agrupación/cloud
+del sistema original, sin relación con la duplicación. Con `ON DELETE CASCADE`, borrar la
+fila referenciada (la duplicada) arrastró a la fila que la apuntaba (la real).
+
+**Fix aplicado**: se cambió esa constraint de `ON DELETE CASCADE` a `ON DELETE SET NULL`
+en `01_schema.sql` y en la base activa (`ALTER TABLE sys_empresa ... DROP/ADD CONSTRAINT
+sys_empresa_empresa_fkey`). Así, borrar una empresa nunca vuelve a borrar otra en cascada;
+como máximo deja en NULL el campo `empresa` de la fila que la referenciaba.
+
+**Recuperación de datos**: la fila `thompson_y_french_sa` se reinsertó a mano con los
+valores originales del dump (`db/postgresql/data/thompson_y_french_sa_pg.sql`), sin
+recrear la fila duplicada sin empleados. Los 95 empleados que quedaron con `empresa = NULL`
+(por el `ON DELETE SET NULL` de `sld_empleado.empresa`, que nunca se llegó a borrar) se
+re-vincularon con `UPDATE sld_empleado SET empresa='thompson_y_french_sa' WHERE empresa IS NULL`.
+
+**Nota**: `sys_sucursal.empresa` también tiene `ON DELETE CASCADE` hacia `sys_empresa(id)`,
+pero ese caso es intencional (una sucursal pertenece a una empresa) y no se modificó.
