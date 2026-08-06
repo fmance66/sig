@@ -18,8 +18,8 @@ Thumbs.db
 !.vscode/extensions.json
 .idea
 
-# Local Claude Code settings (machine-specific)
-.claude/settings.local.json
+# Claude Code
+.claude/
 
 # Dumps reales de sueldos / datos de empresas (sensibles, no van al repo)
 db/mysql/data/
