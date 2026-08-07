@@ -1,5 +1,19 @@
 .page-empresas {
-  padding: 1.25rem;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.page-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.75rem;
+}
+
+.page-title i {
+  color: #3b82f6;
 }
 
 /* Toolbar de la tabla */
@@ -17,6 +31,7 @@
 
 .table-toolbar .p-icon-field .p-inputtext {
   padding-left: 2rem;
+  width: 280px;
 }
 
 .table-toolbar .p-button {

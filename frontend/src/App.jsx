@@ -4,6 +4,15 @@ import Home from './pages/Home';
 import AyudaPage from './pages/ayuda/AyudaPage';
 import EmpleadosPage from './pages/sueldos/EmpleadosPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
+import ConveniosPage from './pages/configuracion/ConveniosPage';
+import ObrasSocialesPage from './pages/configuracion/ObrasSocialesPage';
+import SindicatosPage from './pages/configuracion/SindicatosPage';
+import SituacionRevistaPage from './pages/configuracion/SituacionRevistaPage';
+import CondicionLaboralPage from './pages/configuracion/CondicionLaboralPage';
+import ActividadLaboralPage from './pages/configuracion/ActividadLaboralPage';
+import ModalidadContratoPage from './pages/configuracion/ModalidadContratoPage';
+import IncapacidadPage from './pages/configuracion/IncapacidadPage';
+import CodigoZonaPage from './pages/configuracion/CodigoZonaPage';
 import { EmpresaProvider } from './context/EmpresaContext';
 
 export default function App() {
@@ -24,9 +33,15 @@ export default function App() {
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}
           <Route path="configuracion/empresas" element={<EmpresasPage />} />
-          <Route path="configuracion/convenios" element={<div>Listado de convenios</div>} />
-          <Route path="configuracion/obras-sociales" element={<div>Listado de obras sociales</div>} />
-          <Route path="configuracion/sindicatos" element={<div>Listado de sindicatos</div>} />
+          <Route path="configuracion/convenios" element={<ConveniosPage />} />
+          <Route path="configuracion/obras-sociales" element={<ObrasSocialesPage />} />
+          <Route path="configuracion/sindicatos" element={<SindicatosPage />} />
+          <Route path="configuracion/afip/situacion-revista" element={<SituacionRevistaPage />} />
+          <Route path="configuracion/afip/condicion-laboral" element={<CondicionLaboralPage />} />
+          <Route path="configuracion/afip/actividad-laboral" element={<ActividadLaboralPage />} />
+          <Route path="configuracion/afip/modalidad-contrato" element={<ModalidadContratoPage />} />
+          <Route path="configuracion/afip/incapacidad" element={<IncapacidadPage />} />
+          <Route path="configuracion/afip/codigo-zona" element={<CodigoZonaPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -198,6 +198,8 @@ export default function EmpresasPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
+      <h2 className="page-title"><i className="fa-solid fa-building" /> Empresas</h2>
+
       <DataTable
         value={empresas}
         loading={loading}

@@ -1,0 +1,219 @@
+import { useState, useEffect, useRef } from 'react';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { IconField } from 'primereact/iconfield';
+import { InputIcon } from 'primereact/inputicon';
+import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { Toast } from 'primereact/toast';
+import { createCatalogoApi } from '../../api/catalogo';
+import './CatalogoPage.css';
+
+function emptyForm(fields) {
+  const form = { id: '' };
+  fields.forEach(f => { form[f.name] = f.type === 'select' ? null : ''; });
+  return form;
+}
+
+function cap(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+export default function CatalogoPage({ title, icon, basePath, entityLabel, columns, fields, dialogWidth = '600px' }) {
+  const api = useRef(createCatalogoApi(basePath)).current;
+
+  const [registros, setRegistros]       = useState([]);
+  const [loading, setLoading]           = useState(false);
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [editMode, setEditMode]         = useState(false);
+  const [form, setForm]                 = useState(() => emptyForm(fields));
+  const [saving, setSaving]             = useState(false);
+  const toast = useRef(null);
+
+  useEffect(() => { load(); }, [basePath]);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const res = await api.getAll();
+      setRegistros(res.data.resultado);
+    } catch {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: `No se pudo cargar el listado de ${entityLabel}` });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function openNew() {
+    setForm(emptyForm(fields));
+    setEditMode(false);
+    setDialogVisible(true);
+  }
+
+  function openEdit(row) {
+    const next = { id: row.id ?? '' };
+    fields.forEach(f => { next[f.name] = row[f.name] ?? (f.type === 'select' ? null : ''); });
+    setForm(next);
+    setEditMode(true);
+    setDialogVisible(true);
+  }
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  }
+
+  function handleSelectChange(name, value) {
+    setForm(prev => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSave() {
+    if (!editMode && !form.id.trim()) {
+      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'El código es requerido' });
+      return;
+    }
+    const missing = fields.find(f => f.required && !String(form[f.name] ?? '').trim());
+    if (missing) {
+      toast.current.show({ severity: 'warn', summary: 'Atención', detail: `${missing.label} es requerido/a` });
+      return;
+    }
+    setSaving(true);
+    try {
+      if (editMode) {
+        await api.update(form.id, form);
+        toast.current.show({ severity: 'success', summary: 'OK', detail: `${cap(entityLabel)} actualizado/a` });
+      } else {
+        await api.create(form);
+        toast.current.show({ severity: 'success', summary: 'OK', detail: `${cap(entityLabel)} creado/a` });
+      }
+      setDialogVisible(false);
+      load();
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || 'Error al guardar';
+      toast.current.show({ severity: 'error', summary: 'Error', detail: msg });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleDelete(row) {
+    confirmDialog({
+      message: `¿Está seguro de eliminar "${row.descripcion || row.id}"?`,
+      header: 'Confirmar eliminación',
+      icon: 'fa-solid fa-triangle-exclamation',
+      acceptLabel: 'Eliminar',
+      rejectLabel: 'Cancelar',
+      acceptClassName: 'p-button-danger',
+      accept: async () => {
+        try {
+          await api.remove(row.id);
+          toast.current.show({ severity: 'success', summary: 'OK', detail: `${cap(entityLabel)} eliminado/a` });
+          load();
+        } catch {
+          toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar' });
+        }
+      },
+    });
+  }
+
+  const tableHeader = (
+    <div className="table-toolbar my-2">
+      <IconField iconPosition="left">
+        <InputIcon className="fa-solid fa-magnifying-glass" />
+        <InputText value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
+      </IconField>
+      <Button label={`Agregar ${entityLabel}`} icon="fa-solid fa-plus" onClick={openNew} size="small" />
+    </div>
+  );
+
+  const paginatorRight = <span className="total-registros">Total: {registros.length} registros</span>;
+
+  const accionesTemplate = (row) => (
+    <div className="acciones-col">
+      <Button icon="fa-solid fa-pen" className="p-button-text p-button-sm" tooltip="Modificar" tooltipOptions={{ position: 'top' }} onClick={() => openEdit(row)} />
+      <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleDelete(row)} />
+    </div>
+  );
+
+  const dialogFooter = (
+    <div className="dialog-footer-btns mt-2">
+      <Button label="Cancelar" icon="fa-solid fa-xmark" className="p-button-text" onClick={() => setDialogVisible(false)} disabled={saving} />
+      <Button label="Aceptar" icon="fa-solid fa-check" onClick={handleSave} loading={saving} />
+    </div>
+  );
+
+  return (
+    <div className="page-catalogo">
+      <Toast ref={toast} />
+      <ConfirmDialog />
+
+      <h2 className="catalogo-page-title"><i className={icon} /> {title}</h2>
+
+      <DataTable
+        value={registros}
+        loading={loading}
+        paginator={registros.length > 10}
+        rows={10}
+        rowsPerPageOptions={[10, 15, 25, 50]}
+        paginatorRight={paginatorRight}
+        globalFilter={globalFilter}
+        globalFilterFields={['id', 'descripcion']}
+        header={tableHeader}
+        emptyMessage={`No hay registros de ${entityLabel}`}
+        size="small"
+        stripedRows
+        removableSort
+      >
+        {columns.map(col => (
+          <Column key={col.field} field={col.field} header={col.header} sortable style={col.style} />
+        ))}
+        <Column body={accionesTemplate} header="Acciones" style={{ width: '100px', textAlign: 'center' }} />
+      </DataTable>
+
+      <Dialog
+        visible={dialogVisible}
+        onHide={() => setDialogVisible(false)}
+        header={editMode ? `Modificar ${entityLabel}` : `Agregar ${entityLabel}`}
+        footer={dialogFooter}
+        style={{ width: dialogWidth }}
+        modal
+        draggable={false}
+        resizable={false}
+      >
+        <div className="form-grid">
+          {!editMode && (
+            <div className="form-field">
+              <label>Código <span className="required">*</span></label>
+              <InputText name="id" value={form.id} onChange={handleChange} />
+            </div>
+          )}
+          {fields.map(f => (
+            <div key={f.name} className={`form-field${f.full ? ' form-field--full' : ''}`}>
+              <label>{f.label} {f.required && <span className="required">*</span>}</label>
+              {f.type === 'select' ? (
+                <Dropdown
+                  value={form[f.name]}
+                  options={f.options}
+                  onChange={e => handleSelectChange(f.name, e.value)}
+                  placeholder="Seleccionar..."
+                />
+              ) : (
+                <InputText
+                  name={f.name}
+                  value={form[f.name] ?? ''}
+                  onChange={handleChange}
+                  type={f.type === 'number' ? 'number' : 'text'}
+                  placeholder={f.placeholder}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </Dialog>
+    </div>
+  );
+}

@@ -102,6 +102,30 @@
               }
             },
             {
+              "name": "GET Empleados Activos",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/empleados?estado=activo",
+                  "query": [
+                    { "key": "estado", "value": "activo" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "GET Empleados Inactivos",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/empleados?estado=inactivo",
+                  "query": [
+                    { "key": "estado", "value": "inactivo" }
+                  ]
+                }
+              }
+            },
+            {
               "name": "GET Empleado por ID",
               "request": {
                 "method": "GET",
@@ -118,7 +142,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"id\": \"999\",\n  \"apellido\": \"PRUEBA\",\n  \"nombre\": \"Test\",\n  \"cuil\": \"20-33445566-7\",\n  \"sexo\": \"M\",\n  \"estado_civil\": \"SOLTERO\",\n  \"tipo_documento\": \"DNI\",\n  \"numero_documento\": \"33445566\",\n  \"fecha_ingreso\": \"2024-03-01\",\n  \"empresa\": \"icp_sa\",\n  \"liquidacion\": \"MENSUAL\",\n  \"orden\": 999\n}"
+                  "raw": "{\n  \"id\": \"999\",\n  \"apellido\": \"PRUEBA\",\n  \"nombre\": \"Test\",\n  \"cuil\": \"20-33445566-7\",\n  \"sexo\": \"M\",\n  \"estado_civil\": \"SOLTERO\",\n  \"tipo_documento\": \"DNI\",\n  \"numero_documento\": \"33445566\",\n  \"fecha_ingreso\": \"2024-03-01\",\n  \"empresa\": \"icp_sa\",\n  \"liquidacion\": \"MENSUAL\",\n  \"estado\": \"ACTIVO\",\n  \"orden\": 999\n}"
                 }
               }
             },
@@ -142,6 +166,672 @@
                 "method": "DELETE",
                 "url": "{{base_url}}/empleados/999"
               }
+            },
+            {
+              "name": "GET Empleado LSD",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/empleados/999/lsd"
+              }
+            },
+            {
+              "name": "PUT Empleado LSD",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/empleados/999/lsd",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"situacion\": 1,\n  \"condicion\": 1,\n  \"actividad\": 1,\n  \"modalidad\": 1,\n  \"incapacidad\": 1,\n  \"codigo_zona\": 1,\n  \"situacion_revista_1\": 1,\n  \"dia_inicio_1\": \"2024-03-01\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sucursales",
+          "item": [
+            {
+              "name": "GET Sucursales por Empresa",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/sucursales?empresa=icp_sa",
+                  "query": [
+                    { "key": "empresa", "value": "icp_sa" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "POST Sucursal",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/sucursales",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empresa\": \"icp_sa\",\n  \"sucursal\": \"Casa Central\",\n  \"nombre_fantasia\": \"ICP Central\",\n  \"direccion\": \"Av. Corrientes 1234\",\n  \"localidad\": \"CABA\",\n  \"provincia\": \"Buenos Aires\",\n  \"cpa\": \"1043\",\n  \"telefono\": \"11-1234-5678\",\n  \"email\": \"central@icp.com\",\n  \"login\": true,\n  \"orden\": 1\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Sucursal",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/sucursales/1",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"telefono\": \"11-9999-0000\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Sucursal",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/sucursales/1"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Familiares",
+          "item": [
+            {
+              "name": "GET Familiares por Empleado",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/familiares?empleado=018",
+                  "query": [
+                    { "key": "empleado", "value": "018" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "POST Familiar",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/familiares",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empleado\": \"018\",\n  \"parentesco\": \"HIJO/A\",\n  \"apellido\": \"PRUEBA\",\n  \"nombre\": \"Test\",\n  \"fecha_alta\": \"2024-03-01\",\n  \"cuil\": \"20-33445566-7\",\n  \"sexo\": \"M\",\n  \"fecha_nacimiento\": \"2015-06-10\",\n  \"tipo_documento\": \"DNI\",\n  \"numero_documento\": \"33445566\",\n  \"adherente\": true,\n  \"deducible\": true\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Familiar",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/familiares/018/1",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"deducible\": false\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Familiar",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/familiares/018/1"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Novedades",
+          "item": [
+            {
+              "name": "GET Novedades por Empleado",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/novedades?empleado=018",
+                  "query": [
+                    { "key": "empleado", "value": "018" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "POST Novedad",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/novedades",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empleado\": \"018\",\n  \"tipo_novedad\": 1,\n  \"fecha\": \"2024-03-01\",\n  \"value\": \"1\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Novedad",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/novedades/018/1/2024-03-01"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Historial",
+          "item": [
+            {
+              "name": "GET Historial por Empleado",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/historial?empleado=018",
+                  "query": [
+                    { "key": "empleado", "value": "018" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "POST Registro de Historial",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/historial",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empleado\": \"018\",\n  \"campo\": 1,\n  \"fecha_desde\": \"2024-03-01\",\n  \"fecha_hasta\": \"2024-06-30\",\n  \"valor\": \"280000\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Registro de Historial",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/historial/018/1/2024-03-01"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Conceptos Empleado",
+          "item": [
+            {
+              "name": "GET Conceptos por Empleado",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/conceptos-empleado?empleado=018",
+                  "query": [
+                    { "key": "empleado", "value": "018" }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "POST Concepto de Empleado",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/conceptos-empleado",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empleado\": \"018\",\n  \"concepto\": 1,\n  \"liquidacion\": \"MENSUAL\",\n  \"recibo\": 0,\n  \"descripcion\": \"Adicional de prueba\",\n  \"unidad_manual\": 1,\n  \"importe_manual\": 5000,\n  \"vigencia_desde\": \"2024-03-01\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Concepto de Empleado",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/conceptos-empleado/018/1/MENSUAL/0"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Conceptos Grupo",
+          "item": [
+            {
+              "name": "GET Conceptos por Grupo",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/conceptos-grupo?grupo=1",
+                  "query": [
+                    { "key": "grupo", "value": "1" }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Catalogos",
+          "item": [
+            {
+              "name": "Convenios",
+              "item": [
+                {
+                  "name": "GET Convenios",
+                  "request": { "method": "GET", "url": "{{base_url}}/convenios" }
+                },
+                {
+                  "name": "GET Convenio por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/convenios/1" }
+                },
+                {
+                  "name": "POST Convenio",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/convenios",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Convenio de prueba\",\n  \"liquidacion\": \"MENSUAL\",\n  \"dias\": 30,\n  \"horas\": 200,\n  \"moneda\": \"ARS\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Convenio",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/convenios/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Convenio actualizado\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Convenio",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/convenios/1" }
+                }
+              ]
+            },
+            {
+              "name": "Obras Sociales",
+              "item": [
+                {
+                  "name": "GET Obras Sociales",
+                  "request": { "method": "GET", "url": "{{base_url}}/obras-sociales" }
+                },
+                {
+                  "name": "GET Obra Social por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/obras-sociales/1" }
+                },
+                {
+                  "name": "POST Obra Social",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/obras-sociales",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Obra social de prueba\",\n  \"aporte_porcentaje\": 3,\n  \"retencion_porcentaje\": 3,\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Obra Social",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/obras-sociales/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Obra social actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Obra Social",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/obras-sociales/1" }
+                }
+              ]
+            },
+            {
+              "name": "Sindicatos",
+              "item": [
+                {
+                  "name": "GET Sindicatos",
+                  "request": { "method": "GET", "url": "{{base_url}}/sindicatos" }
+                },
+                {
+                  "name": "GET Sindicato por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/sindicatos/1" }
+                },
+                {
+                  "name": "POST Sindicato",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/sindicatos",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Sindicato de prueba\",\n  \"aporte_porcentaje\": 2,\n  \"retencion_porcentaje\": 2,\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Sindicato",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/sindicatos/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Sindicato actualizado\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Sindicato",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/sindicatos/1" }
+                }
+              ]
+            },
+            {
+              "name": "Situacion de Revista",
+              "item": [
+                {
+                  "name": "GET Situaciones de Revista",
+                  "request": { "method": "GET", "url": "{{base_url}}/situacion-revista" }
+                },
+                {
+                  "name": "GET Situacion de Revista por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/situacion-revista/1" }
+                },
+                {
+                  "name": "POST Situacion de Revista",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/situacion-revista",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Situación de prueba\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Situacion de Revista",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/situacion-revista/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Situación actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Situacion de Revista",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/situacion-revista/1" }
+                }
+              ]
+            },
+            {
+              "name": "Condiciones Laborales",
+              "item": [
+                {
+                  "name": "GET Condiciones Laborales",
+                  "request": { "method": "GET", "url": "{{base_url}}/condiciones-laborales" }
+                },
+                {
+                  "name": "GET Condicion Laboral por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/condiciones-laborales/1" }
+                },
+                {
+                  "name": "POST Condicion Laboral",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/condiciones-laborales",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Condición de prueba\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Condicion Laboral",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/condiciones-laborales/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Condición actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Condicion Laboral",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/condiciones-laborales/1" }
+                }
+              ]
+            },
+            {
+              "name": "Actividades Laborales",
+              "item": [
+                {
+                  "name": "GET Actividades Laborales",
+                  "request": { "method": "GET", "url": "{{base_url}}/actividades-laborales" }
+                },
+                {
+                  "name": "GET Actividad Laboral por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/actividades-laborales/1" }
+                },
+                {
+                  "name": "POST Actividad Laboral",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/actividades-laborales",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Actividad de prueba\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Actividad Laboral",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/actividades-laborales/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Actividad actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Actividad Laboral",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/actividades-laborales/1" }
+                }
+              ]
+            },
+            {
+              "name": "Modalidades de Contrato",
+              "item": [
+                {
+                  "name": "GET Modalidades de Contrato",
+                  "request": { "method": "GET", "url": "{{base_url}}/modalidades-contrato" }
+                },
+                {
+                  "name": "GET Modalidad de Contrato por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/modalidades-contrato/1" }
+                },
+                {
+                  "name": "POST Modalidad de Contrato",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/modalidades-contrato",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Modalidad de prueba\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Modalidad de Contrato",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/modalidades-contrato/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Modalidad actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Modalidad de Contrato",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/modalidades-contrato/1" }
+                }
+              ]
+            },
+            {
+              "name": "Incapacidades",
+              "item": [
+                {
+                  "name": "GET Incapacidades",
+                  "request": { "method": "GET", "url": "{{base_url}}/incapacidades" }
+                },
+                {
+                  "name": "GET Incapacidad por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/incapacidades/1" }
+                },
+                {
+                  "name": "POST Incapacidad",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/incapacidades",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Incapacidad de prueba\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Incapacidad",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/incapacidades/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Incapacidad actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Incapacidad",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/incapacidades/1" }
+                }
+              ]
+            },
+            {
+              "name": "Codigos de Zona",
+              "item": [
+                {
+                  "name": "GET Codigos de Zona",
+                  "request": { "method": "GET", "url": "{{base_url}}/codigos-zona" }
+                },
+                {
+                  "name": "GET Codigo de Zona por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/codigos-zona/1" }
+                },
+                {
+                  "name": "POST Codigo de Zona",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/codigos-zona",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Zona de prueba\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Codigo de Zona",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/codigos-zona/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Zona actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Codigo de Zona",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/codigos-zona/1" }
+                }
+              ]
             }
           ]
         }

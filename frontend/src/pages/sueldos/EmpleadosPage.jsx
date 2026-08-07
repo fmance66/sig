@@ -294,6 +294,11 @@ export default function EmpleadosPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
+      <h2 className="page-title">
+        <i className={mostrarInactivos ? 'fa-solid fa-user-slash' : 'fa-solid fa-user'} />
+        {mostrarInactivos ? 'Empleados inactivos' : 'Empleados activos'}
+      </h2>
+
       <DataTable
         value={empleados}
         loading={loading}
