@@ -16,9 +16,6 @@ export default function App() {
           {/* sueldos */}
           <Route path="sueldos/empleados" element={<EmpleadosPage />} />
           <Route path="sueldos/empleados/:id" element={<div>Ficha de empleado</div>} />
-          <Route path="sueldos/convenios" element={<div>Listado de convenios</div>} />
-          <Route path="sueldos/obras-sociales" element={<div>Listado de obras sociales</div>} />
-          <Route path="sueldos/sindicatos" element={<div>Listado de sindicatos</div>} />
           <Route path="sueldos/liquidaciones" element={<div>Liquidaciones</div>} />
           <Route path="sueldos/recibos" element={<div>Recibos</div>} />
           <Route path="sueldos/conceptos" element={<div>Conceptos</div>} />
@@ -27,6 +24,9 @@ export default function App() {
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}
           <Route path="configuracion/empresas" element={<EmpresasPage />} />
+          <Route path="configuracion/convenios" element={<div>Listado de convenios</div>} />
+          <Route path="configuracion/obras-sociales" element={<div>Listado de obras sociales</div>} />
+          <Route path="configuracion/sindicatos" element={<div>Listado de sindicatos</div>} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -257,7 +257,7 @@ function canonicalId(filename) {
 // Procesa un dump completo y devuelve el SQL para PostgreSQL.
 // ---------------------------------------------------------------------------
 function processDump(inputFile) {
-  const content   = fs.readFileSync(inputFile, 'latin1');
+  const content   = fs.readFileSync(inputFile, 'utf8');
   const srcId     = detectEmpresaId(content);
   const empresaId = canonicalId(inputFile);
   const needsRename = srcId && srcId !== empresaId;

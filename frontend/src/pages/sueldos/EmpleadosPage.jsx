@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -12,7 +13,6 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Tag } from 'primereact/tag';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { useEmpresa } from '../../context/EmpresaContext';
 import * as api from '../../api/empleados';
@@ -22,17 +22,6 @@ import NovedadesTab from './NovedadesTab';
 import HistorialTab from './HistorialTab';
 import ConceptosTab from './ConceptosTab';
 import './EmpleadosPage.css';
-
-const ESTADO_MAP = {
-  a: { severity: 'success', label: 'Activo' },
-  activo: { severity: 'success', label: 'Activo' },
-  i: { severity: 'danger', label: 'Inactivo' },
-  inactivo: { severity: 'danger', label: 'Inactivo' },
-  s: { severity: 'warning', label: 'Suspendido' },
-  suspendido: { severity: 'warning', label: 'Suspendido' },
-  l: { severity: 'info', label: 'Licencia' },
-  licencia: { severity: 'info', label: 'Licencia' },
-};
 
 const ESTADO_OPTIONS = [
   { label: 'Activo', value: 'activo' },
@@ -85,6 +74,8 @@ const LSD_FIELDS = [
 
 export default function EmpleadosPage() {
   const { empresa } = useEmpresa();
+  const [searchParams] = useSearchParams();
+  const mostrarInactivos = searchParams.get('estado') === 'inactivo';
   const [empleados, setEmpleados] = useState([]);
   const [loading, setLoading]     = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -96,12 +87,12 @@ export default function EmpleadosPage() {
   const [activeTab, setActiveTab] = useState(0);
   const toast = useRef(null);
 
-  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id, mostrarInactivos]);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getEmpleados(empresa.id);
+      const res = await api.getEmpleados(empresa.id, mostrarInactivos ? 'inactivo' : 'activo');
       setEmpleados(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los empleados' });
@@ -235,12 +226,6 @@ export default function EmpleadosPage() {
     return `${row.apellido ?? ''}${row.apellido && row.nombre ? ', ' : ''}${row.nombre ?? ''}`;
   }
 
-  function estadoTemplate(row) {
-    const key = row.estado?.toLowerCase();
-    const { severity, label } = ESTADO_MAP[key] ?? { severity: 'secondary', label: row.estado ?? '—' };
-    return <Tag severity={severity} value={label} className="estado-tag" />;
-  }
-
   function fechaTemplate(row) {
     if (!row.fecha_ingreso) return '—';
     return new Date(row.fecha_ingreso).toLocaleDateString('es-AR');
@@ -275,7 +260,9 @@ export default function EmpleadosPage() {
           placeholder="Buscar..."
         />
       </IconField>
-      <Button label="Agregar empleado" icon="fa-solid fa-plus" size="small" onClick={openNew} />
+      {!mostrarInactivos && (
+        <Button label="Agregar empleado" icon="fa-solid fa-plus" size="small" onClick={openNew} />
+      )}
     </div>
   );
 
@@ -317,7 +304,7 @@ export default function EmpleadosPage() {
         globalFilter={globalFilter}
         globalFilterFields={['apellido', 'nombre', 'cuil', 'convenio', 'categoria']}
         header={tableHeader}
-        emptyMessage="No hay empleados registrados"
+        emptyMessage={mostrarInactivos ? 'No hay empleados inactivos' : 'No hay empleados registrados'}
         size="small"
         stripedRows
         removableSort
@@ -325,7 +312,6 @@ export default function EmpleadosPage() {
         <Column field="id"       header="Legajo"           sortable style={{ width: '80px' }} />
         <Column body={nombreTemplate}  header="Apellido y Nombre" sortField="apellido" sortable />
         <Column field="cuil"     header="CUIL"             sortable style={{ width: '140px' }} />
-        <Column body={estadoTemplate}  header="Estado"     sortField="estado" sortable style={{ width: '100px', textAlign: 'center' }} />
         <Column body={fechaTemplate}   header="Ingreso"    sortField="fecha_ingreso" sortable style={{ width: '100px' }} />
         <Column field="convenio" header="Convenio"         sortable style={{ width: '130px' }} />
         <Column field="categoria" header="Categoría"       sortable style={{ width: '100px' }} />

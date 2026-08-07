@@ -2,7 +2,7 @@ const Empleado = require('../models/empleados');
 
 async function list(req, res) {
   try {
-    const data = await Empleado.list({ empresa: req.query.empresa });
+    const data = await Empleado.list({ empresa: req.query.empresa, estado: req.query.estado });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (err) {
     console.error(err);

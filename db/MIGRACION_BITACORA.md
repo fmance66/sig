@@ -68,6 +68,11 @@ sld_liquidacion:       { lugar_pago: 100, periodo_deposito: 40, banco_deposito: 
 Todos los cambios al schema reflejan datos reales más anchos que los límites originales.
 Aplicar estos mismos cambios en cualquier recreación desde cero.
 
+**Nota (2026-08-06)**: algunos de los anchos abajo se calcularon sobre texto con mojibake
+(ver sección 7, ya resuelto) y por lo tanto son más generosos de lo estrictamente necesario
+ahora que el encoding está corregido. No hace falta achicarlos — son límites válidos, solo
+más holgados de lo mínimo.
+
 ### 3.1 Columnas de obra social / sindicato
 
 **Motivo**: valores como `'O.S. MECÁNICOS Y AFIN'` (21 chars en mojibake) superan VARCHAR(20).
@@ -194,18 +199,37 @@ Migración completada exitosamente el 2026-08-04.
 
 ---
 
-## 7. Notas sobre encoding (mojibake)
+## 7. Bug: mojibake en caracteres acentuados (RESUELTO 2026-08-06)
 
-Los dumps MySQL estaban en UTF-8 pero se leyeron con charset incorrecto en algún momento.
-Resultado: caracteres acentuados del español aparecen duplicados (ej. `á` → `Ã¡`, `ó` → `Ã³`, `º` → `Âº`).
+**Síntoma**: caracteres acentuados del español aparecían duplicados en toda la base
+(ej. `á` → `Ã¡`, `ó` → `Ã³`, `º` → `Âº`, `José` → `JosÃ©`), visible tanto en la respuesta
+de la API como en el frontend.
 
-**El script NO corrige el mojibake**: los datos en PostgreSQL conservan el texto tal como
-está en los dumps. Corregir el encoding requeriría una transformación adicional fuera del
-alcance de la migración inicial.
+**Causa raíz**: `migrate-from-mysql.js` leía los dumps de MySQL (que ya están en UTF-8
+válido, confirmado por la cabecera `SET NAMES utf8` de `mysqldump`) con el encoding
+`'latin1'` y volvía a escribir el resultado como `'utf8'`. Cada carácter multibyte UTF-8
+(ej. `é` = bytes `C3 A9`) se interpretaba como dos caracteres Latin-1 (`Ã©`) y al
+reescribirse en UTF-8 esos dos caracteres se recodificaban a 4 bytes, duplicando el mojibake.
+Ese texto ya corrupto era el que terminaba cargado en PostgreSQL vía `psql` — el
+`server_encoding`/`client_encoding` del contenedor están correctamente en `UTF8`, no hay
+transcodificación errónea ahí ni en el backend (`pg`/Express) ni en el frontend (`axios`);
+el dato ya estaba mal guardado en la fila.
 
-El **único efecto negativo** del mojibake sobre los constraints es que ciertos valores
-ocupan 1-2 chars más de lo esperado (cada vocal acentuada pasa de 1 char a 2 chars).
-Todos esos casos quedaron cubiertos con las ampliaciones de VARCHAR documentadas en la sección 3.
+**Fix aplicado**:
+- `migrate-from-mysql.js`: cambiado `fs.readFileSync(inputFile, 'latin1')` a
+  `fs.readFileSync(inputFile, 'utf8')` (línea ~260).
+- Eliminado `db/mysql/data/thompson_pg.sql`, un archivo espurio: una salida ya procesada
+  (con el mojibake simple ya aplicado) que había quedado guardada dentro de la carpeta de
+  dumps de origen y que, al volver a pasarse por el script, generó una segunda capa de
+  corrupción (`db/postgresql/data/thompson_pg.sql_pg.sql`, también eliminado).
+- Regenerados todos los `db/postgresql/data/*_pg.sql` con `node migrate-from-mysql.js --all`.
+- Recargada la base: `TRUNCATE` de todas las tablas migradas (`RESTART IDENTITY CASCADE`)
+  seguido de la recarga de los 6 `*_pg.sql` corregidos, en el mismo orden que la sección 6
+  (`master` primero). Verificado con `SELECT ... WHERE campo LIKE '%Ã%'` en `sld_empleado`
+  → 0 filas.
+
+**Nota**: si se vuelve a ejecutar la migración desde dumps MySQL nuevos, no hace falta
+ninguna acción especial — el script ya lee los dumps con el encoding correcto.
 
 ---
 

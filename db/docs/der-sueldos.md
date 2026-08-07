@@ -615,7 +615,10 @@ MySQL usa `ENUM(...)` a nivel de columna. En PostgreSQL se convierten a `VARCHAR
 | `enum(...)` | `VARCHAR(n) CHECK(... IN (...))` |
 
 ### 4. Charset
-Los dumps originales son `latin1`. Al exportar para migrar, usar `--default-character-set=utf8` o convertir con `iconv`.
+Las tablas MySQL originales declaran `DEFAULT CHARSET=latin1`, pero los dumps (`mysqldump`)
+ya están en **UTF-8** (cabecera `SET NAMES utf8`) — confirmado byte a byte. Hay que leerlos
+como `utf8`, no como `latin1`; leerlos como `latin1` produce mojibake (`é` → `Ã©`). Ver
+`db/MIGRACION_BITACORA.md` sección 7 para el detalle del bug y el fix aplicado.
 
 ### 5. Fechas inválidas
 MySQL admite `'0000-00-00'` como fecha. PostgreSQL no. El script de migración reemplaza estos valores con `NULL`.

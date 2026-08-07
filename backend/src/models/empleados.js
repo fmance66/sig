@@ -30,13 +30,15 @@ const MUTABLE = [
   'banco','cuenta','cbu','grupo_de_conceptos','observaciones',
 ];
 
-async function list({ empresa } = {}) {
+async function list({ empresa, estado } = {}) {
+  const activo = estado === 'activo' ? true : estado === 'inactivo' ? false : null;
   const { rows } = await pool.query(
     `SELECT ${LIST_COLS}
      FROM sld_empleado e
      WHERE ($1::varchar IS NULL OR e.empresa = $1)
+       AND ($2::boolean IS NULL OR (lower(trim(e.estado)) = 'activo') = $2)
      ORDER BY e.orden NULLS LAST, e.apellido, e.nombre`,
-    [empresa ?? null]
+    [empresa ?? null, activo]
   );
   return rows;
 }

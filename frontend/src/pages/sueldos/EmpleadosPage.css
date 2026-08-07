@@ -71,17 +71,7 @@
 
 .acciones-col {
   display: flex;
-  gap: 0;
   justify-content: center;
-}
-
-.acciones-col .p-button.p-button-text {
-  padding: 0.2rem 0.22rem;
-}
-
-.estado-tag {
-  font-size: 0.7rem;
-  padding: 0.15rem 0.5rem;
 }
 
 /* Formulario del modal */

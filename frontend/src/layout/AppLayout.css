@@ -243,6 +243,10 @@ body {
   background: #ffffff;
 }
 
+.app-menubar .p-menubar .p-submenu-list .p-menuitem-link {
+  gap: 0.2rem;
+}
+
 .app-menubar .p-menubar .p-submenu-list .p-menuitem-link .p-menuitem-text {
   font-size: 0.78rem;
   font-weight: 400;
@@ -252,6 +256,8 @@ body {
 .app-menubar .p-menubar .p-submenu-list .p-menuitem-link .p-menuitem-icon {
   font-size: 0.7rem;
   color: #2b6cb0;
+  width: 1rem;
+  text-align: center;
 }
 
 .app-menubar .p-menubar .p-submenu-list .p-menuitem-link:hover {

@@ -13,16 +13,14 @@ export default function AppHeader() {
 
   async function openDialog() {
     setDialogVisible(true);
-    if (empresas.length === 0) {
-      setLoading(true);
-      try {
-        const res = await getEmpresas();
-        setEmpresas(res.data.resultado);
-      } catch {
-        // silencioso — la lista quedará vacía
-      } finally {
-        setLoading(false);
-      }
+    setLoading(true);
+    try {
+      const res = await getEmpresas();
+      setEmpresas(res.data.resultado);
+    } catch {
+      // silencioso — la lista quedará vacía
+    } finally {
+      setLoading(false);
     }
   }
 
