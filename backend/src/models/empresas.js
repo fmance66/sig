@@ -42,7 +42,7 @@ async function getById(id) {
 }
 
 async function create(data) {
-  const cols = ['id', ...MUTABLE.filter(c => data[c] !== undefined)];
+  const cols = MUTABLE.filter(c => data[c] !== undefined);
   const vals = cols.map(c => normalize(c, data[c]));
   const ph   = cols.map((_, i) => `$${i + 1}`);
   const { rows } = await pool.query(

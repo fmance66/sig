@@ -39,7 +39,7 @@
               "name": "GET Empresa por ID",
               "request": {
                 "method": "GET",
-                "url": "{{base_url}}/empresas/icp_sa"
+                "url": "{{base_url}}/empresas/1"
               }
             },
             {
@@ -52,7 +52,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"id\": \"nueva_empresa\",\n  \"razon_social\": \"Nueva Empresa S.R.L.\",\n  \"cuit\": \"30-12345678-9\",\n  \"condicion_iva\": \"INSCRIPTO\",\n  \"direccion\": \"Av. Corrientes 1234\",\n  \"localidad\": \"CABA\",\n  \"provincia\": \"Buenos Aires\",\n  \"cpa\": \"1043\",\n  \"telefono\": \"11-1234-5678\",\n  \"email\": \"info@nueva.com\",\n  \"login\": true,\n  \"orden\": 10\n}"
+                  "raw": "{\n  \"razon_social\": \"Nueva Empresa S.R.L.\",\n  \"cuit\": \"30-12345678-9\",\n  \"condicion_iva\": \"INSCRIPTO\",\n  \"direccion\": \"Av. Corrientes 1234\",\n  \"localidad\": \"CABA\",\n  \"provincia\": \"Buenos Aires\",\n  \"cpa\": \"1043\",\n  \"telefono\": \"11-1234-5678\",\n  \"email\": \"info@nueva.com\",\n  \"login\": true,\n  \"orden\": 10\n}"
                 }
               }
             },
@@ -60,7 +60,7 @@
               "name": "PUT Empresa",
               "request": {
                 "method": "PUT",
-                "url": "{{base_url}}/empresas/nueva_empresa",
+                "url": "{{base_url}}/empresas/7",
                 "header": [
                   { "key": "Content-Type", "value": "application/json" }
                 ],
@@ -74,7 +74,7 @@
               "name": "DELETE Empresa",
               "request": {
                 "method": "DELETE",
-                "url": "{{base_url}}/empresas/nueva_empresa"
+                "url": "{{base_url}}/empresas/7"
               }
             }
           ]
@@ -94,9 +94,11 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/empleados?empresa=thompson_y_french_sa",
+                  "raw": "{{base_url}}/empleados?empresa=5",
+                  "host": ["{{base_url}}"],
+                  "path": ["empleados"],
                   "query": [
-                    { "key": "empresa", "value": "thompson_y_french_sa" }
+                    { "key": "empresa", "value": "5" }
                   ]
                 }
               }
@@ -107,6 +109,8 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/empleados?estado=activo",
+                  "host": ["{{base_url}}"],
+                  "path": ["empleados"],
                   "query": [
                     { "key": "estado", "value": "activo" }
                   ]
@@ -119,6 +123,8 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/empleados?estado=inactivo",
+                  "host": ["{{base_url}}"],
+                  "path": ["empleados"],
                   "query": [
                     { "key": "estado", "value": "inactivo" }
                   ]
@@ -129,7 +135,7 @@
               "name": "GET Empleado por ID",
               "request": {
                 "method": "GET",
-                "url": "{{base_url}}/empleados/018"
+                "url": "{{base_url}}/empleados/1"
               }
             },
             {
@@ -142,7 +148,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"id\": \"999\",\n  \"apellido\": \"PRUEBA\",\n  \"nombre\": \"Test\",\n  \"cuil\": \"20-33445566-7\",\n  \"sexo\": \"M\",\n  \"estado_civil\": \"SOLTERO\",\n  \"tipo_documento\": \"DNI\",\n  \"numero_documento\": \"33445566\",\n  \"fecha_ingreso\": \"2024-03-01\",\n  \"empresa\": \"icp_sa\",\n  \"liquidacion\": \"MENSUAL\",\n  \"estado\": \"ACTIVO\",\n  \"orden\": 999\n}"
+                  "raw": "{\n  \"legajo\": \"999\",\n  \"apellido\": \"PRUEBA\",\n  \"nombre\": \"Test\",\n  \"cuil\": \"20-33445566-7\",\n  \"sexo\": \"M\",\n  \"estado_civil\": \"SOLTERO\",\n  \"tipo_documento\": \"DNI\",\n  \"numero_documento\": \"33445566\",\n  \"fecha_ingreso\": \"2024-03-01\",\n  \"empresa\": 1,\n  \"liquidacion\": \"MENSUAL\",\n  \"estado\": \"ACTIVO\",\n  \"orden\": 999\n}"
                 }
               }
             },
@@ -198,9 +204,11 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/sucursales?empresa=icp_sa",
+                  "raw": "{{base_url}}/sucursales?empresa=1",
+                  "host": ["{{base_url}}"],
+                  "path": ["sucursales"],
                   "query": [
-                    { "key": "empresa", "value": "icp_sa" }
+                    { "key": "empresa", "value": "1" }
                   ]
                 }
               }
@@ -215,7 +223,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"empresa\": \"icp_sa\",\n  \"sucursal\": \"Casa Central\",\n  \"nombre_fantasia\": \"ICP Central\",\n  \"direccion\": \"Av. Corrientes 1234\",\n  \"localidad\": \"CABA\",\n  \"provincia\": \"Buenos Aires\",\n  \"cpa\": \"1043\",\n  \"telefono\": \"11-1234-5678\",\n  \"email\": \"central@icp.com\",\n  \"login\": true,\n  \"orden\": 1\n}"
+                  "raw": "{\n  \"empresa\": 1,\n  \"sucursal\": \"Casa Central\",\n  \"nombre_fantasia\": \"ICP Central\",\n  \"direccion\": \"Av. Corrientes 1234\",\n  \"localidad\": \"CABA\",\n  \"provincia\": \"Buenos Aires\",\n  \"cpa\": \"1043\",\n  \"telefono\": \"11-1234-5678\",\n  \"email\": \"central@icp.com\",\n  \"login\": true,\n  \"orden\": 1\n}"
                 }
               }
             },
@@ -250,9 +258,11 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/familiares?empleado=018",
+                  "raw": "{{base_url}}/familiares?empleado=1",
+                  "host": ["{{base_url}}"],
+                  "path": ["familiares"],
                   "query": [
-                    { "key": "empleado", "value": "018" }
+                    { "key": "empleado", "value": "1" }
                   ]
                 }
               }
@@ -267,7 +277,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"empleado\": \"018\",\n  \"parentesco\": \"HIJO/A\",\n  \"apellido\": \"PRUEBA\",\n  \"nombre\": \"Test\",\n  \"fecha_alta\": \"2024-03-01\",\n  \"cuil\": \"20-33445566-7\",\n  \"sexo\": \"M\",\n  \"fecha_nacimiento\": \"2015-06-10\",\n  \"tipo_documento\": \"DNI\",\n  \"numero_documento\": \"33445566\",\n  \"adherente\": true,\n  \"deducible\": true\n}"
+                  "raw": "{\n  \"empleado\": \"1\",\n  \"parentesco\": \"HIJO/A\",\n  \"apellido\": \"PRUEBA\",\n  \"nombre\": \"Test\",\n  \"fecha_alta\": \"2024-03-01\",\n  \"cuil\": \"20-33445566-7\",\n  \"sexo\": \"M\",\n  \"fecha_nacimiento\": \"2015-06-10\",\n  \"tipo_documento\": \"DNI\",\n  \"numero_documento\": \"33445566\",\n  \"adherente\": true,\n  \"deducible\": true\n}"
                 }
               }
             },
@@ -275,7 +285,7 @@
               "name": "PUT Familiar",
               "request": {
                 "method": "PUT",
-                "url": "{{base_url}}/familiares/018/1",
+                "url": "{{base_url}}/familiares/1/1",
                 "header": [
                   { "key": "Content-Type", "value": "application/json" }
                 ],
@@ -289,7 +299,7 @@
               "name": "DELETE Familiar",
               "request": {
                 "method": "DELETE",
-                "url": "{{base_url}}/familiares/018/1"
+                "url": "{{base_url}}/familiares/1/1"
               }
             }
           ]
@@ -302,9 +312,11 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/novedades?empleado=018",
+                  "raw": "{{base_url}}/novedades?empleado=1",
+                  "host": ["{{base_url}}"],
+                  "path": ["novedades"],
                   "query": [
-                    { "key": "empleado", "value": "018" }
+                    { "key": "empleado", "value": "1" }
                   ]
                 }
               }
@@ -319,7 +331,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"empleado\": \"018\",\n  \"tipo_novedad\": 1,\n  \"fecha\": \"2024-03-01\",\n  \"value\": \"1\"\n}"
+                  "raw": "{\n  \"empleado\": \"1\",\n  \"tipo_novedad\": 1,\n  \"fecha\": \"2024-03-01\",\n  \"value\": \"1\"\n}"
                 }
               }
             },
@@ -327,7 +339,7 @@
               "name": "DELETE Novedad",
               "request": {
                 "method": "DELETE",
-                "url": "{{base_url}}/novedades/018/1/2024-03-01"
+                "url": "{{base_url}}/novedades/1/1/2024-03-01"
               }
             }
           ]
@@ -340,9 +352,11 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/historial?empleado=018",
+                  "raw": "{{base_url}}/historial?empleado=1",
+                  "host": ["{{base_url}}"],
+                  "path": ["historial"],
                   "query": [
-                    { "key": "empleado", "value": "018" }
+                    { "key": "empleado", "value": "1" }
                   ]
                 }
               }
@@ -357,7 +371,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"empleado\": \"018\",\n  \"campo\": 1,\n  \"fecha_desde\": \"2024-03-01\",\n  \"fecha_hasta\": \"2024-06-30\",\n  \"valor\": \"280000\"\n}"
+                  "raw": "{\n  \"empleado\": \"1\",\n  \"campo\": 1,\n  \"fecha_desde\": \"2024-03-01\",\n  \"fecha_hasta\": \"2024-06-30\",\n  \"valor\": \"280000\"\n}"
                 }
               }
             },
@@ -365,7 +379,7 @@
               "name": "DELETE Registro de Historial",
               "request": {
                 "method": "DELETE",
-                "url": "{{base_url}}/historial/018/1/2024-03-01"
+                "url": "{{base_url}}/historial/1/1/2024-03-01"
               }
             }
           ]
@@ -378,9 +392,11 @@
               "request": {
                 "method": "GET",
                 "url": {
-                  "raw": "{{base_url}}/conceptos-empleado?empleado=018",
+                  "raw": "{{base_url}}/conceptos-empleado?empleado=1",
+                  "host": ["{{base_url}}"],
+                  "path": ["conceptos-empleado"],
                   "query": [
-                    { "key": "empleado", "value": "018" }
+                    { "key": "empleado", "value": "1" }
                   ]
                 }
               }
@@ -395,7 +411,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"empleado\": \"018\",\n  \"concepto\": 1,\n  \"liquidacion\": \"MENSUAL\",\n  \"recibo\": 0,\n  \"descripcion\": \"Adicional de prueba\",\n  \"unidad_manual\": 1,\n  \"importe_manual\": 5000,\n  \"vigencia_desde\": \"2024-03-01\"\n}"
+                  "raw": "{\n  \"empleado\": \"1\",\n  \"concepto\": 1,\n  \"liquidacion\": \"MENSUAL\",\n  \"recibo\": 0,\n  \"descripcion\": \"Adicional de prueba\",\n  \"unidad_manual\": 1,\n  \"importe_manual\": 5000,\n  \"vigencia_desde\": \"2024-03-01\"\n}"
                 }
               }
             },
@@ -403,7 +419,7 @@
               "name": "DELETE Concepto de Empleado",
               "request": {
                 "method": "DELETE",
-                "url": "{{base_url}}/conceptos-empleado/018/1/MENSUAL/0"
+                "url": "{{base_url}}/conceptos-empleado/1/1/MENSUAL/0"
               }
             }
           ]
@@ -417,6 +433,8 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/conceptos-grupo?grupo=1",
+                  "host": ["{{base_url}}"],
+                  "path": ["conceptos-grupo"],
                   "query": [
                     { "key": "grupo", "value": "1" }
                   ]

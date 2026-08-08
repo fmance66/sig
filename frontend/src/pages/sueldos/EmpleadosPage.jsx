@@ -52,7 +52,7 @@ const LIQUIDACION_OPTIONS = [
 ];
 
 const EMPTY_FORM = {
-  id: '', apellido: '', nombre: '', cuil: '', grupo: '', estado: '', tarea: '',
+  legajo: '', apellido: '', nombre: '', cuil: '', grupo: '', estado: '', tarea: '',
   fecha_ingreso: null, fecha_egreso: null, fecha_antiguedad: null, antiguedad: '',
   sexo: '', fecha_nacimiento: null, nacionalidad: '', estado_civil: '',
   tipo_documento: '', numero_documento: '', direccion: '', localidad: '', provincia: '', cpa: '',
@@ -122,6 +122,7 @@ export default function EmpleadosPage() {
       const lsd = lsdRes.data.resultado ?? {};
       setForm({
         id: emp.id ?? '',
+        legajo: emp.legajo ?? '',
         apellido: emp.apellido ?? '', nombre: emp.nombre ?? '', cuil: emp.cuil ?? '',
         grupo: emp.grupo ?? '', estado: emp.estado ?? '', tarea: emp.tarea ?? '',
         fecha_ingreso: toDate(emp.fecha_ingreso), fecha_egreso: toDate(emp.fecha_egreso),
@@ -167,13 +168,14 @@ export default function EmpleadosPage() {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'El apellido es requerido' });
       return;
     }
-    if (!editMode && !form.id.trim()) {
+    if (!form.legajo.trim()) {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'El legajo es requerido' });
       return;
     }
     setSaving(true);
     try {
       const payload = { ...form };
+      delete payload.id;
       LSD_FIELDS.forEach(f => delete payload[f]);
       payload.fecha_ingreso    = toIsoDate(form.fecha_ingreso);
       payload.fecha_egreso     = toIsoDate(form.fecha_egreso);
@@ -184,7 +186,8 @@ export default function EmpleadosPage() {
       if (editMode) {
         await api.updateEmpleado(form.id, payload);
       } else {
-        await api.createEmpleado(payload);
+        const res = await api.createEmpleado(payload);
+        empleadoId = res.data.data.id;
       }
 
       const lsdPayload = {};
@@ -307,14 +310,14 @@ export default function EmpleadosPage() {
         rowsPerPageOptions={[10, 25, 50, 100]}
         paginatorRight={paginatorRight}
         globalFilter={globalFilter}
-        globalFilterFields={['apellido', 'nombre', 'cuil', 'convenio', 'categoria']}
+        globalFilterFields={['legajo', 'apellido', 'nombre', 'cuil', 'convenio', 'categoria']}
         header={tableHeader}
         emptyMessage={mostrarInactivos ? 'No hay empleados inactivos' : 'No hay empleados registrados'}
         size="small"
         stripedRows
         removableSort
       >
-        <Column field="id"       header="Legajo"           sortable style={{ width: '80px' }} />
+        <Column field="legajo"   header="Legajo"           sortable style={{ width: '80px' }} />
         <Column body={nombreTemplate}  header="Apellido y Nombre" sortField="apellido" sortable />
         <Column field="cuil"     header="CUIL"             sortable style={{ width: '140px' }} />
         <Column body={fechaTemplate}   header="Ingreso"    sortField="fecha_ingreso" sortable style={{ width: '100px' }} />
@@ -337,12 +340,10 @@ export default function EmpleadosPage() {
 
           <TabPanel header="Empleado">
             <div className="form-grid">
-              {!editMode && (
-                <div className="form-field">
-                  <label>Legajo <span className="required">*</span></label>
-                  <InputText name="id" value={form.id} onChange={handleChange} />
-                </div>
-              )}
+              <div className="form-field">
+                <label>Legajo <span className="required">*</span></label>
+                <InputText name="legajo" value={form.legajo} onChange={handleChange} />
+              </div>
               <div className="form-field">
                 <label>Apellido <span className="required">*</span></label>
                 <InputText name="apellido" value={form.apellido} onChange={handleChange} />

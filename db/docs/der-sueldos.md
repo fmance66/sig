@@ -1,28 +1,30 @@
 # Documentación de Base de Datos — Sistema de Sueldos
 
-> **Origen:** MySQL 5.5 — 5 empresas + 1 base master  
-> **Destino:** PostgreSQL 16  
-> **Fecha de análisis:** 2026-03-30
+> **Origen:** MySQL 5.5 — 5 empresas + 1 base master
+> **Destino:** PostgreSQL 16
+> **Última sincronización con la BBDD en vivo:** 2026-08-07
 
 ---
 
 ## Resumen de módulos
 
-La base original es un ERP completo. Para el proyecto de sueldos, el módulo central es **`sld_`**.  
+La base original es un ERP completo. Para el proyecto de sueldos, el módulo central es **`sld_`**.
 Los demás módulos son parte de la aplicación de origen y **no se migran** en la primera fase.
 
-| Prefijo | Módulo | Tablas | Relevancia |
-|---------|--------|--------|------------|
-| `sld_` | **Sueldos / Nómina** | 38 | ✅ CORE — se migra completo |
-| `bas_` | Tablas base / catálogos | 17 | ✅ Parcial — solo las referenciadas por sld_ |
-| `sys_` | Sistema (usuarios, empresas) | 10 | ✅ Parcial — sys_empresa, sys_user |
-| `cnt_` | Contabilidad | 15 | ⬜ Referencia externa (asientos) |
-| `fac_` | Facturación | 16 | ⬜ No se migra |
-| `cmp_` | Compras | 30 | ⬜ No se migra |
-| `vta_` | Ventas | 55 | ⬜ No se migra |
-| `fnd_` | Fondos / Tesorería | 16 | ⬜ No se migra |
-| `iva_` | IVA / Libro | 28 | ⬜ No se migra |
-| `stk_` | Stock | 45 | ⬜ No se migra |
+| Prefijo | Módulo | Tablas en `sueldos` (Postgres) | Tablas en ERP original | Relevancia |
+|---------|--------|:--:|:--:|------------|
+| `sld_` | **Sueldos / Nómina** | 46 | 38 (crecido durante la migración) | ✅ CORE — migrado completo |
+| `sys_` | Sistema (usuarios, empresas, sucursales, permisos) | 6 | 10 | ✅ Parcial — empresa, sucursal, user, group, user_group, dynamic_field |
+| `bas_` | Tablas base / catálogos | 5 | 17 | ✅ Parcial — moneda, proyecto, provincia, localidad, importacion |
+| `cnt_` | Contabilidad | 0 | 15 | ⬜ No se migra (solo se referenciaba desde `sld_recibo` en el análisis original; el vínculo no llegó a implementarse) |
+| `fac_` | Facturación | 0 | 16 | ⬜ No se migra |
+| `cmp_` | Compras | 0 | 30 | ⬜ No se migra |
+| `vta_` | Ventas | 0 | 55 | ⬜ No se migra |
+| `fnd_` | Fondos / Tesorería | 0 | 16 | ⬜ No se migra |
+| `iva_` | IVA / Libro | 0 | 28 | ⬜ No se migra |
+| `stk_` | Stock | 0 | 45 | ⬜ No se migra |
+
+**Total tablas migradas y en uso:** 57 (5 `bas_` + 46 `sld_` + 6 `sys_`).
 
 ---
 
@@ -31,7 +33,59 @@ Los demás módulos son parte de la aplicación de origen y **no se migran** en 
 ```mermaid
 erDiagram
 
-    %% ─── CATÁLOGOS BASE ──────────────────────────────────────────────────────
+    %% ─── SISTEMA (sys_) ──────────────────────────────────────────────────────
+
+    sys_empresa {
+        int id PK
+        varchar razon_social
+        varchar nombre_comercial
+        varchar cuit
+        varchar condicion_iva
+        varchar direccion
+        varchar localidad
+        varchar provincia
+        int empresa FK
+        boolean cloud
+        varchar workspace
+    }
+
+    sys_sucursal {
+        int id PK
+        int empresa FK
+        varchar sucursal
+        varchar direccion
+        varchar localidad
+        varchar codigo_zona
+        boolean login
+    }
+
+    sys_user {
+        varchar uid PK
+        varchar name
+        varchar password
+        int empresa FK
+        int nivel
+        timestamp last_login
+    }
+
+    sys_group {
+        varchar gid PK
+        varchar description
+    }
+
+    sys_user_group {
+        varchar uid PK
+        varchar gid PK
+    }
+
+    sys_dynamic_field {
+        varchar class PK
+        varchar field PK
+        varchar label
+        varchar data_type
+    }
+
+    %% ─── CATÁLOGOS BASE (bas_) ───────────────────────────────────────────────
 
     bas_moneda {
         varchar id PK
@@ -40,19 +94,33 @@ erDiagram
         decimal cotizacion
     }
 
-    sys_empresa {
-        varchar id PK
-        varchar razon_social
-        varchar cuit
-        varchar condicion_iva
-        varchar direccion
-        varchar localidad
+    bas_provincia {
+        varchar provincia PK
+        varchar codigo
+    }
+
+    bas_localidad {
+        varchar localidad PK
+        varchar zona
+        varchar provincia FK
+        varchar cpa
     }
 
     bas_proyecto {
         varchar id PK
         varchar descripcion
+        varchar grupo
         varchar moneda FK
+        varchar id_padre FK
+        boolean visible
+    }
+
+    bas_importacion {
+        varchar tipo PK
+        varchar id PK
+        varchar descripcion
+        varchar date_format
+        varchar decimal_format
     }
 
     %% ─── CATÁLOGOS SUELDOS ───────────────────────────────────────────────────
@@ -149,7 +217,7 @@ erDiagram
         varchar id PK
         varchar descripcion
         varchar column_1
-        varchar column_2
+        varchar data_type_1
     }
 
     %% ─── CONCEPTOS ───────────────────────────────────────────────────────────
@@ -176,11 +244,33 @@ erDiagram
         boolean contribucion_aaff
         boolean contribucion_fne
         boolean contribucion_lrt
+        boolean repetible
     }
 
     sld_concepto_grupo {
         varchar grupo PK
         varchar concepto PK
+    }
+
+    sld_concepto_general {
+        varchar concepto PK
+        varchar liquidacion PK
+        int recibo PK
+        decimal unidad_manual
+        decimal importe_manual
+        date vigencia_desde
+        date vigencia_hasta
+    }
+
+    sld_concepto_de_grupo {
+        varchar grupo_de_conceptos PK
+        varchar concepto PK
+        varchar liquidacion PK
+        int recibo PK
+        decimal unidad_manual
+        decimal importe_manual
+        date vigencia_desde
+        date vigencia_hasta
     }
 
     %% ─── CONVENIO Y CATEGORÍAS ───────────────────────────────────────────────
@@ -218,7 +308,8 @@ erDiagram
     %% ─── EMPLEADO (entidad central) ──────────────────────────────────────────
 
     sld_empleado {
-        varchar id PK
+        int id PK
+        varchar legajo
         varchar apellido
         varchar nombre
         varchar cuil
@@ -241,14 +332,14 @@ erDiagram
         varchar obra_social FK
         varchar sindicato FK
         varchar proyecto FK
-        varchar empresa FK
+        int empresa FK
         varchar grupo_de_conceptos FK
         varchar banco
         varchar cbu
     }
 
     sld_empleado_afip {
-        varchar empleado PK
+        int empleado PK
         varchar situacion FK
         varchar condicion FK
         varchar actividad FK
@@ -260,8 +351,15 @@ erDiagram
         varchar situacion_revista_3 FK
     }
 
+    sld_empleado_field {
+        varchar class PK
+        varchar field PK
+        int entity PK
+        varchar value
+    }
+
     sld_familiar {
-        varchar empleado PK
+        int empleado PK
         varchar id PK
         varchar parentesco
         varchar apellido
@@ -277,20 +375,20 @@ erDiagram
     }
 
     sld_jornada_laboral {
-        varchar empleado PK
+        int empleado PK
         varchar horario
         varchar feriados
     }
 
     sld_horario {
-        varchar empleado PK
+        int empleado PK
         varchar dia PK
         time entrada
         time salida
     }
 
     sld_ausentismo {
-        varchar empleado PK
+        int empleado PK
         varchar motivo PK
         date fecha_desde PK
         date fecha_hasta
@@ -298,21 +396,21 @@ erDiagram
     }
 
     sld_presentismo {
-        varchar empleado PK
+        int empleado PK
         date fecha PK
         time hora PK
         varchar tipo
     }
 
     sld_novedad {
-        varchar empleado PK
+        int empleado PK
         varchar tipo_novedad PK
         date fecha PK
         varchar value
     }
 
     sld_historial_empleado {
-        varchar empleado PK
+        int empleado PK
         varchar campo PK
         date fecha_desde PK
         date fecha_hasta
@@ -320,7 +418,7 @@ erDiagram
     }
 
     sld_empleado_concepto {
-        varchar empleado PK
+        int empleado PK
         varchar concepto PK
         varchar liquidacion PK
         int recibo PK
@@ -346,7 +444,7 @@ erDiagram
 
     sld_recibo {
         varchar periodo PK
-        varchar empleado PK
+        int empleado PK
         int numero PK
         decimal remunerativo
         decimal no_remunerativo
@@ -363,7 +461,7 @@ erDiagram
     }
 
     sld_recibo_empleado {
-        varchar empleado PK
+        int empleado PK
         date fecha PK
         varchar tarea
         varchar convenio FK
@@ -375,7 +473,7 @@ erDiagram
 
     sld_recibo_concepto {
         varchar periodo PK
-        varchar empleado PK
+        int empleado PK
         int numero PK
         varchar concepto PK
         varchar descripcion
@@ -390,15 +488,17 @@ erDiagram
     }
 
     sld_recibo_afip {
-        varchar empleado PK
+        int empleado PK
         date fecha PK
         varchar situacion FK
         varchar condicion FK
         varchar actividad FK
         varchar modalidad FK
+        varchar incapacidad FK
+        varchar codigo_zona FK
     }
 
-    %% ─── HISTÓRICOS ──────────────────────────────────────────────────────────
+    %% ─── HISTÓRICOS Y CONFIGURACIÓN GLOBAL ──────────────────────────────────
 
     sld_historial {
         varchar campo PK
@@ -415,37 +515,67 @@ erDiagram
         varchar value_9
     }
 
-    %% ─── CONFIGURACIÓN GLOBAL ────────────────────────────────────────────────
+    %% ─── IMPORTACIÓN DE NOVEDADES ────────────────────────────────────────────
 
-    sld_concepto_general {
-        varchar concepto PK
-        varchar liquidacion PK
-        int recibo PK
-        decimal unidad_manual
-        decimal importe_manual
-        date vigencia_desde
-        date vigencia_hasta
+    sld_importacion {
+        varchar tipo PK
+        varchar importacion PK
+        boolean valor_cero
     }
 
-    sld_concepto_de_grupo {
-        varchar grupo_de_conceptos PK
-        varchar concepto PK
-        varchar liquidacion PK
-        int recibo PK
-        decimal unidad_manual
-        decimal importe_manual
-        date vigencia_desde
-        date vigencia_hasta
+    sld_importacion_novedad {
+        varchar tipo PK
+        varchar importacion PK
+        int numero PK
+        varchar tipo_novedad FK
+        char novedad_col
+        char valor_col
+    }
+
+    %% ─── INFORMES ────────────────────────────────────────────────────────────
+
+    sld_informe {
+        varchar id PK
+        varchar descripcion
+        varchar tabla
+        varchar agrupacion
+        varchar ordenamiento
+        varchar orientation
+        varchar page_size
+        varchar condicion
+    }
+
+    sld_informe_campo {
+        varchar informe PK
+        int campo PK
+        varchar tipo
+        varchar descripcion
+        varchar formula
+        varchar data_type
+        varchar group_function
     }
 
     %% ─── RELACIONES ──────────────────────────────────────────────────────────
 
+    %% Sistema
+    sys_empresa ||--o{ sys_empresa : "empresa (grupo económico)"
+    sys_empresa ||--o{ sys_sucursal : "empresa"
+    sys_empresa ||--o{ sys_user : "empresa"
+    sys_user ||--o{ sys_user_group : "uid"
+    sys_group ||--o{ sys_user_group : "gid"
+    sys_dynamic_field ||--o{ sld_empleado_field : "class+field"
+
     %% bas_ → sld_
+    bas_provincia ||--o{ bas_localidad : "provincia"
+    bas_moneda ||--o{ bas_proyecto : "moneda"
+    bas_proyecto ||--o{ bas_proyecto : "id_padre"
     bas_moneda ||--o{ sld_convenio : "moneda"
     bas_moneda ||--o{ sld_empleado : "moneda"
     bas_moneda ||--o{ sld_recibo : "moneda"
     bas_proyecto ||--o{ sld_empleado : "proyecto"
     bas_proyecto ||--o{ sld_recibo : "proyecto"
+    bas_importacion ||--o{ sld_importacion : "tipo+id"
+    bas_importacion ||--o{ sld_importacion_novedad : "tipo+id"
     sys_empresa ||--o{ sld_empleado : "empresa"
 
     %% Convenio → Categoría → Empleado
@@ -468,6 +598,7 @@ erDiagram
 
     %% Empleado → sub-tablas
     sld_empleado ||--|| sld_empleado_afip : "empleado"
+    sld_empleado ||--o{ sld_empleado_field : "entity"
     sld_empleado ||--o{ sld_familiar : "empleado"
     sld_empleado ||--|| sld_jornada_laboral : "empleado"
     sld_jornada_laboral ||--o{ sld_horario : "empleado"
@@ -477,20 +608,28 @@ erDiagram
     sld_empleado ||--o{ sld_historial_empleado : "empleado"
     sld_empleado ||--o{ sld_empleado_concepto : "empleado"
     sld_empleado ||--o{ sld_recibo_empleado : "empleado"
+    sld_empleado ||--o{ sld_recibo_afip : "empleado"
 
     %% Motivos de ausentismo
     sld_motivo_ausentismo ||--o{ sld_ausentismo : "motivo"
 
-    %% AFIP lookups
-    sld_situacion_revista ||--o{ sld_empleado_afip : "situacion"
+    %% AFIP lookups (empleado_afip y recibo_afip comparten los mismos catálogos)
+    sld_situacion_revista ||--o{ sld_empleado_afip : "situacion (x4: actual + histórico 1-3)"
     sld_condicion_laboral ||--o{ sld_empleado_afip : "condicion"
     sld_actividad_laboral ||--o{ sld_empleado_afip : "actividad"
     sld_modalidad_contrato ||--o{ sld_empleado_afip : "modalidad"
     sld_incapacidad ||--o{ sld_empleado_afip : "incapacidad"
     sld_codigo_zona ||--o{ sld_empleado_afip : "codigo_zona"
+    sld_situacion_revista ||--o{ sld_recibo_afip : "situacion (x4: actual + histórico 1-3)"
+    sld_condicion_laboral ||--o{ sld_recibo_afip : "condicion"
+    sld_actividad_laboral ||--o{ sld_recibo_afip : "actividad"
+    sld_modalidad_contrato ||--o{ sld_recibo_afip : "modalidad"
+    sld_incapacidad ||--o{ sld_recibo_afip : "incapacidad"
+    sld_codigo_zona ||--o{ sld_recibo_afip : "codigo_zona"
 
     %% Novedades
     sld_tipo_novedad ||--o{ sld_novedad : "tipo_novedad"
+    sld_tipo_novedad ||--o{ sld_importacion_novedad : "tipo_novedad"
 
     %% Historial
     sld_campo_historial ||--o{ sld_historial : "campo"
@@ -499,22 +638,46 @@ erDiagram
     %% Tabla → filas
     sld_tabla ||--o{ sld_fila : "tabla"
 
+    %% Informes
+    sld_informe ||--o{ sld_informe_campo : "informe"
+
     %% Liquidación → Recibo → Conceptos
     sld_liquidacion ||--o{ sld_recibo : "periodo"
     sld_empleado ||--o{ sld_recibo : "empleado"
     sld_recibo ||--o{ sld_recibo_concepto : "periodo+empleado+numero"
     sld_concepto ||--o{ sld_recibo_concepto : "concepto"
     sld_concepto ||--o{ sld_empleado_concepto : "concepto"
-
-    %% Recibo AFIP
-    sld_empleado ||--o{ sld_recibo_afip : "empleado"
+    sld_categoria ||--o{ sld_recibo_empleado : "convenio+categoria"
+    sld_obra_social ||--o{ sld_recibo_empleado : "obra_social"
+    sld_sindicato ||--o{ sld_recibo_empleado : "sindicato"
 ```
 
 ---
 
 ## Descripción de tablas — Módulo SLD
 
-### Catálogos / Tablas maestras
+### Sistema (`sys_`)
+
+| Tabla | Descripción |
+|-------|-------------|
+| `sys_empresa` | Empresa/razón social. Auto-referenciada por `empresa` para agrupar empresas de un mismo grupo económico. |
+| `sys_sucursal` | Sucursales de una empresa. |
+| `sys_user` | Usuarios del sistema original (login, nivel de permisos). |
+| `sys_group` | Grupos de permisos. |
+| `sys_user_group` | Relación N:M entre usuarios y grupos. |
+| `sys_dynamic_field` | Definición de campos dinámicos/custom por clase de entidad. |
+
+### Catálogos base (`bas_`)
+
+| Tabla | Descripción |
+|-------|-------------|
+| `bas_moneda` | Monedas y cotización. |
+| `bas_provincia` | Provincias (Argentina). |
+| `bas_localidad` | Localidades, con FK a provincia. |
+| `bas_proyecto` | Proyectos/centros de costo, con jerarquía (`id_padre`) y moneda. |
+| `bas_importacion` | Configuración de formatos de importación CSV (fecha, decimales, separador). |
+
+### Catálogos / Tablas maestras (`sld_`)
 
 | Tabla | Descripción |
 |-------|-------------|
@@ -532,7 +695,7 @@ erDiagram
 | `sld_obra_social` | Obras sociales con sus porcentajes de aporte |
 | `sld_sindicato` | Sindicatos con sus porcentajes de retención |
 | `sld_situacion_revista` | Situación de revista del trabajador (AFIP) |
-| `sld_tabla` | Tablas paramétricas de valores (para fórmulas) |
+| `sld_tabla` | Tablas paramétricas de hasta 9 columnas tipadas (para fórmulas) |
 | `sld_tipo_novedad` | Tipos de novedades imputables por empleado |
 
 ### Conceptos
@@ -544,7 +707,6 @@ erDiagram
 | `sld_concepto_general` | Concepto aplicable a **todos** los empleados (importe/unidad global). |
 | `sld_concepto_de_grupo` | Concepto aplicable a todos los empleados de un **grupo de conceptos**. |
 | `sld_concepto_grupo` | Asigna conceptos a un grupo (agrupación de empleados). |
-| `sld_formula_auxiliar` | Variables intermedias reutilizables en fórmulas. |
 
 ### Convenio y Categorías
 
@@ -559,10 +721,11 @@ erDiagram
 | Tabla | Descripción |
 |-------|-------------|
 | `sld_empleado` | **Tabla central**. Datos personales, laborales y salariales del trabajador. FK a convenio+categoría, obra social, sindicato, empresa, proyecto. |
-| `sld_empleado_afip` | Datos AFIP del empleado: situación de revista, condición, actividad, modalidad, zona. 1:1 con `sld_empleado`. |
+| `sld_empleado_afip` | Datos AFIP del empleado: situación de revista (actual + 3 históricas), condición, actividad, modalidad, zona. 1:1 con `sld_empleado`. |
+| `sld_empleado_field` | Valores de campos dinámicos (`sys_dynamic_field`) para un empleado puntual. |
 | `sld_familiar` | Grupo familiar del empleado (cónyuge, hijos). Incluye datos para cargas de familia AFIP. |
 | `sld_jornada_laboral` | Configuración de horario del empleado (fijo/rotativo, trabaja feriados). 1:1 con `sld_empleado`. |
-| `sld_horario` | Horario diario del empleado (entrada/salida por día de la semana). |
+| `sld_horario` | Horario diario del empleado (entrada/salida por día de la semana). FK real hacia `sld_jornada_laboral.empleado`, no directo a `sld_empleado`. |
 | `sld_ausentismo` | Registro de ausencias del empleado con motivo y rango de fechas. |
 | `sld_presentismo` | Control de asistencia: entrada y salida con timestamp. |
 | `sld_novedad` | Novedades por empleado y período (ej: días trabajados, horas extra). |
@@ -578,16 +741,15 @@ erDiagram
 | `sld_recibo_concepto` | Líneas del recibo: cada concepto liquidado con su unidad, unitario e importe. |
 | `sld_recibo_empleado` | Snapshot de los datos laborales del empleado al momento del recibo (convenio, categoría, sueldo, etc.). |
 | `sld_recibo_afip` | Snapshot de los datos AFIP del empleado al momento del recibo. |
-| `sld_recibo_asiento` | Vínculo del recibo con el asiento contable generado (`cnt_asiento`). |
 
-### Tablas paramétricas y de importación
+### Tablas paramétricas, históricos e importación
 
 | Tabla | Descripción |
 |-------|-------------|
 | `sld_tabla` | Tabla de hasta 9 columnas tipadas para usar en fórmulas de conceptos. |
 | `sld_fila` | Filas de datos de `sld_tabla`. |
 | `sld_historial` | Histórico de valores globales (no por empleado) de campos auditados. |
-| `sld_importacion` | Configuración de importación CSV para novedades. |
+| `sld_importacion` | Configuración de importación CSV para novedades (referencia a `bas_importacion`). |
 | `sld_importacion_novedad` | Columnas del CSV y su mapeo a tipos de novedad. |
 | `sld_informe` | Configuración de informes/reportes del módulo. |
 | `sld_informe_campo` | Columnas de cada informe. |
@@ -597,8 +759,8 @@ erDiagram
 ## Observaciones importantes para la migración
 
 ### 1. Arquitectura multi-empresa
-La base original tiene **una database MySQL por empresa** (icp sa, minucci, thompson, zurawski). El campo `sld_empleado.empresa` FK a `sys_empresa.id` ya anticipa esto.  
-En PostgreSQL se puede usar **un solo schema** con la columna `empresa` como discriminador, o schemas separados por empresa.
+La base original tiene **una database MySQL por empresa** (icp sa, minucci, thompson, zurawski). El campo `sld_empleado.empresa` FK a `sys_empresa.id` ya anticipa esto.
+En PostgreSQL se usa **un solo schema** con la columna `empresa` como discriminador. `sys_empresa` también se auto-referencia (`empresa`) para agrupar empresas de un mismo grupo económico.
 
 ### 2. Enums MySQL → PostgreSQL
 MySQL usa `ENUM(...)` a nivel de columna. En PostgreSQL se convierten a `VARCHAR` con `CHECK` constraints por mantenibilidad.
@@ -621,7 +783,7 @@ como `utf8`, no como `latin1`; leerlos como `latin1` produce mojibake (`é` → 
 `db/MIGRACION_BITACORA.md` sección 7 para el detalle del bug y el fix aplicado.
 
 ### 5. Fechas inválidas
-MySQL admite `'0000-00-00'` como fecha. PostgreSQL no. El script de migración reemplaza estos valores con `NULL`.
+MySQL admite `'0000-00-00'` como fecha. PostgreSQL no. La función `safe_date(text)` (definida en la BBDD) reemplaza estos valores por `NULL` durante la migración.
 
 ### 6. Columna `columna` en sld_concepto
 El campo `columna` define la naturaleza del concepto en el recibo:
@@ -632,4 +794,7 @@ El campo `columna` define la naturaleza del concepto en el recibo:
 - `AUXILIAR` — variable de cálculo, no aparece en el recibo
 
 ### 7. Fórmulas de conceptos
-Los campos `formula_unidad`, `formula_importe` y `formula_unitario` en `sld_concepto` son expresiones en un lenguaje propio del sistema original. No son SQL ni JavaScript. Habrá que re-implementar un evaluador o mapearlos manualmente.
+Los campos `formula_unidad`, `formula_importe`, `formula_unitario` y `formula_condicion` en `sld_concepto` son expresiones en un lenguaje propio del sistema original. No son SQL ni JavaScript. Habrá que re-implementar un evaluador o mapearlos manualmente.
+
+### 8. Tablas sin PRIMARY KEY explícita
+`sld_concepto_de_grupo`, `sld_concepto_general` y `sld_empleado_concepto` no tienen `PRIMARY KEY` definida en Postgres — solo una restricción `UNIQUE` sobre las mismas columnas. Tenerlo en cuenta si se agregan FKs hacia ellas o se usan como tabla de detalle en un ORM.

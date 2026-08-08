@@ -15,8 +15,12 @@ const MUTABLE = [
 ];
 
 async function listByEmpleado(empleado) {
+  // id es numérico para los familiares cargados desde la UI (create() de acá abajo
+  // genera "1","2",...), pero los datos migrados de MySQL traen códigos no numéricos
+  // (ej. "ESPOSA","HIJO1") — no se puede castear todo a ::int sin que explote.
   const { rows } = await pool.query(
-    `SELECT ${COLS} FROM sld_familiar WHERE empleado = $1 ORDER BY id::int NULLS LAST`,
+    `SELECT ${COLS} FROM sld_familiar WHERE empleado = $1
+     ORDER BY (CASE WHEN id ~ '^[0-9]+$' THEN id::int END) NULLS LAST, id`,
     [empleado]
   );
   return rows;

@@ -23,11 +23,11 @@ async function getOne(req, res) {
 
 async function create(req, res) {
   try {
-    if (!req.body.id) return res.status(400).json({ estado: 'error', mensaje: 'id es requerido' });
+    if (!req.body.legajo) return res.status(400).json({ estado: 'error', mensaje: 'legajo es requerido' });
     const data = await Empleado.create(req.body);
     res.status(201).json({ estado: 'ok', data });
   } catch (err) {
-    if (err.code === '23505') return res.status(409).json({ estado: 'error', mensaje: 'Ya existe un empleado con ese id' });
+    if (err.code === '23505') return res.status(409).json({ estado: 'error', mensaje: 'Ya existe un empleado con ese legajo en esta empresa' });
     console.error(err);
     res.status(500).json({ estado: 'error', mensaje: 'Error al crear empleado' });
   }
@@ -39,6 +39,7 @@ async function update(req, res) {
     if (!data) return res.status(404).json({ estado: 'error', mensaje: 'Empleado no encontrado' });
     res.json({ estado: 'ok', resultado: data });
   } catch (err) {
+    if (err.code === '23505') return res.status(409).json({ estado: 'error', mensaje: 'Ya existe un empleado con ese legajo en esta empresa' });
     console.error(err);
     res.status(500).json({ estado: 'error', mensaje: 'Error al actualizar empleado' });
   }

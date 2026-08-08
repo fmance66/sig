@@ -23,11 +23,10 @@ async function getOne(req, res) {
 
 async function create(req, res) {
   try {
-    if (!req.body.id) return res.status(400).json({ estado: 'error', mensaje: 'id es requerido' });
+    if (!req.body.razon_social) return res.status(400).json({ estado: 'error', mensaje: 'razon_social es requerida' });
     const data = await Empresa.create(req.body);
     res.status(201).json({ estado: 'ok', data });
   } catch (err) {
-    if (err.code === '23505') return res.status(409).json({ estado: 'error', mensaje: 'Ya existe una empresa con ese id' });
     console.error(err);
     res.status(500).json({ estado: 'error', mensaje: 'Error al crear empresa' });
   }

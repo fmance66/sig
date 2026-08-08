@@ -24,7 +24,7 @@ CREATE EXTENSION IF NOT EXISTS "unaccent";
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS sys_empresa (
-    id              VARCHAR(30)  PRIMARY KEY,
+    id              SERIAL       PRIMARY KEY,
     sistema         VARCHAR(20),
     version         VARCHAR(10),
     razon_social    VARCHAR(100),
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS sys_empresa (
     mail_password   VARCHAR(100),
     smtp_host       VARCHAR(100),
     smtp_port       INTEGER,
-    empresa         VARCHAR(30) REFERENCES sys_empresa(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    empresa         INTEGER REFERENCES sys_empresa(id) ON DELETE SET NULL ON UPDATE CASCADE,
     login           BOOLEAN,
     cloud           BOOLEAN,
     workspace       VARCHAR(30),
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS sys_user (
     uid         VARCHAR(20) PRIMARY KEY,
     name        VARCHAR(50),
     password    VARCHAR(20),
-    empresa     VARCHAR(30) REFERENCES sys_empresa(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    empresa     INTEGER REFERENCES sys_empresa(id) ON DELETE SET NULL ON UPDATE CASCADE,
     terminal    VARCHAR(30),
     workspace   VARCHAR(30),
     cloudspace  VARCHAR(30),
@@ -81,6 +81,22 @@ CREATE TABLE IF NOT EXISTS sys_user (
     last_login  TIMESTAMP,
     timeout     INTEGER,
     orden       INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS sys_sucursal (
+    id              SERIAL PRIMARY KEY,
+    empresa         INTEGER NOT NULL REFERENCES sys_empresa(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    sucursal        VARCHAR(100),
+    nombre_fantasia VARCHAR(200),
+    direccion       VARCHAR(200),
+    localidad       VARCHAR(100),
+    provincia       VARCHAR(50),
+    cpa             VARCHAR(10),
+    codigo_zona     VARCHAR(20),
+    telefono        VARCHAR(50),
+    email           VARCHAR(100),
+    login           BOOLEAN DEFAULT FALSE,
+    orden           INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS sys_user_group (
@@ -449,7 +465,8 @@ CREATE TABLE IF NOT EXISTS sld_liquidacion (
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS sld_empleado (
-    id                  VARCHAR(20) PRIMARY KEY,
+    id                  SERIAL PRIMARY KEY,
+    legajo              VARCHAR(20) NOT NULL,
     apellido            VARCHAR(25),
     nombre              VARCHAR(25),
     cuil                VARCHAR(15),
@@ -490,14 +507,15 @@ CREATE TABLE IF NOT EXISTS sld_empleado (
     obra_social         VARCHAR(20) REFERENCES sld_obra_social(id) ON DELETE SET NULL ON UPDATE CASCADE,
     sindicato           VARCHAR(20) REFERENCES sld_sindicato(id) ON DELETE SET NULL ON UPDATE CASCADE,
     proyecto            VARCHAR(20) REFERENCES bas_proyecto(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    empresa             VARCHAR(30) REFERENCES sys_empresa(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    empresa             INTEGER REFERENCES sys_empresa(id) ON DELETE SET NULL ON UPDATE CASCADE,
     lugar_trabajo       VARCHAR(50),
     banco               VARCHAR(40),
     cuenta              VARCHAR(40),
     cbu                 VARCHAR(25),
     grupo_de_conceptos  VARCHAR(20) REFERENCES sld_grupo_de_conceptos(id) ON DELETE SET NULL ON UPDATE CASCADE,
     observaciones       TEXT,
-    FOREIGN KEY (convenio, categoria) REFERENCES sld_categoria(convenio, id) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (convenio, categoria) REFERENCES sld_categoria(convenio, id) ON DELETE SET NULL ON UPDATE CASCADE,
+    UNIQUE (empresa, legajo)
 );
 
 CREATE INDEX IF NOT EXISTS idx_sld_empleado_orden ON sld_empleado(orden, id);
@@ -508,7 +526,7 @@ CREATE INDEX IF NOT EXISTS idx_sld_empleado_empresa ON sld_empleado(empresa);
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS sld_empleado_afip (
-    empleado            VARCHAR(20) PRIMARY KEY REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado            INTEGER     PRIMARY KEY REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     situacion           VARCHAR(5)  REFERENCES sld_situacion_revista(id) ON DELETE SET NULL ON UPDATE CASCADE,
     condicion           VARCHAR(5)  REFERENCES sld_condicion_laboral(id) ON DELETE SET NULL ON UPDATE CASCADE,
     actividad           VARCHAR(10) REFERENCES sld_actividad_laboral(id) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -524,7 +542,7 @@ CREATE TABLE IF NOT EXISTS sld_empleado_afip (
 );
 
 CREATE TABLE IF NOT EXISTS sld_empleado_concepto (
-    empleado        VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado        INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     concepto        VARCHAR(10) NOT NULL REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
     liquidacion     VARCHAR(15) NOT NULL CHECK (liquidacion IN ('MENSUAL','QUINCENA_1','QUINCENA_2','AGUINALDO','VACACIONES','RENUNCIA','DESPIDO','OTROS')),
     recibo          INTEGER     NOT NULL DEFAULT 0,
@@ -540,14 +558,14 @@ CREATE TABLE IF NOT EXISTS sld_empleado_concepto (
 CREATE TABLE IF NOT EXISTS sld_empleado_field (
     class   VARCHAR(100) NOT NULL,
     field   VARCHAR(30)  NOT NULL,
-    entity  VARCHAR(20)  NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    entity  INTEGER      NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     value   VARCHAR(100),
     PRIMARY KEY (class, field, entity),
     FOREIGN KEY (class, field) REFERENCES sys_dynamic_field(class, field) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sld_familiar (
-    empleado        VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado        INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     id              VARCHAR(20) NOT NULL,
     parentesco      VARCHAR(10) CHECK (parentesco IN ('CONYUGE','HIJO','PRENATAL','FAMILIAR','OTRO')),
     apellido        VARCHAR(25),
@@ -571,13 +589,13 @@ CREATE TABLE IF NOT EXISTS sld_familiar (
 );
 
 CREATE TABLE IF NOT EXISTS sld_jornada_laboral (
-    empleado    VARCHAR(20) PRIMARY KEY REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado    INTEGER     PRIMARY KEY REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     horario     VARCHAR(8)  CHECK (horario IN ('FIJO','ROTATIVO')) DEFAULT 'FIJO',
     feriados    VARCHAR(2)  CHECK (feriados IN ('SI','NO')) DEFAULT 'NO'
 );
 
 CREATE TABLE IF NOT EXISTS sld_horario (
-    empleado    VARCHAR(20) NOT NULL REFERENCES sld_jornada_laboral(empleado) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado    INTEGER     NOT NULL REFERENCES sld_jornada_laboral(empleado) ON DELETE CASCADE ON UPDATE CASCADE,
     dia         VARCHAR(9)  NOT NULL CHECK (dia IN ('LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO','DOMINGO')),
     entrada     TIME,
     salida      TIME,
@@ -585,7 +603,7 @@ CREATE TABLE IF NOT EXISTS sld_horario (
 );
 
 CREATE TABLE IF NOT EXISTS sld_ausentismo (
-    empleado    VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado    INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     motivo      VARCHAR(20) NOT NULL REFERENCES sld_motivo_ausentismo(id) ON DELETE CASCADE ON UPDATE CASCADE,
     fecha_desde DATE        NOT NULL,
     fecha_hasta DATE,
@@ -594,7 +612,7 @@ CREATE TABLE IF NOT EXISTS sld_ausentismo (
 );
 
 CREATE TABLE IF NOT EXISTS sld_presentismo (
-    empleado    VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado    INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     fecha       DATE        NOT NULL,
     hora        TIME        NOT NULL,
     tipo        VARCHAR(7)  CHECK (tipo IN ('ENTRADA','SALIDA')),
@@ -602,7 +620,7 @@ CREATE TABLE IF NOT EXISTS sld_presentismo (
 );
 
 CREATE TABLE IF NOT EXISTS sld_novedad (
-    empleado        VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado        INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tipo_novedad    VARCHAR(20) NOT NULL REFERENCES sld_tipo_novedad(id) ON DELETE CASCADE ON UPDATE CASCADE,
     fecha           DATE        NOT NULL,
     value           VARCHAR(1024),
@@ -610,7 +628,7 @@ CREATE TABLE IF NOT EXISTS sld_novedad (
 );
 
 CREATE TABLE IF NOT EXISTS sld_historial_empleado (
-    empleado    VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado    INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     campo       VARCHAR(20) NOT NULL REFERENCES sld_campo_historial(id) ON DELETE CASCADE ON UPDATE CASCADE,
     fecha_desde DATE        NOT NULL,
     fecha_hasta DATE,
@@ -642,7 +660,7 @@ CREATE TABLE IF NOT EXISTS sld_concepto_de_grupo (
 
 CREATE TABLE IF NOT EXISTS sld_recibo (
     periodo         VARCHAR(30) NOT NULL REFERENCES sld_liquidacion(periodo) ON DELETE CASCADE ON UPDATE CASCADE,
-    empleado        VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado        INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     numero          INTEGER     NOT NULL DEFAULT 1,
     periodo_recibo  VARCHAR(30),
     fecha_recibo    DATE,
@@ -666,7 +684,7 @@ CREATE TABLE IF NOT EXISTS sld_recibo (
 
 CREATE TABLE IF NOT EXISTS sld_recibo_concepto (
     periodo         VARCHAR(30) NOT NULL,
-    empleado        VARCHAR(20) NOT NULL,
+    empleado        INTEGER     NOT NULL,
     numero          INTEGER     NOT NULL,
     concepto        VARCHAR(10) NOT NULL REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
     descripcion     VARCHAR(50),
@@ -687,7 +705,7 @@ CREATE TABLE IF NOT EXISTS sld_recibo_concepto (
 );
 
 CREATE TABLE IF NOT EXISTS sld_recibo_empleado (
-    empleado                VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado                INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     fecha                   DATE        NOT NULL,
     tarea                   VARCHAR(50),
     convenio                VARCHAR(20),
@@ -710,7 +728,7 @@ CREATE TABLE IF NOT EXISTS sld_recibo_empleado (
 );
 
 CREATE TABLE IF NOT EXISTS sld_recibo_afip (
-    empleado            VARCHAR(20) NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    empleado            INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     fecha               DATE        NOT NULL,
     situacion           VARCHAR(5)  REFERENCES sld_situacion_revista(id) ON DELETE SET NULL ON UPDATE CASCADE,
     condicion           VARCHAR(5)  REFERENCES sld_condicion_laboral(id) ON DELETE SET NULL ON UPDATE CASCADE,

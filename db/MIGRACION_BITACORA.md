@@ -150,16 +150,22 @@ ALTER TABLE sld_fila  ALTER COLUMN tabla    TYPE VARCHAR(30);
 ## 4. IDs de empresa canónicos
 
 Cada dump MySQL tenía su propio `id` en `sys_empresa`. Tres empresas usaban `'nacional'`
-(colisión). El script deriva un ID canónico del nombre de archivo:
+(colisión). El script deriva un ID canónico del nombre de archivo, y desde el cambio
+descripto en la sección 9, también un id numérico (el que termina en `sys_empresa.id`):
 
-| Archivo fuente | ID MySQL original | ID canónico en PostgreSQL |
-|----------------|-------------------|---------------------------|
-| `icp sa_...sql` | `ICP SA` | `icp_sa` |
-| `master_...sql` | `master` | `master` |
-| `minucc luis_...sql` | `nacional` | `minucc_luis` |
-| `minucci pablo_...sql` | `nacional` | `minucci_pablo` |
-| `thompson y french sa_...sql` | `HELADERIA` | `thompson_y_french_sa` |
-| `zurawski jorge hecto_...sql` | `nacional` | `zurawski_jorge_hecto` |
+| Archivo fuente | ID MySQL original | ID canónico (solo nombre de archivo `*_pg.sql`) | `sys_empresa.id` numérico |
+|----------------|-------------------|---------------------------|------------------|
+| `icp sa_...sql` | `ICP SA` | `icp_sa` | `1` |
+| `master_...sql` | `master` | `master` | `2` |
+| `minucc luis_...sql` | `nacional` | `minucc_luis` | `3` |
+| `minucci pablo_...sql` | `nacional` | `minucci_pablo` | `4` |
+| `thompson y french sa_...sql` | `HELADERIA` | `thompson_y_french_sa` | `5` |
+| `zurawski jorge hecto_...sql` | `nacional` | `zurawski_jorge_hecto` | `6` |
+
+El número se asigna por orden alfabético de archivo (ver `assignEmpresaNumbers` en
+`migrate-from-mysql.js`), así que se mantiene estable mientras no cambie el conjunto de
+dumps en `db/mysql/data/`. Una empresa nueva creada desde la UI (no migrada) sigue la
+secuencia a partir del último id migrado (ver sección 9.3).
 
 ---
 
@@ -180,13 +186,17 @@ Migración completada exitosamente el 2026-08-04.
 ## 6. Para repetir la migración (datos actualizados)
 
 1. Detener y borrar el volumen: `docker compose down -v`
-2. Copiar los nuevos dumps a `data/original/backup/`
+2. Copiar los nuevos dumps a `db/mysql/data/`
 3. Levantar el contenedor: `docker compose up -d`
-   - Ejecuta `01_schema.sql` automáticamente (ya tiene los tipos corregidos)
+   - Ejecuta `01_schema.sql` automáticamente (ya tiene los tipos corregidos, y desde la
+     sección 9 también crea `sys_sucursal` — ya no hace falta el paso manual aparte)
 4. Regenerar los SQL: `node db/migrate-from-mysql.js --all`
-5. Cargar cada archivo:
+   - Además de los `*_pg.sql` por empresa, genera `zzz_setval_pg.sql` (sincroniza la
+     secuencia de `sys_empresa.id` para que las empresas creadas desde la UI después de
+     la carga sigan numerando a partir del último id migrado — ver sección 9.3)
+5. Cargar cada archivo, en orden alfabético (así `zzz_setval_pg.sql` corre al final):
    ```powershell
-   foreach ($f in Get-ChildItem db/postgres/data/*_pg.sql) {
+   foreach ($f in Get-ChildItem db/postgresql/data/*_pg.sql | Sort-Object Name) {
      docker cp $f.FullName sueldos_db:/tmp/load.sql
      docker exec sueldos_db psql -U sueldos -d sueldos -f /tmp/load.sql
    }
@@ -258,3 +268,181 @@ re-vincularon con `UPDATE sld_empleado SET empresa='thompson_y_french_sa' WHERE 
 
 **Nota**: `sys_sucursal.empresa` también tiene `ON DELETE CASCADE` hacia `sys_empresa(id)`,
 pero ese caso es intencional (una sucursal pertenece a una empresa) y no se modificó.
+
+**Actualización (2026-08-07)**: con el cambio de la sección 9, la fila duplicada que
+causaba este bug ya no llega a insertarse (se descarta automáticamente en la migración),
+así que este escenario no debería repetirse en una regeneración desde cero.
+
+---
+
+## 9. Cambio: `sys_empresa.id` pasa de string a numérico (INTEGER)
+
+**Motivo**: tener ids de empresa legibles/numéricos en vez de strings arbitrarios
+derivados del nombre del dump de origen (`icp_sa`, `thompson_y_french_sa`, etc.), que
+además obligaban a escribirlos a mano al crear una empresa desde la UI.
+
+### 9.1 Schema (`01_schema.sql`)
+
+- `sys_empresa.id`: `VARCHAR(30)` → `SERIAL` (autoincremental).
+- FKs actualizadas a `INTEGER`: `sys_empresa.empresa` (auto-referencia, agrupación por
+  grupo económico), `sys_user.empresa`, `sld_empleado.empresa`, `sys_sucursal.empresa`.
+- `sys_sucursal` (antes en `db/postgresql/migrations/001_sys_sucursal.sql`, que había que
+  aplicar a mano) ahora se crea directamente en `01_schema.sql`, ya con `empresa INTEGER`.
+  El archivo de migración queda solo como referencia histórica — no ejecutar.
+
+### 9.2 `migrate-from-mysql.js`
+
+Antes, el id de cada empresa era el string canónico derivado del nombre de archivo
+(`canonicalId`), y las FKs se resolvían con un reemplazo de texto ciego: cualquier
+literal `'<id original MySQL>'` en todo el INSERT se cambiaba por `'<id canónico>'`, sin
+mirar en qué columna caía.
+
+Con `id` numérico eso ya no alcanza (una FK necesita un número, no cualquier substring
+coincidente), así que el reemplazo ahora es por columna:
+
+- `EMPRESA_ID_COLUMNS` declara qué columnas de qué tablas guardan un id de empresa
+  (`sys_empresa.id`, `sys_empresa.empresa`, `sys_user.empresa`, `sld_empleado.empresa`).
+  Solo esas columnas se resuelven contra el mapa de ids — cualquier otro campo que
+  coincida por casualidad con el string (ej. `sys_empresa.workspace`) ya no se toca (antes
+  sí se tocaba, era un efecto colateral no buscado del reemplazo ciego).
+- El id numérico de cada empresa se asigna por **orden alfabético de archivo**
+  (`assignEmpresaNumbers`) — ver tabla actualizada en la sección 4.
+- El mapa `id original MySQL → id numérico` se arma **por archivo**, no global: tres de
+  los seis dumps comparten el mismo id de origen (`'nacional'`, ver sección 4), y como
+  cada uno es una base MySQL independiente, esos strings no tienen relación entre sí. Un
+  mapa global los confundiría entre sí (bug detectado y corregido durante esta migración,
+  antes de aplicarla a la base real).
+- Si una fila de `sys_empresa` tiene un `id` que no aparece en el mapa del archivo (el
+  caso de la fila duplicada de la sección 8), la fila se descarta con un aviso por
+  stderr en vez de insertarse con `id NULL` (que violaría la PK `NOT NULL`). Si es otra
+  columna FK (`empresa`, auto-referencia) la que no resuelve, se guarda `NULL` — mismo
+  criterio que ya tenía el schema (`ON DELETE SET NULL`).
+
+### 9.3 Sincronización de la secuencia
+
+Como los `*_pg.sql` insertan ids explícitos (1 a 6) en vez de dejar que `SERIAL` los
+genere, hace falta sincronizar la secuencia después de cargarlos para que la próxima
+empresa creada desde la UI no choque con esos ids. El script ahora genera un archivo
+extra, `zzz_setval_pg.sql` (ordena último alfabéticamente, se carga en el mismo loop de
+la sección 6):
+
+```sql
+SELECT setval('sys_empresa_id_seq', (SELECT COALESCE(MAX(id), 1) FROM sys_empresa));
+```
+
+### 9.4 Backend y frontend
+
+- `backend/src/models/empresas.js` / `controllers/empresas.js`: `create` ya no recibe
+  `id` del cliente (lo genera Postgres); se validó `razon_social` en su lugar. Se sacó el
+  manejo de `23505` (duplicado de PK) en el controller porque ya no puede pasar con id
+  autogenerado.
+- `backend/src/models/empleados.js`: el filtro `empresa` del listado pasó de
+  `$1::varchar` a `$1::integer`, y se normaliza `''`/`undefined` a `null` antes de la
+  query.
+- `frontend/.../EmpresasPage.jsx`: se sacó el campo "ID" del formulario de alta (ya no
+  existe, lo asigna la base) y la validación asociada.
+- `backend/postman/Sueldos.postman_collection.json`: ejemplos actualizados con ids
+  numéricos (`icp_sa` → `1`, `thompson_y_french_sa` → `5`, etc., según la tabla de la
+  sección 4).
+
+### 9.5 Aplicación
+
+Este cambio se aplicó regenerando la base desde cero (sección 6) en vez de un `ALTER`
+en caliente, porque los datos cargados hasta ahora eran de prueba y no definitivos.
+
+---
+
+## 10. Cambio: `sld_empleado.id` (legajo) pasa a `legajo` + `id` numérico
+
+**Motivo**: `sld_empleado.id` era el legajo (string) y a la vez la PK global de la
+tabla. Como todas las empresas conviven en una sola `sld_empleado`, dos empresas no
+podían tener empleados con el mismo legajo (ej. las dos el legajo `"1"`), algo que en
+el sistema original sí era válido porque cada empresa tenía su propia base MySQL. Mismo
+patrón que la sección 9 (`sys_empresa`), aplicado acá.
+
+### 10.1 Schema (`01_schema.sql`)
+
+- `sld_empleado`: el viejo `id VARCHAR(20) PRIMARY KEY` se separó en dos columnas:
+  `id SERIAL PRIMARY KEY` (nuevo, autoincremental, es lo que referencian el resto de las
+  tablas) y `legajo VARCHAR(20) NOT NULL` (el valor que antes era el id). Se agregó
+  `UNIQUE (empresa, legajo)` — el legajo es único *dentro de una empresa*, no global.
+- Las **14 tablas** que tenían `empleado VARCHAR(20) REFERENCES sld_empleado(id)` (o,
+  en el caso de `sld_empleado_field`, la columna `entity`) pasan a `INTEGER`:
+  `sld_empleado_afip`, `sld_empleado_concepto`, `sld_empleado_field` (columna `entity`),
+  `sld_familiar`, `sld_jornada_laboral`, `sld_horario` (FK indirecta, vía
+  `sld_jornada_laboral.empleado`), `sld_ausentismo`, `sld_presentismo`, `sld_novedad`,
+  `sld_historial_empleado`, `sld_recibo`, `sld_recibo_concepto` (FK indirecta, vía
+  `sld_recibo`), `sld_recibo_empleado`, `sld_recibo_afip`.
+
+### 10.2 `migrate-from-mysql.js`
+
+- El mecanismo de resolución de ids de la sección 9 (antes específico de `sys_empresa`,
+  con la constante `EMPRESA_ID_COLUMNS`) se generalizó a `ID_RESOLVERS`, que ahora
+  declara dos resolutores independientes — `empresa` y `empleado` — cada uno con su
+  propio mapa de ids y su propia lista de columnas críticas (donde un id sin resolver
+  descarta la fila entera) vs. nullables (donde se guarda `NULL`). Para `empleado`,
+  **las 15 columnas son críticas**: todas son PK o parte de una PK compuesta, así que
+  nunca se guarda `NULL` ahí — la fila se descarta si el legajo no resuelve.
+- El id numérico de empleado se asigna con un **contador global** que sigue creciendo a
+  través de todos los archivos (a diferencia del id de empresa, que es "uno por
+  archivo"): como `sld_empleado` es una sola tabla compartida, cada empleado migrado
+  necesita un id único en toda la base, sin importar de qué empresa venga.
+- El **mapa legajo → id, en cambio, se arma por archivo** (`buildEmpleadoIdMaps`), por
+  el mismo motivo que los ids de empresa en la sección 9: el legajo es único dentro de
+  una base MySQL pero no entre ellas (dos empresas distintas pueden tener ambas un
+  empleado con legajo `"1"`, sin relación entre sí).
+- `sld_empleado`: la columna `id` del dump MySQL (el legajo original) se preserva tal
+  cual en una columna nueva `legajo` que se inserta al lado de `id` en el INSERT
+  generado; `id` pasa a llevar el id numérico nuevo. Ver `transformInsert` — busca la
+  posición de `id` en las columnas de MySQL y duplica el valor original sin convertir
+  junto al valor convertido.
+- **Bug de parseo encontrado y corregido en el camino**: `splitTuples` (separa cada
+  tupla de un `VALUES (...), (...), ...`) contaba paréntesis a ciegas, sin saber si
+  estaba dentro de un string. Una foto de empleado guardada como BYTEA en el dump de
+  `master` contiene bytes `(`/`)` como parte de los datos binarios del PNG, lo que
+  cortaba la tupla siguiente en el lugar equivocado y perdía o corrompía filas. Se
+  corrigió para que `splitTuples` salte los strings completos (con el mismo escaping de
+  MySQL que ya usaba `parseValueTokens`) sin contar paréntesis dentro de ellos. Esto
+  **recuperó empleados que la migración anterior perdía silenciosamente**: el total pasó
+  de 119 a 123 (`master` +1, `minucci_pablo` +1, `zurawski_jorge_hecto` +2). Si se
+  vuelve a tocar el parser, tener en cuenta que cualquier columna BYTEA puede traer bytes
+  arbitrarios, no solo paréntesis.
+- Relacionado con lo anterior: si **todas** las tuplas de un INSERT se descartan (por
+  ids sin resolver), el `VALUES` queda vacío, lo cual es SQL inválido
+  (`VALUES  ON CONFLICT ...`). `transformInsert` ahora detecta ese caso y omite el
+  statement completo en vez de emitirlo roto.
+- **Dato huérfano encontrado en el dump de `thompson y french sa`**: `sld_ausentismo`,
+  `sld_familiar`, `sld_novedad`, `sld_empleado_afip` y `sld_recibo_concepto` tenían
+  registros con `empleado = '2'`, un legajo que no existe en el `sld_empleado` de ese
+  mismo dump (fue borrado directamente en MySQL alguna vez, sin borrar en cascada sus
+  hijos). Con el id numérico esas 395 filas se descartan automáticamente (advertencia
+  por stderr) en vez de fallar la carga por violar una FK — no hay nada para arreglar,
+  es basura preexistente en el dump de origen.
+
+### 10.3 Backend y frontend
+
+- `backend/src/models/empleados.js`: `legajo` se agregó a `MUTABLE`/`DETAIL_COLS`/
+  `LIST_COLS`; `create` ya no antepone `id` a las columnas (lo genera Postgres).
+- `backend/src/controllers/empleados.js`: `create`/`update` validan y devuelven error
+  409 sobre `legajo` en vez de `id`; el mensaje de conflicto (`23505`) ahora es "ya
+  existe un empleado con ese legajo en esta empresa" (antes no podía pasar por PK
+  duplicada, ahora es la constraint `UNIQUE(empresa, legajo)`).
+- `frontend/.../EmpleadosPage.jsx`: el campo "Legajo" del formulario pasó de
+  `name="id"` (solo visible al crear) a `name="legajo"` (visible y editable siempre,
+  como cualquier otro campo). Tras crear un empleado, el id numérico para la pestaña LSD
+  y el resto de las sub-tablas (Conceptos, Familiares, Novedades, Historial) se toma de
+  la respuesta del POST (`res.data.data.id`), no del legajo tipeado. La columna "Legajo"
+  de la grilla pasó de `field="id"` a `field="legajo"`.
+- `backend/postman/Sueldos.postman_collection.json`: los ejemplos que usaban el legajo
+  `"018"` (en URLs y bodies de empleados/familiares/novedades/historial/conceptos) se
+  reemplazaron por el id numérico `1`; el body de alta de empleado pasó de `"id": "999"`
+  a `"legajo": "999"`.
+
+Las tablas `sld_empleado_concepto`, `sld_concepto_de_grupo` y `sld_concepto_general` no
+tienen PK propia (solo `UNIQUE`, ver nota de `der-sueldos.md`) — no se tocaron acá más
+allá de que su columna `empleado`/`grupo_de_conceptos` ya era la correcta en cada caso.
+
+### 10.4 Aplicación
+
+Igual que la sección 9: se regeneró la base desde cero (sección 6) en vez de un `ALTER`
+en caliente.

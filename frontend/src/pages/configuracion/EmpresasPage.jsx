@@ -15,7 +15,7 @@ import * as api from '../../api/empresas';
 import './EmpresasPage.css';
 
 const EMPTY_FORM = {
-  id: '', razon_social: '', nombre_comercial: '', cuit: '',
+  razon_social: '', nombre_comercial: '', cuit: '',
   condicion_iva: '', actividad: '', direccion: '', localidad: '',
   provincia: '', cpa: '', zona: '', telefono: '', email: '',
   webpage: '', observaciones: '', orden: '',
@@ -93,10 +93,6 @@ export default function EmpresasPage() {
   async function handleSave() {
     if (!form.razon_social.trim()) {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'La razón social es requerida' });
-      return;
-    }
-    if (!editMode && !form.id.trim()) {
-      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'El ID es requerido' });
       return;
     }
     setSaving(true);
@@ -236,12 +232,6 @@ export default function EmpresasPage() {
 
           <TabPanel header="Empresa">
             <div className="form-grid">
-              {!editMode && (
-                <div className="form-field form-field--full">
-                  <label>ID <span className="required">*</span></label>
-                  <InputText name="id" value={form.id} onChange={handleChange} placeholder="Ej: nueva_empresa" />
-                </div>
-              )}
               <div className="form-field form-field--full">
                 <label>Razón Social <span className="required">*</span></label>
                 <InputText name="razon_social" value={form.razon_social} onChange={handleChange} />
