@@ -4,7 +4,10 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
+import { Calendar } from 'primereact/calendar';
+import { Checkbox } from 'primereact/checkbox';
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -14,15 +17,44 @@ import './CatalogoPage.css';
 
 function emptyForm(fields) {
   const form = { id: '' };
-  fields.forEach(f => { form[f.name] = f.type === 'select' ? null : ''; });
+  fields.forEach(f => {
+    if (f.type === 'select' || f.type === 'date') form[f.name] = null;
+    else if (f.type === 'checkbox') form[f.name] = f.default ?? false;
+    else form[f.name] = '';
+  });
   return form;
+}
+
+function emptyValue(f) {
+  if (f.type === 'select' || f.type === 'date') return null;
+  if (f.type === 'checkbox') return false;
+  return '';
+}
+
+function toDateInput(val) {
+  if (!val) return null;
+  const d = val instanceof Date ? val : new Date(val);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+function serializeForm(form, fields) {
+  const out = { ...form };
+  fields.forEach(f => {
+    if (f.type === 'date' && out[f.name] instanceof Date) {
+      const d = out[f.name];
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      out[f.name] = `${d.getFullYear()}-${mm}-${dd}`;
+    }
+  });
+  return out;
 }
 
 function cap(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export default function CatalogoPage({ title, icon, basePath, entityLabel, columns, fields, dialogWidth = '600px' }) {
+export default function CatalogoPage({ title, icon, basePath, entityLabel, columns, fields, dialogWidth = '600px', filterFields = ['id', 'descripcion'], idLabel = 'Código' }) {
   const api = useRef(createCatalogoApi(basePath)).current;
 
   const [registros, setRegistros]       = useState([]);
@@ -56,7 +88,10 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
 
   function openEdit(row) {
     const next = { id: row.id ?? '' };
-    fields.forEach(f => { next[f.name] = row[f.name] ?? (f.type === 'select' ? null : ''); });
+    fields.forEach(f => {
+      if (f.type === 'date') next[f.name] = toDateInput(row[f.name]);
+      else next[f.name] = row[f.name] ?? emptyValue(f);
+    });
     setForm(next);
     setEditMode(true);
     setDialogVisible(true);
@@ -83,11 +118,12 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
     }
     setSaving(true);
     try {
+      const payload = serializeForm(form, fields);
       if (editMode) {
-        await api.update(form.id, form);
+        await api.update(form.id, payload);
         toast.current.show({ severity: 'success', summary: 'OK', detail: `${cap(entityLabel)} actualizado/a` });
       } else {
-        await api.create(form);
+        await api.create(payload);
         toast.current.show({ severity: 'success', summary: 'OK', detail: `${cap(entityLabel)} creado/a` });
       }
       setDialogVisible(false);
@@ -130,7 +166,11 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
     </div>
   );
 
-  const paginatorRight = <span className="total-registros">Total: {registros.length} registros</span>;
+  const hasPaginator = registros.length > 10;
+  const totalRegistros = <span className="total-registros">Total: {registros.length} registros</span>;
+  const tableFooter = !hasPaginator && registros.length > 0
+    ? <div className="table-footer-right">{totalRegistros}</div>
+    : null;
 
   const accionesTemplate = (row) => (
     <div className="acciones-col">
@@ -156,13 +196,14 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
       <DataTable
         value={registros}
         loading={loading}
-        paginator={registros.length > 10}
+        paginator={hasPaginator}
         rows={10}
         rowsPerPageOptions={[10, 15, 25, 50]}
-        paginatorRight={paginatorRight}
+        paginatorRight={totalRegistros}
         globalFilter={globalFilter}
-        globalFilterFields={['id', 'descripcion']}
+        globalFilterFields={filterFields}
         header={tableHeader}
+        footer={tableFooter}
         emptyMessage={`No hay registros de ${entityLabel}`}
         size="small"
         stripedRows
@@ -187,13 +228,20 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
         <div className="form-grid">
           {!editMode && (
             <div className="form-field">
-              <label>Código <span className="required">*</span></label>
+              <label>{idLabel} <span className="required">*</span></label>
               <InputText name="id" value={form.id} onChange={handleChange} />
             </div>
           )}
           {fields.map(f => (
-            <div key={f.name} className={`form-field${f.full ? ' form-field--full' : ''}`}>
-              <label>{f.label} {f.required && <span className="required">*</span>}</label>
+            <div key={f.name} className={`form-field${f.full ? ' form-field--full' : ''}${f.type === 'checkbox' ? ' form-field--checkbox' : ''}`}>
+              {f.type === 'checkbox' ? (
+                <label className="checkbox-label">
+                  <Checkbox checked={!!form[f.name]} onChange={e => handleSelectChange(f.name, e.checked)} />
+                  {f.label}
+                </label>
+              ) : (
+                <label>{f.label} {f.required && <span className="required">*</span>}</label>
+              )}
               {f.type === 'select' ? (
                 <Dropdown
                   value={form[f.name]}
@@ -201,7 +249,23 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
                   onChange={e => handleSelectChange(f.name, e.value)}
                   placeholder="Seleccionar..."
                 />
-              ) : (
+              ) : f.type === 'date' ? (
+                <Calendar
+                  value={form[f.name]}
+                  onChange={e => handleSelectChange(f.name, e.value)}
+                  dateFormat="dd/mm/yy"
+                  showIcon
+                  showButtonBar
+                />
+              ) : f.type === 'textarea' ? (
+                <InputTextarea
+                  name={f.name}
+                  value={form[f.name] ?? ''}
+                  onChange={handleChange}
+                  rows={3}
+                  autoResize
+                />
+              ) : f.type === 'checkbox' ? null : (
                 <InputText
                   name={f.name}
                   value={form[f.name] ?? ''}

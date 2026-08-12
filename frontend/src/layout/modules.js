@@ -203,7 +203,18 @@ export const ADMIN_MODULES = [
           { label: 'Sindicatos', icon: 'fa-solid fa-people-group', path: '/configuracion/sindicatos' },
           { separator: true },
           {
-            label: 'Tablas AFIP',
+            label: 'Tablas Comunes',
+            icon: 'fa-solid fa-globe',
+            items: [
+              { label: 'Moneda', icon: 'fa-solid fa-coins', path: '/configuracion/comunes/monedas' },
+              { label: 'Localidad', icon: 'fa-solid fa-location-dot', path: '/configuracion/comunes/localidades' },
+              { label: 'País', icon: 'fa-solid fa-flag', path: '/configuracion/comunes/paises' },
+              { label: 'Proyectos', icon: 'fa-solid fa-diagram-project', path: '/configuracion/comunes/proyectos' },
+            ],
+          },
+          { separator: true },
+          {
+            label: 'Tablas ARCA',
             icon: 'fa-solid fa-landmark',
             items: [
               { label: 'Situación de Revista', path: '/configuracion/afip/situacion-revista' },

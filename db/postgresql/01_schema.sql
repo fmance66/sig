@@ -133,6 +133,11 @@ CREATE TABLE IF NOT EXISTS bas_provincia (
     codigo      VARCHAR(3)
 );
 
+CREATE TABLE IF NOT EXISTS bas_pais (
+    pais        VARCHAR(20) PRIMARY KEY,
+    codigo      VARCHAR(3)
+);
+
 CREATE TABLE IF NOT EXISTS bas_localidad (
     localidad   VARCHAR(40) PRIMARY KEY,
     zona        VARCHAR(30),

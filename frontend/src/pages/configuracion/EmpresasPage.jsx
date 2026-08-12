@@ -148,9 +148,11 @@ export default function EmpresasPage() {
     </div>
   );
 
-  const paginatorRight = (
-    <span className="total-registros">Total: {empresas.length} registros</span>
-  );
+  const hasPaginator = empresas.length > 10;
+  const totalRegistros = <span className="total-registros">Total: {empresas.length} registros</span>;
+  const tableFooter = !hasPaginator && empresas.length > 0
+    ? <div className="table-footer-right">{totalRegistros}</div>
+    : null;
 
   const accionesTemplate = (row) => (
     <div className="acciones-col">
@@ -199,13 +201,14 @@ export default function EmpresasPage() {
       <DataTable
         value={empresas}
         loading={loading}
-        paginator={empresas.length > 10}
+        paginator={hasPaginator}
         rows={10}
         rowsPerPageOptions={[10, 15, 25, 50]}
-        paginatorRight={paginatorRight}
+        paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['cuit', 'razon_social', 'telefono']}
         header={tableHeader}
+        footer={tableFooter}
         emptyMessage="No hay empresas registradas"
         size="small"
         stripedRows

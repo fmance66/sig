@@ -850,6 +850,186 @@
                   "request": { "method": "DELETE", "url": "{{base_url}}/codigos-zona/1" }
                 }
               ]
+            },
+            {
+              "name": "Monedas",
+              "item": [
+                {
+                  "name": "GET Monedas",
+                  "request": { "method": "GET", "url": "{{base_url}}/monedas" }
+                },
+                {
+                  "name": "GET Moneda por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/monedas/ARS" }
+                },
+                {
+                  "name": "POST Moneda",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/monedas",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"ARS\",\n  \"nombre\": \"Peso argentino\",\n  \"simbolo\": \"$\",\n  \"cotizacion\": 1,\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Moneda",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/monedas/ARS",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"nombre\": \"Peso argentino actualizado\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Moneda",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/monedas/ARS" }
+                }
+              ]
+            },
+            {
+              "name": "Localidades",
+              "item": [
+                {
+                  "name": "GET Localidades",
+                  "request": { "method": "GET", "url": "{{base_url}}/localidades" }
+                },
+                {
+                  "name": "GET Localidad por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/localidades/Rosario" }
+                },
+                {
+                  "name": "POST Localidad",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/localidades",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"Rosario\",\n  \"provincia\": \"Santa Fe\",\n  \"zona\": \"Litoral\",\n  \"cpa\": \"S2000\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Localidad",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/localidades/Rosario",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"cpa\": \"S2000FBB\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Localidad",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/localidades/Rosario" }
+                }
+              ]
+            },
+            {
+              "name": "Paises",
+              "item": [
+                {
+                  "name": "GET Paises",
+                  "request": { "method": "GET", "url": "{{base_url}}/paises" }
+                },
+                {
+                  "name": "GET Pais por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/paises/Argentina" }
+                },
+                {
+                  "name": "POST Pais",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/paises",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"Chile\",\n  \"codigo\": \"208\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Pais",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/paises/Chile",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"codigo\": \"209\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Pais",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/paises/Chile" }
+                }
+              ]
+            },
+            {
+              "name": "Proyectos",
+              "item": [
+                {
+                  "name": "GET Proyectos",
+                  "request": { "method": "GET", "url": "{{base_url}}/proyectos" }
+                },
+                {
+                  "name": "GET Proyecto por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/proyectos/1" }
+                },
+                {
+                  "name": "POST Proyecto",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/proyectos",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Proyecto de prueba\",\n  \"moneda\": \"ARS\",\n  \"orden\": 1,\n  \"visible\": true\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Proyecto",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/proyectos/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Proyecto actualizado\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Proyecto",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/proyectos/1" }
+                }
+              ]
             }
           ]
         }

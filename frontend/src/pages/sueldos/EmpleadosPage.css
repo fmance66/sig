@@ -84,6 +84,12 @@
   white-space: nowrap;
 }
 
+.table-footer-right {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.4rem 0.5rem;
+}
+
 .acciones-col {
   display: flex;
   justify-content: center;

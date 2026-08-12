@@ -269,9 +269,11 @@ export default function EmpleadosPage() {
     </div>
   );
 
-  const paginatorRight = (
-    <span className="total-registros">Total: {empleados.length} registros</span>
-  );
+  const hasPaginator = empleados.length > 10;
+  const totalRegistros = <span className="total-registros">Total: {empleados.length} registros</span>;
+  const tableFooter = !hasPaginator && empleados.length > 0
+    ? <div className="table-footer-right">{totalRegistros}</div>
+    : null;
 
   const dialogFooter = (
     <div className="dialog-footer-btns mt-2">
@@ -305,13 +307,14 @@ export default function EmpleadosPage() {
       <DataTable
         value={empleados}
         loading={loading}
-        paginator={empleados.length > 10}
+        paginator={hasPaginator}
         rows={10}
         rowsPerPageOptions={[10, 25, 50, 100]}
-        paginatorRight={paginatorRight}
+        paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['legajo', 'apellido', 'nombre', 'cuil', 'convenio', 'categoria']}
         header={tableHeader}
+        footer={tableFooter}
         emptyMessage={mostrarInactivos ? 'No hay empleados inactivos' : 'No hay empleados registrados'}
         size="small"
         stripedRows

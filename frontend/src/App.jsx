@@ -13,6 +13,10 @@ import ActividadLaboralPage from './pages/configuracion/ActividadLaboralPage';
 import ModalidadContratoPage from './pages/configuracion/ModalidadContratoPage';
 import IncapacidadPage from './pages/configuracion/IncapacidadPage';
 import CodigoZonaPage from './pages/configuracion/CodigoZonaPage';
+import MonedaPage from './pages/configuracion/MonedaPage';
+import LocalidadPage from './pages/configuracion/LocalidadPage';
+import PaisPage from './pages/configuracion/PaisPage';
+import ProyectoPage from './pages/configuracion/ProyectoPage';
 import { EmpresaProvider } from './context/EmpresaContext';
 
 export default function App() {
@@ -42,6 +46,10 @@ export default function App() {
           <Route path="configuracion/afip/modalidad-contrato" element={<ModalidadContratoPage />} />
           <Route path="configuracion/afip/incapacidad" element={<IncapacidadPage />} />
           <Route path="configuracion/afip/codigo-zona" element={<CodigoZonaPage />} />
+          <Route path="configuracion/comunes/monedas" element={<MonedaPage />} />
+          <Route path="configuracion/comunes/localidades" element={<LocalidadPage />} />
+          <Route path="configuracion/comunes/paises" element={<PaisPage />} />
+          <Route path="configuracion/comunes/proyectos" element={<ProyectoPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

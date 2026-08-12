@@ -94,7 +94,7 @@ const VARCHAR_LIMITS = {
 // ---------------------------------------------------------------------------
 const TARGET_TABLES = new Set([
   'sys_empresa','sys_group','sys_user','sys_user_group','sys_dynamic_field',
-  'bas_moneda','bas_provincia','bas_localidad','bas_proyecto','bas_importacion',
+  'bas_moneda','bas_provincia','bas_pais','bas_localidad','bas_proyecto','bas_importacion',
   'sld_actividad_laboral','sld_campo_historial','sld_codigo_zona',
   'sld_condicion_laboral','sld_feriado','sld_formula_auxiliar',
   'sld_grupo','sld_grupo_de_conceptos','sld_incapacidad','sld_modalidad_contrato',

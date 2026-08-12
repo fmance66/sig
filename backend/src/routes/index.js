@@ -5,8 +5,8 @@ const { createCatalogoModel }      = require('../models/catalogo');
 const { createCatalogoController } = require('../controllers/catalogo');
 const { createCatalogoRouter }     = require('./catalogo');
 
-function catalogo(tableName, columns, numericColumns, nombreEntidad) {
-  const model      = createCatalogoModel(tableName, columns, numericColumns);
+function catalogo(tableName, columns, numericColumns, nombreEntidad, options) {
+  const model      = createCatalogoModel(tableName, columns, numericColumns, options);
   const controller = createCatalogoController(model, nombreEntidad);
   return createCatalogoRouter(controller);
 }
@@ -39,5 +39,20 @@ router.use('/actividades-laborales', catalogo('sld_actividad_laboral', ['descrip
 router.use('/modalidades-contrato', catalogo('sld_modalidad_contrato', ['descripcion', 'orden'], ['orden'], 'modalidad de contratación'));
 router.use('/incapacidades',        catalogo('sld_incapacidad',        ['descripcion', 'orden'], ['orden'], 'incapacidad'));
 router.use('/codigos-zona',         catalogo('sld_codigo_zona',        ['descripcion', 'orden'], ['orden'], 'código de zona'));
+
+router.use('/monedas', catalogo('bas_moneda',
+  ['nombre', 'simbolo', 'simbolos', 'cotizacion', 'color', 'icono', 'orden'],
+  ['cotizacion', 'orden'], 'moneda'));
+
+router.use('/localidades', catalogo('bas_localidad',
+  ['zona', 'provincia', 'cpa'], [], 'localidad', { idColumn: 'localidad' }));
+
+router.use('/paises', catalogo('bas_pais',
+  ['codigo'], [], 'país', { idColumn: 'pais' }));
+
+router.use('/proyectos', catalogo('bas_proyecto',
+  ['descripcion', 'grupo', 'fecha', 'fecha_fin', 'horas', 'valor_hora', 'presupuesto',
+   'ejecutado', 'avance', 'moneda', 'observaciones', 'alias', 'color', 'orden', 'visible', 'id_padre'],
+  ['horas', 'valor_hora', 'presupuesto', 'ejecutado', 'avance', 'orden'], 'proyecto'));
 
 module.exports = router;
