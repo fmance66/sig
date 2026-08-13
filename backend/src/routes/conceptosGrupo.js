@@ -3,5 +3,7 @@ const router     = express.Router();
 const controller = require('../controllers/conceptos');
 
 router.get('/', controller.listGrupales); // ?grupo=grupo_de_conceptos_id
+router.post('/', controller.createGrupal);
+router.delete('/:grupo/:concepto/:liquidacion/:recibo', controller.removeGrupal);
 
 module.exports = router;

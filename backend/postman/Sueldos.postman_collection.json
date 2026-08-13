@@ -1030,6 +1030,350 @@
                   "request": { "method": "DELETE", "url": "{{base_url}}/proyectos/1" }
                 }
               ]
+            },
+            {
+              "name": "Fórmulas",
+              "item": [
+                {
+                  "name": "GET Fórmulas",
+                  "request": { "method": "GET", "url": "{{base_url}}/formulas" }
+                },
+                {
+                  "name": "GET Fórmula por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/formulas/1" }
+                },
+                {
+                  "name": "POST Fórmula",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/formulas",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Fórmula de prueba\",\n  \"formato\": \"NUMERIC\",\n  \"formula\": \"UNIDAD * IMPORTE\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Fórmula",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/formulas/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Fórmula actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Fórmula",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/formulas/1" }
+                }
+              ]
+            },
+            {
+              "name": "Grupos de Conceptos",
+              "item": [
+                {
+                  "name": "GET Grupos de Conceptos",
+                  "request": { "method": "GET", "url": "{{base_url}}/grupos-de-conceptos" }
+                },
+                {
+                  "name": "GET Grupo de Conceptos por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/grupos-de-conceptos/1" }
+                },
+                {
+                  "name": "POST Grupo de Conceptos",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/grupos-de-conceptos",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Grupo de conceptos de prueba\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Grupo de Conceptos",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/grupos-de-conceptos/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Grupo de conceptos actualizado\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Grupo de Conceptos",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/grupos-de-conceptos/1" }
+                },
+                {
+                  "name": "GET Conceptos de un Grupo",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/conceptos-grupo?grupo=1",
+                      "host": ["{{base_url}}"],
+                      "path": ["conceptos-grupo"],
+                      "query": [{ "key": "grupo", "value": "1" }]
+                    }
+                  }
+                },
+                {
+                  "name": "POST Concepto en Grupo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/conceptos-grupo",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"grupo_de_conceptos\": \"1\",\n  \"concepto\": \"10\",\n  \"liquidacion\": \"MENSUAL\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Concepto de Grupo",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/conceptos-grupo/1/10/MENSUAL/0" }
+                }
+              ]
+            },
+            {
+              "name": "Grupo General de Conceptos",
+              "item": [
+                {
+                  "name": "GET Conceptos Generales",
+                  "request": { "method": "GET", "url": "{{base_url}}/conceptos-general" }
+                },
+                {
+                  "name": "POST Concepto General",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/conceptos-general",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"concepto\": \"10\",\n  \"liquidacion\": \"MENSUAL\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Concepto General",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/conceptos-general/10/MENSUAL/0" }
+                }
+              ]
+            },
+            {
+              "name": "Clases de Concepto",
+              "item": [
+                {
+                  "name": "GET Clases de Concepto",
+                  "request": { "method": "GET", "url": "{{base_url}}/clases-concepto" }
+                },
+                {
+                  "name": "GET Clase de Concepto por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/clases-concepto/1" }
+                },
+                {
+                  "name": "POST Clase de Concepto",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/clases-concepto",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Clase de prueba\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Clase de Concepto",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/clases-concepto/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Clase actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Clase de Concepto",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/clases-concepto/1" }
+                },
+                {
+                  "name": "GET Grupos de una Clase",
+                  "request": { "method": "GET", "url": "{{base_url}}/clases-concepto/1/grupos" }
+                },
+                {
+                  "name": "POST Grupo en Clase",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/clases-concepto/1/grupos",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"grupo\": \"1\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Grupo de Clase",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/clases-concepto/1/grupos/1" }
+                }
+              ]
+            },
+            {
+              "name": "Tipos de Tabla",
+              "item": [
+                {
+                  "name": "GET Tipos de Tabla",
+                  "request": { "method": "GET", "url": "{{base_url}}/tipos-tabla" }
+                },
+                {
+                  "name": "GET Tipo de Tabla por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/tipos-tabla/1" }
+                },
+                {
+                  "name": "POST Tipo de Tabla",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/tipos-tabla",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"1\",\n  \"descripcion\": \"Tabla de prueba\",\n  \"column_1\": \"Categoría\",\n  \"data_type_1\": \"TEXT\",\n  \"length_1\": 20,\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Tipo de Tabla",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/tipos-tabla/1",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Tabla actualizada\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Tipo de Tabla",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/tipos-tabla/1" }
+                },
+                {
+                  "name": "GET Filas de una Tabla",
+                  "request": { "method": "GET", "url": "{{base_url}}/tipos-tabla/1/filas" }
+                },
+                {
+                  "name": "POST Fila en Tabla",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/tipos-tabla/1/filas",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"value_1\": \"A\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Fila de Tabla",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/tipos-tabla/1/filas/1" }
+                }
+              ]
+            },
+            {
+              "name": "Conceptos",
+              "item": [
+                {
+                  "name": "GET Conceptos",
+                  "request": { "method": "GET", "url": "{{base_url}}/conceptos" }
+                },
+                {
+                  "name": "GET Concepto por ID",
+                  "request": { "method": "GET", "url": "{{base_url}}/conceptos/10" }
+                },
+                {
+                  "name": "POST Concepto",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/conceptos",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"999\",\n  \"descripcion\": \"Concepto de prueba\",\n  \"columna\": \"REMUNERATIVO\",\n  \"orden\": 999\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Concepto",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/conceptos/999",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Concepto actualizado\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Concepto",
+                  "request": { "method": "DELETE", "url": "{{base_url}}/conceptos/999" }
+                },
+                {
+                  "name": "GET LSD de Concepto",
+                  "request": { "method": "GET", "url": "{{base_url}}/conceptos/10/lsd" }
+                },
+                {
+                  "name": "PUT LSD de Concepto",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/conceptos/10/lsd",
+                    "header": [
+                      { "key": "Content-Type", "value": "application/json" }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"aporte_sipa\": true,\n  \"contribucion_sipa\": true,\n  \"repetible\": false\n}"
+                    }
+                  }
+                }
+              ]
             }
           ]
         }

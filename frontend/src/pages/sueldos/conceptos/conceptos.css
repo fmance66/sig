@@ -1,0 +1,102 @@
+/* Estilos compartidos por las páginas del módulo Conceptos.
+   Reutiliza las clases utilitarias ya globales (page-title, table-toolbar,
+   form-grid, form-field, sub-tab, sub-form, tab-empty-msg, dialog-footer-btns,
+   acciones-col — ver EmpleadosPage.css/CatalogoPage.css) y agrega solo lo
+   específico de este módulo. */
+
+.page-conceptos {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.conceptos-subtitle {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin: -0.4rem 0 0.75rem;
+}
+
+.conceptos-tabs .p-tabview-nav {
+  font-size: 0.82rem;
+}
+
+.conceptos-tabs .p-tabview-nav li .p-tabview-nav-link {
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+}
+
+.conceptos-tabs .p-tabview-panels {
+  padding: 0.75rem 0 0 0;
+}
+
+/* Fila expandida del listado de Grupos de Conceptos */
+.row-expansion {
+  padding: 0.5rem 1rem 0.5rem 3rem;
+  background: #f8f9fa;
+}
+
+.row-expansion .p-datatable .p-datatable-tbody > tr > td,
+.row-expansion .p-datatable .p-datatable-thead > tr > th {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.6rem;
+}
+
+/* Grilla de columnas del formulario Tipo de Tabla */
+.tabla-columnas-grid {
+  display: grid;
+  grid-template-columns: 90px 1fr 130px 100px 100px;
+  gap: 0.5rem 0.75rem;
+  align-items: end;
+}
+
+.tabla-columnas-grid .col-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  padding-bottom: 0.2rem;
+}
+
+.tabla-columnas-grid .col-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+  padding-bottom: 0.55rem;
+}
+
+/* Checkboxes de LSD en el Concepto */
+.lsd-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.lsd-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  align-items: center;
+}
+
+.lsd-row-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #374151;
+  width: 100%;
+}
+
+.lsd-check {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: #374151;
+}
+
+/* Indicadores de aportes/contribuciones en el listado de Conceptos */
+.lsd-indicator {
+  display: flex;
+  justify-content: center;
+}
+
+.lsd-indicator i {
+  color: #3b82f6;
+}

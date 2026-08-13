@@ -55,4 +55,32 @@ router.use('/proyectos', catalogo('bas_proyecto',
    'ejecutado', 'avance', 'moneda', 'observaciones', 'alias', 'color', 'orden', 'visible', 'id_padre'],
   ['horas', 'valor_hora', 'presupuesto', 'ejecutado', 'avance', 'orden'], 'proyecto'));
 
+router.use('/formulas', catalogo('sld_formula_auxiliar',
+  ['descripcion', 'formato', 'formula', 'orden'], ['orden'], 'fórmula'));
+
+router.use('/grupos-de-conceptos', catalogo('sld_grupo_de_conceptos',
+  ['descripcion', 'orden'], ['orden'], 'grupo de conceptos'));
+
+const clasesConceptoRouter = catalogo('sld_clase', ['descripcion', 'orden'], ['orden'], 'clase de concepto');
+const claseGrupoController = require('../controllers/claseGrupo');
+clasesConceptoRouter.get   ('/:id/grupos', claseGrupoController.list);
+clasesConceptoRouter.post  ('/:id/grupos', claseGrupoController.create);
+clasesConceptoRouter.delete('/:id/grupos/:grupo', claseGrupoController.remove);
+router.use('/clases-concepto', clasesConceptoRouter);
+
+const TABLA_COLUMNAS = [1, 2, 3, 4, 5, 6, 7, 8, 9].flatMap(n =>
+  [`column_${n}`, `data_type_${n}`, `length_${n}`, `decimals_${n}`]);
+const TABLA_NUMERICAS = [1, 2, 3, 4, 5, 6, 7, 8, 9].flatMap(n => [`length_${n}`, `decimals_${n}`]);
+
+const tiposTablaRouter = catalogo('sld_tabla',
+  ['descripcion', ...TABLA_COLUMNAS, 'orden'], [...TABLA_NUMERICAS, 'orden'], 'tipo de tabla');
+const filaController = require('../controllers/fila');
+tiposTablaRouter.get   ('/:id/filas', filaController.list);
+tiposTablaRouter.post  ('/:id/filas', filaController.create);
+tiposTablaRouter.delete('/:id/filas/:fila', filaController.remove);
+router.use('/tipos-tabla', tiposTablaRouter);
+
+router.use('/conceptos', require('./conceptos'));
+router.use('/conceptos-general', require('./conceptoGeneral'));
+
 module.exports = router;

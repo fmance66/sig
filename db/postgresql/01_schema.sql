@@ -229,6 +229,19 @@ CREATE TABLE IF NOT EXISTS sld_grupo (
     orden       INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS sld_clase (
+    id          VARCHAR(30) PRIMARY KEY,
+    descripcion VARCHAR(100),
+    orden       INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS sld_clase_grupo (
+    clase VARCHAR(30) NOT NULL REFERENCES sld_clase(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    grupo VARCHAR(30) NOT NULL REFERENCES sld_grupo(id)  ON DELETE CASCADE ON UPDATE CASCADE,
+    orden INTEGER,
+    PRIMARY KEY (clase, grupo)
+);
+
 CREATE TABLE IF NOT EXISTS sld_grupo_de_conceptos (
     id          VARCHAR(20) PRIMARY KEY,
     descripcion VARCHAR(50),
@@ -402,6 +415,9 @@ CREATE TABLE IF NOT EXISTS sld_concepto_grupo (
     concepto VARCHAR(10) NOT NULL REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (grupo, concepto)
 );
+
+ALTER TABLE sld_concepto
+    ADD COLUMN IF NOT EXISTS clase VARCHAR(30) REFERENCES sld_clase(id) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- -----------------------------------------------------------------------------
 -- 5. CONVENIO Y CATEGORÍAS

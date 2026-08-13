@@ -61,4 +61,37 @@ async function listGrupales(grupoDeConceptos) {
   return rows;
 }
 
-module.exports = { listIndividualesByEmpleado, createIndividual, removeIndividual, listGrupales };
+async function createGrupal(grupoDeConceptos, data) {
+  const { rows } = await pool.query(
+    `INSERT INTO sld_concepto_de_grupo
+       (grupo_de_conceptos, concepto, liquidacion, recibo, descripcion, unidad_manual, importe_manual, vigencia_desde, vigencia_hasta)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+     RETURNING grupo_de_conceptos, concepto, liquidacion, recibo, descripcion, unidad_manual, importe_manual, vigencia_desde, vigencia_hasta`,
+    [
+      grupoDeConceptos,
+      data.concepto,
+      data.liquidacion || LIQUIDACION_DEFAULT,
+      data.recibo || 0,
+      data.descripcion || null,
+      data.unidad_manual === '' ? null : data.unidad_manual ?? null,
+      data.importe_manual === '' ? null : data.importe_manual ?? null,
+      data.vigencia_desde || null,
+      data.vigencia_hasta || null,
+    ]
+  );
+  return rows[0];
+}
+
+async function removeGrupal(grupoDeConceptos, concepto, liquidacion, recibo) {
+  const { rowCount } = await pool.query(
+    `DELETE FROM sld_concepto_de_grupo
+     WHERE grupo_de_conceptos = $1 AND concepto = $2 AND liquidacion = $3 AND recibo = $4`,
+    [grupoDeConceptos, concepto, liquidacion, recibo]
+  );
+  return rowCount > 0;
+}
+
+module.exports = {
+  listIndividualesByEmpleado, createIndividual, removeIndividual,
+  listGrupales, createGrupal, removeGrupal,
+};

@@ -3,6 +3,13 @@ import AppLayout from './layout/AppLayout';
 import Home from './pages/Home';
 import AyudaPage from './pages/ayuda/AyudaPage';
 import EmpleadosPage from './pages/sueldos/EmpleadosPage';
+import ConceptosPage from './pages/sueldos/conceptos/ConceptosPage';
+import FormulasPage from './pages/sueldos/conceptos/FormulasPage';
+import GruposDeConceptosPage from './pages/sueldos/conceptos/GruposDeConceptosPage';
+import ConceptoGeneralPage from './pages/sueldos/conceptos/ConceptoGeneralPage';
+import ClasesConceptoPage from './pages/sueldos/conceptos/ClasesConceptoPage';
+import TablasPage from './pages/sueldos/conceptos/TablasPage';
+import TiposTablaPage from './pages/sueldos/conceptos/TiposTablaPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import ConveniosPage from './pages/configuracion/ConveniosPage';
 import ObrasSocialesPage from './pages/configuracion/ObrasSocialesPage';
@@ -31,7 +38,13 @@ export default function App() {
           <Route path="sueldos/empleados/:id" element={<div>Ficha de empleado</div>} />
           <Route path="sueldos/liquidaciones" element={<div>Liquidaciones</div>} />
           <Route path="sueldos/recibos" element={<div>Recibos</div>} />
-          <Route path="sueldos/conceptos" element={<div>Conceptos</div>} />
+          <Route path="sueldos/conceptos" element={<ConceptosPage />} />
+          <Route path="sueldos/conceptos/formulas" element={<FormulasPage />} />
+          <Route path="sueldos/conceptos/grupos" element={<GruposDeConceptosPage />} />
+          <Route path="sueldos/conceptos/general" element={<ConceptoGeneralPage />} />
+          <Route path="sueldos/conceptos/clases" element={<ClasesConceptoPage />} />
+          <Route path="sueldos/conceptos/tablas" element={<TablasPage />} />
+          <Route path="sueldos/conceptos/tipos-tabla" element={<TiposTablaPage />} />
           <Route path="sueldos/novedades" element={<div>Novedades</div>} />
           {/* ayuda */}
           <Route path="ayuda" element={<AyudaPage />} />
