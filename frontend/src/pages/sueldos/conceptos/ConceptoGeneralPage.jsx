@@ -5,10 +5,9 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import BuscadorTabla from '../../../components/BuscadorTabla';
 import { toIsoDate } from '../../../utils/dates';
 import { getConceptosGeneral, createConceptoGeneral, deleteConceptoGeneral } from '../../../api/conceptos';
 import './conceptos.css';
@@ -121,10 +120,7 @@ export default function ConceptoGeneralPage() {
 
   const tableHeader = (
     <div className="table-toolbar my-2">
-      <IconField iconPosition="left">
-        <InputIcon className="fa-solid fa-magnifying-glass" />
-        <InputText value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} placeholder="Buscar por concepto..." />
-      </IconField>
+      <BuscadorTabla value={globalFilter} onChange={setGlobalFilter} placeholder="Buscar por concepto..." />
       {!showForm && (
         <Button label="Agregar concepto" icon="fa-solid fa-plus" size="small" onClick={openNew} />
       )}
@@ -191,7 +187,7 @@ export default function ConceptoGeneralPage() {
         <Column field="importe_manual" header="Importe"    style={{ width: '110px' }} />
         <Column field="liquidacion"   header="Liquidación" sortable style={{ width: '130px' }} />
         <Column body={vigenciaTemplate} header="Vigencia"  style={{ width: '170px' }} />
-        <Column body={accionesTemplate} header="Acciones"  style={{ width: '80px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '80px', textAlign: 'center' }} />
       </DataTable>
     </div>
   );

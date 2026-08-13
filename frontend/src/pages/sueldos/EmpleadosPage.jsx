@@ -9,12 +9,11 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { useEmpresa } from '../../context/EmpresaContext';
+import BuscadorTabla from '../../components/BuscadorTabla';
 import * as api from '../../api/empleados';
 import { toDate, toIsoDate } from '../../utils/dates';
 import FamiliaresTab from './FamiliaresTab';
@@ -255,14 +254,7 @@ export default function EmpleadosPage() {
 
   const tableHeader = (
     <div className="table-toolbar my-2">
-      <IconField iconPosition="left">
-        <InputIcon className="fa-solid fa-magnifying-glass" />
-        <InputText
-          value={globalFilter}
-          onChange={e => setGlobalFilter(e.target.value)}
-          placeholder="Buscar..."
-        />
-      </IconField>
+      <BuscadorTabla value={globalFilter} onChange={setGlobalFilter} />
       {!mostrarInactivos && (
         <Button label="Agregar empleado" icon="fa-solid fa-plus" size="small" onClick={openNew} />
       )}
@@ -326,7 +318,7 @@ export default function EmpleadosPage() {
         <Column body={fechaTemplate}   header="Ingreso"    sortField="fecha_ingreso" sortable style={{ width: '100px' }} />
         <Column field="convenio" header="Convenio"         sortable style={{ width: '130px' }} />
         <Column field="categoria" header="Categoría"       sortable style={{ width: '100px' }} />
-        <Column body={accionesTemplate} header="Acciones"  style={{ width: '90px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '90px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog

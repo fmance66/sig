@@ -7,10 +7,9 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/liquidaciones';
 import { toDate, toIsoDate } from '../../../utils/dates';
 import './liquidaciones.css';
@@ -155,10 +154,7 @@ export default function LiquidacionesPage() {
 
   const tableHeader = (
     <div className="table-toolbar my-2">
-      <IconField iconPosition="left">
-        <InputIcon className="fa-solid fa-magnifying-glass" />
-        <InputText value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
-      </IconField>
+      <BuscadorTabla value={globalFilter} onChange={setGlobalFilter} />
       <Button label="Nueva liquidación" icon="fa-solid fa-plus" size="small" onClick={openNew} />
     </div>
   );
@@ -206,7 +202,7 @@ export default function LiquidacionesPage() {
         <Column body={fechaTemplate('fecha_hasta')} header="Fecha Hasta" sortField="fecha_hasta" sortable style={{ width: '110px' }} />
         <Column body={estadoTemplate} header="Estado" sortField="estado" sortable style={{ width: '110px' }} />
         <Column field="orden" header="Orden" sortable style={{ width: '80px' }} />
-        <Column body={accionesTemplate} header="Acciones" style={{ width: '160px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '160px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog

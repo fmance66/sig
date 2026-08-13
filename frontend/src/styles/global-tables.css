@@ -1,8 +1,311 @@
-/* Ajustes globales de DataTable aplicados a toda la app (importado una
-   sola vez en main.jsx), en la misma línea que compact-inputs.css. */
+/* Ajustes globales de las pantallas de listado (tabla + toolbar + modal de
+   alta/edición) aplicados a toda la app (importado una sola vez en
+   main.jsx), en la misma línea que compact-inputs.css. Centraliza clases
+   que antes estaban copiadas idénticas en cada CSS de página
+   (EmpleadosPage.css, CatalogoPage.css, EmpresasPage.css, conceptos.css,
+   liquidaciones.css) — algunas de esas páginas ni siquiera las redefinían
+   y dependían de que otra página ya hubiera cargado su CSS antes (los
+   imports de React son estáticos y todo el CSS termina en el mismo bundle,
+   pero es una dependencia implícita frágil que conviene no repetir). */
+
+/* Toolbar de la tabla (buscador + botón "Agregar") */
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.table-toolbar .p-button {
+  font-size: 0.82rem;
+  padding: 0.55rem 0.9rem;
+}
 
 /* Centrar el mensaje "No hay ... registrados/as" cuando la tabla está vacía. */
 .p-datatable-emptymessage > td {
   text-align: center;
   color: #6b7280;
+}
+
+/* Centrar el título del header cuando la columna usa alignHeader="center".
+   El tema lara-light-blue solo trae la regla de .p-align-center para
+   TreeTable, no para DataTable — sin esto el prop de PrimeReact no hace nada. */
+.p-datatable .p-datatable-thead > tr > th.p-align-center > .p-column-header-content {
+  justify-content: center;
+}
+
+/* Columna de acciones (editar/eliminar) compartida por todas las tablas.
+   La causa real de que los íconos se vean separados NO era el padding del
+   botón (se intentó varias veces sin éxito) sino que el tema le fuerza un
+   ancho fijo a todo botón icon-only: .p-button.p-button-icon-only { width: 3rem }.
+   Por eso hay que pisar el width, no solo el padding. */
+.acciones-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.acciones-col .p-button.p-button-icon-only {
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+}
+
+/* Ícono ">" para expandir filas (Column expander). */
+.p-datatable .p-row-toggler {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.p-datatable .p-row-toggler-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+/* Buscador (BuscadorTabla, componente compartido en src/components) de los
+   table-toolbar: lupa fija a la derecha + "x" para vaciar. Hay que devolver
+   el padding-right que el tema reserva para los íconos porque el padding
+   compacto de abajo lo pisa con shorthand, y ampliarlo porque ahora son dos
+   íconos en vez de uno. */
+.table-toolbar .p-inputtext {
+  font-size: 0.82rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.table-toolbar .p-icon-field .p-inputtext {
+  padding-right: 3.4rem;
+  width: 280px;
+}
+
+.buscador-tabla-clear {
+  right: 2.15rem;
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+.buscador-tabla-clear:hover {
+  color: #6b7280;
+}
+
+.buscador-tabla-clear--hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Dropdown con showClear dentro de un table-toolbar (ej. filtro "Columna").
+   Mismo problema que con .p-button-icon-only: el tema le da al trigger un
+   ancho fijo de 3rem, lo que deja la "x" lejos de la flecha y del texto.
+   Se achica el trigger y se recalcula dónde cae la "x" en consecuencia. */
+.table-toolbar .p-dropdown .p-dropdown-trigger {
+  width: 1.8rem;
+}
+
+.table-toolbar .p-dropdown .p-dropdown-clear-icon {
+  right: 1.9rem;
+}
+
+.table-toolbar .p-dropdown.p-dropdown-clearable .p-dropdown-label {
+  padding-right: 3rem;
+}
+
+/* Tamaño de letra compacto de toda tabla DataTable */
+.p-datatable .p-datatable-tbody > tr > td,
+.p-datatable .p-datatable-thead > tr > th {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
+}
+
+/* Paginador compacto */
+.p-paginator {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.5rem;
+  position: relative;
+}
+
+.p-paginator .p-paginator-page,
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+  min-width: 1.8rem;
+  height: 1.8rem;
+  font-size: 0.78rem;
+}
+
+.p-paginator .p-dropdown {
+  height: 1.8rem;
+  font-size: 0.78rem;
+}
+
+.p-paginator .p-dropdown .p-dropdown-label {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.4rem;
+}
+
+.p-paginator-right-content {
+  position: absolute;
+  right: 0.5rem;
+}
+
+.total-registros {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.table-footer-right {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.4rem 0.5rem;
+}
+
+/* Formulario del modal de alta/edición (grid de 2 columnas) */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+  padding-top: 0.5rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-field--full {
+  grid-column: 1 / -1;
+}
+
+.form-field label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.required {
+  color: #ef4444;
+}
+
+/* Footer del modal */
+.dialog-footer-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.dialog-footer-btns .p-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+}
+
+.dialog-footer-btns .p-button.p-button-text {
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.dialog-footer-btns .p-button.p-button-text:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+/* Botones del ConfirmDialog de eliminación */
+.p-confirm-dialog .p-dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.p-confirm-dialog .p-confirm-dialog-reject {
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  border: 1px solid #d1d5db !important;
+  color: #374151 !important;
+  background: transparent !important;
+}
+
+.p-confirm-dialog .p-confirm-dialog-reject:hover {
+  background: #f3f4f6 !important;
+  border-color: #9ca3af !important;
+}
+
+.p-confirm-dialog .p-confirm-dialog-accept {
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+}
+
+/* Tabs de sub-recursos dentro de un modal (Familiares/Novedades/Historial/
+   Conceptos de un empleado, Clases/Tablas de un grupo de conceptos, etc.) */
+.sub-tab {
+  min-height: 200px;
+}
+
+.sub-tab-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.sub-tab .p-button:not(.p-button-text) {
+  font-size: 0.82rem;
+  padding: 0.55rem 0.9rem;
+}
+
+.sub-tab .acciones-col .p-button.p-button-text {
+  padding: 0.2rem 0.22rem;
+  font-size: 0.82rem;
+}
+
+.sub-form {
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.sub-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.sub-form-actions .p-button {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.82rem;
+}
+
+.sub-form-actions .p-button.p-button-text {
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+/* Mensaje de tab sin registro guardado todavía */
+.tab-empty-msg {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #6b7280;
+  font-size: 0.85rem;
+  padding: 1.5rem 0;
+}
+
+.tab-empty-msg i {
+  font-size: 1rem;
+  color: #93c5fd;
+}
+
+/* Fila expandida de un DataTable (Grupos de Conceptos, Recibos, Contribuciones) */
+.row-expansion {
+  padding: 0.5rem 1rem 0.5rem 3rem;
+  background: #f8f9fa;
+}
+
+.row-expansion .p-datatable .p-datatable-tbody > tr > td,
+.row-expansion .p-datatable .p-datatable-thead > tr > th {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.6rem;
 }

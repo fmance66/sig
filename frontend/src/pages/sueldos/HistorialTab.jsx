@@ -159,7 +159,7 @@ export default function HistorialTab({ empleadoId, toast }) {
         <Column body={fechaTemplate('fecha_desde')} header="Fecha Desde" style={{ width: '110px' }} />
         <Column body={fechaTemplate('fecha_hasta')} header="Fecha Hasta" style={{ width: '110px' }} />
         <Column field="valor"       header="Valor" />
-        <Column body={accionesTemplate} header="Acciones"  style={{ width: '70px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '70px', textAlign: 'center' }} />
       </DataTable>
     </div>
   );

@@ -2,13 +2,7 @@
   padding: 0 1.25rem 1.25rem;
 }
 
-/* Toolbar de la tabla */
-.table-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
+/* Toolbar de la tabla: ver .table-toolbar en styles/global-tables.css */
 
 .catalogo-page-title {
   font-size: 1.05rem;
@@ -24,108 +18,8 @@
   color: #3b82f6;
 }
 
-.table-toolbar .p-inputtext {
-  font-size: 0.82rem;
-  padding: 0.55rem 0.65rem;
-}
-
-.table-toolbar .p-icon-field .p-inputtext {
-  padding-left: 2rem;
-  width: 280px;
-}
-
-.table-toolbar .p-button {
-  font-size: 0.82rem;
-  padding: 0.55rem 0.9rem;
-}
-
-/* Tamaño de letra de la tabla */
-.page-catalogo .p-datatable .p-datatable-tbody > tr > td,
-.page-catalogo .p-datatable .p-datatable-thead > tr > th {
-  font-size: 0.8rem;
-  padding: 0.4rem 0.75rem;
-}
-
-/* Paginador */
-.page-catalogo .p-paginator {
-  font-size: 0.78rem;
-  padding: 0.35rem 0.5rem;
-  position: relative;
-}
-
-.page-catalogo .p-paginator .p-paginator-page,
-.page-catalogo .p-paginator .p-paginator-first,
-.page-catalogo .p-paginator .p-paginator-prev,
-.page-catalogo .p-paginator .p-paginator-next,
-.page-catalogo .p-paginator .p-paginator-last {
-  min-width: 1.8rem;
-  height: 1.8rem;
-  font-size: 0.78rem;
-}
-
-.page-catalogo .p-paginator .p-dropdown {
-  height: 1.8rem;
-  font-size: 0.78rem;
-}
-
-.page-catalogo .p-paginator .p-dropdown .p-dropdown-label {
-  font-size: 0.78rem;
-  padding: 0.25rem 0.4rem;
-}
-
-.page-catalogo .p-paginator-right-content {
-  position: absolute;
-  right: 0.5rem;
-}
-
-.total-registros {
-  font-size: 0.78rem;
-  color: #94a3b8;
-  white-space: nowrap;
-}
-
-.table-footer-right {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.4rem 0.5rem;
-}
-
-/* Columna de acciones */
-.acciones-col {
-  display: flex;
-  justify-content: center;
-}
-
-/* Formulario del modal */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem 1.25rem;
-  padding-top: 0.5rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.form-field--full {
-  grid-column: 1 / -1;
-}
-
-.form-field label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #374151;
-}
-
-/* Tamaño compacto de los inputs: ver src/styles/compact-inputs.css
-   (global, importado una sola vez en main.jsx). */
-
-.required {
-  color: #ef4444;
-}
+/* Botón del toolbar, tamaño de tabla, paginador, form-grid/form-field,
+   total-registros, table-footer-right: ver styles/global-tables.css */
 
 .form-field--checkbox {
   justify-content: flex-end;
@@ -137,50 +31,4 @@
   gap: 0.5rem;
 }
 
-/* Footer del modal */
-.dialog-footer-btns {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding-top: 0.25rem;
-}
-
-.dialog-footer-btns .p-button {
-  padding: 0.5rem 1rem;
-  font-size: 0.82rem;
-}
-
-.dialog-footer-btns .p-button.p-button-text {
-  border: 1px solid #d1d5db;
-  color: #374151;
-}
-
-.dialog-footer-btns .p-button.p-button-text:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-}
-
-/* Botones del ConfirmDialog de eliminación */
-.p-confirm-dialog .p-dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-
-.p-confirm-dialog .p-confirm-dialog-reject {
-  padding: 0.5rem 1rem;
-  font-size: 0.82rem;
-  border: 1px solid #d1d5db !important;
-  color: #374151 !important;
-  background: transparent !important;
-}
-
-.p-confirm-dialog .p-confirm-dialog-reject:hover {
-  background: #f3f4f6 !important;
-  border-color: #9ca3af !important;
-}
-
-.p-confirm-dialog .p-confirm-dialog-accept {
-  padding: 0.5rem 1rem;
-  font-size: 0.82rem;
-}
+/* dialog-footer-btns y p-confirm-dialog: ver styles/global-tables.css */

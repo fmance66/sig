@@ -269,7 +269,7 @@ export default function FamiliaresTab({ empleadoId, toast }) {
         <Column field="apellido"   header="Apellido"    sortable />
         <Column field="nombre"     header="Nombre"      sortable />
         <Column body={edadTemplate} header="Edad"       style={{ width: '80px' }} />
-        <Column body={accionesTemplate} header="Acciones" style={{ width: '90px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '90px', textAlign: 'center' }} />
       </DataTable>
     </div>
   );

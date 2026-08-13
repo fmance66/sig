@@ -8,10 +8,9 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import BuscadorTabla from '../../components/BuscadorTabla';
 import { createCatalogoApi } from '../../api/catalogo';
 import './CatalogoPage.css';
 
@@ -158,10 +157,7 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
 
   const tableHeader = (
     <div className="table-toolbar my-2">
-      <IconField iconPosition="left">
-        <InputIcon className="fa-solid fa-magnifying-glass" />
-        <InputText value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
-      </IconField>
+      <BuscadorTabla value={globalFilter} onChange={setGlobalFilter} />
       <Button label={`Agregar ${entityLabel}`} icon="fa-solid fa-plus" onClick={openNew} size="small" />
     </div>
   );
@@ -212,7 +208,7 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
         {columns.map(col => (
           <Column key={col.field} field={col.field} header={col.header} sortable style={col.style} />
         ))}
-        <Column body={accionesTemplate} header="Acciones" style={{ width: '100px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '100px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog

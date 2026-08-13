@@ -4,13 +4,12 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { TabView, TabPanel } from 'primereact/tabview';
 import SucursalesTab from './SucursalesTab';
 import MailTab from './MailTab';
+import BuscadorTabla from '../../components/BuscadorTabla';
 import * as api from '../../api/empresas';
 import './EmpresasPage.css';
 
@@ -136,14 +135,7 @@ export default function EmpresasPage() {
 
   const tableHeader = (
     <div className="table-toolbar my-2">
-      <IconField iconPosition="left">
-        <InputIcon className="fa-solid fa-magnifying-glass" />
-        <InputText
-          value={globalFilter}
-          onChange={e => setGlobalFilter(e.target.value)}
-          placeholder="Buscar..."
-        />
-      </IconField>
+      <BuscadorTabla value={globalFilter} onChange={setGlobalFilter} />
       <Button label="Agregar empresa" icon="fa-solid fa-plus" onClick={openNew} size="small" />
     </div>
   );
@@ -218,7 +210,7 @@ export default function EmpresasPage() {
         <Column field="razon_social"     header="Razón Social"     sortable />
         <Column field="nombre_comercial" header="Nombre Comercial" sortable />
         <Column field="telefono"         header="Teléfono"         sortable style={{ width: '150px' }} />
-        <Column body={accionesTemplate}  header="Acciones"  style={{ width: '100px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '100px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog

@@ -4,10 +4,9 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/clasesConcepto';
 import './conceptos.css';
 
@@ -188,10 +187,7 @@ export default function ClasesConceptoPage() {
 
   const tableHeader = (
     <div className="table-toolbar my-2">
-      <IconField iconPosition="left">
-        <InputIcon className="fa-solid fa-magnifying-glass" />
-        <InputText value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
-      </IconField>
+      <BuscadorTabla value={globalFilter} onChange={setGlobalFilter} />
       <Button label="Agregar clase" icon="fa-solid fa-plus" size="small" onClick={openNew} />
     </div>
   );
@@ -231,7 +227,7 @@ export default function ClasesConceptoPage() {
         <Column field="id" header="Clase" sortable style={{ width: '180px' }} />
         <Column field="descripcion" header="Descripción" sortable />
         <Column field="orden" header="Orden" sortable style={{ width: '100px' }} />
-        <Column body={accionesTemplate} header="Acciones" style={{ width: '100px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '100px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog
@@ -297,7 +293,7 @@ export default function ClasesConceptoPage() {
               <Column field="grupo" header="Grupo" style={{ width: '160px' }} />
               <Column field="descripcion" header="Descripción" />
               <Column field="orden" header="Orden" style={{ width: '100px' }} />
-              <Column body={accionesGrupoTemplate} header="Acciones" style={{ width: '70px', textAlign: 'center' }} />
+              <Column body={accionesGrupoTemplate} header="Acciones" alignHeader="center" style={{ width: '70px', textAlign: 'center' }} />
             </DataTable>
           </div>
         )}

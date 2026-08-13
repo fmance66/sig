@@ -7,11 +7,10 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { TabView, TabPanel } from 'primereact/tabview';
+import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/conceptos';
 import ConceptoClasesTab from './ConceptoClasesTab';
 import './conceptos.css';
@@ -223,7 +222,7 @@ export default function ConceptosPage() {
   );
 
   const accionesTemplate = (row) => (
-    <div className="acciones-col acciones-col--tight">
+    <div className="acciones-col">
       <Button icon="fa-solid fa-pen" className="p-button-text p-button-sm" tooltip="Modificar" tooltipOptions={{ position: 'top' }} onClick={() => openEdit(row)} />
       <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleDelete(row)} />
     </div>
@@ -232,12 +231,9 @@ export default function ConceptosPage() {
   const tableHeader = (
     <div className="table-toolbar my-2">
       <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-        <IconField iconPosition="left">
-          <InputIcon className="fa-solid fa-magnifying-glass" />
-          <InputText value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
-        </IconField>
+        <BuscadorTabla value={globalFilter} onChange={setGlobalFilter} />
         <Dropdown value={columnaFiltro} options={COLUMNA_OPTIONS} onChange={e => setColumnaFiltro(e.value)}
-          placeholder="Columna" showClear style={{ width: '180px' }} />
+          placeholder="Columna" showClear style={{ width: '210px' }} />
       </div>
       <Button label="Agregar concepto" icon="fa-solid fa-plus" size="small" onClick={openNew} />
     </div>
@@ -281,7 +277,7 @@ export default function ConceptosPage() {
         <Column field="simbolo_unidad" header="Símbolo" style={{ width: '90px' }} />
         <Column field="orden" header="Orden" sortable style={{ width: '90px' }} />
         <Column body={activoTemplate} header="Activo" style={{ width: '80px', textAlign: 'center' }} />
-        <Column body={accionesTemplate} header="Acciones" style={{ width: '90px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '90px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog

@@ -29,3 +29,4 @@ db/postgresql/data/
 # Build output
 frontend/dist/
 frontend/dist-ssr/
+.copilot-commit-message-instructions.md

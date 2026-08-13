@@ -153,7 +153,7 @@ export default function NovedadesTab({ empleadoId, toast }) {
         <Column field="tipo_novedad_desc" header="Descripción" />
         <Column body={fechaTemplate}     header="Fecha"       style={{ width: '110px' }} />
         <Column field="value"            header="Valor" />
-        <Column body={accionesTemplate}  header="Acciones"    style={{ width: '70px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '70px', textAlign: 'center' }} />
       </DataTable>
     </div>
   );

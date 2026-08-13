@@ -5,10 +5,9 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
-import { IconField } from 'primereact/iconfield';
-import { InputIcon } from 'primereact/inputicon';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/tiposTabla';
 import './conceptos.css';
 
@@ -158,10 +157,7 @@ export default function TiposTablaPage() {
 
   const tableHeader = (
     <div className="table-toolbar my-2">
-      <IconField iconPosition="left">
-        <InputIcon className="fa-solid fa-magnifying-glass" />
-        <InputText value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
-      </IconField>
+      <BuscadorTabla value={globalFilter} onChange={setGlobalFilter} />
       <Button label="Agregar tipo de tabla" icon="fa-solid fa-plus" size="small" onClick={openNew} />
     </div>
   );
@@ -201,7 +197,7 @@ export default function TiposTablaPage() {
         <Column field="id" header="Tabla" sortable style={{ width: '160px' }} />
         <Column field="descripcion" header="Descripción" sortable />
         <Column field="orden" header="Orden" sortable style={{ width: '100px' }} />
-        <Column body={accionesTemplate} header="Acciones" style={{ width: '100px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '100px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog

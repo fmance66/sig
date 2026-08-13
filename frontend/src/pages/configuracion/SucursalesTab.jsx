@@ -205,7 +205,7 @@ export default function SucursalesTab({ empresaId, toast }) {
         <Column field="localidad"       header="Localidad"          sortable style={{ width: '130px' }} />
         <Column field="provincia"       header="Provincia"          sortable style={{ width: '120px' }} />
         <Column field="telefono"        header="Teléfono"           style={{ width: '110px' }} />
-        <Column body={accionesTemplate} header="Acciones"           style={{ width: '90px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '90px', textAlign: 'center' }} />
       </DataTable>
     </div>
   );

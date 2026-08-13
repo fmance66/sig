@@ -193,7 +193,7 @@ export default function TablasPage() {
             {columnas.map(c => (
               <Column key={c.field} field={c.field} header={c.nombre} />
             ))}
-            <Column body={accionesTemplate} header="Acciones" style={{ width: '80px', textAlign: 'center' }} />
+            <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '80px', textAlign: 'center' }} />
           </DataTable>
         </>
       )}

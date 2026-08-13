@@ -1,7 +1,7 @@
 /* Estilos compartidos por las páginas del módulo Liquidaciones.
    Reutiliza las clases utilitarias globales (page-title, table-toolbar,
    form-grid, form-field, acciones-col, dialog-footer-btns — ver
-   EmpleadosPage.css) y agrega solo lo específico de este módulo. */
+   styles/global-tables.css) y agrega solo lo específico de este módulo. */
 
 .page-liquidaciones {
   padding: 0 1.25rem 1.25rem;
@@ -17,59 +17,7 @@
   padding: 0 1.25rem;
 }
 
-.page-liquidaciones .table-toolbar .p-inputtext {
-  font-size: 0.82rem;
-  padding: 0.55rem 0.65rem;
-}
-
-.page-liquidaciones .table-toolbar .p-icon-field .p-inputtext {
-  padding-left: 2rem;
-  width: 280px;
-}
-
-.page-liquidaciones .table-toolbar .p-button {
-  font-size: 0.82rem;
-  padding: 0.55rem 0.9rem;
-}
-
-/* Tamaño de letra de la tabla (igual que en Conceptos) */
-.page-liquidaciones .p-datatable .p-datatable-tbody > tr > td,
-.page-liquidaciones .p-datatable .p-datatable-thead > tr > th {
-  font-size: 0.8rem;
-  padding: 0.4rem 0.75rem;
-}
-
-/* Paginador: mismo criterio que Conceptos para que quede centrado */
-.page-liquidaciones .p-paginator {
-  font-size: 0.78rem;
-  padding: 0.35rem 0.5rem;
-  position: relative;
-}
-
-.page-liquidaciones .p-paginator .p-paginator-page,
-.page-liquidaciones .p-paginator .p-paginator-first,
-.page-liquidaciones .p-paginator .p-paginator-prev,
-.page-liquidaciones .p-paginator .p-paginator-next,
-.page-liquidaciones .p-paginator .p-paginator-last {
-  min-width: 1.8rem;
-  height: 1.8rem;
-  font-size: 0.78rem;
-}
-
-.page-liquidaciones .p-paginator .p-dropdown {
-  height: 1.8rem;
-  font-size: 0.78rem;
-}
-
-.page-liquidaciones .p-paginator .p-dropdown .p-dropdown-label {
-  font-size: 0.78rem;
-  padding: 0.25rem 0.4rem;
-}
-
-.page-liquidaciones .p-paginator-right-content {
-  position: absolute;
-  right: 0.5rem;
-}
+/* Botón del toolbar, tamaño de tabla, paginador: ver styles/global-tables.css */
 
 .filtros-toolbar {
   display: flex;
@@ -161,16 +109,7 @@
 .estado-badge--cerrada { color: #b45309; background: #fef3c7; }
 .estado-badge--activa  { color: #15803d; background: #dcfce7; }
 
-.row-expansion {
-  padding: 0.5rem 1rem 0.5rem 3rem;
-  background: #f8f9fa;
-}
-
-.row-expansion .p-datatable .p-datatable-tbody > tr > td,
-.row-expansion .p-datatable .p-datatable-thead > tr > th {
-  font-size: 0.78rem;
-  padding: 0.35rem 0.6rem;
-}
+/* .row-expansion: ver styles/global-tables.css */
 
 /* Página de Recibo de Empleado */
 .recibo-layout {

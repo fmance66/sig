@@ -16,111 +16,8 @@
   color: #3b82f6;
 }
 
-.table-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.table-toolbar .p-inputtext {
-  font-size: 0.82rem;
-  padding: 0.55rem 0.65rem;
-}
-
-.table-toolbar .p-icon-field .p-inputtext {
-  padding-left: 2rem;
-  width: 280px;
-}
-
-.table-toolbar .p-button {
-  font-size: 0.82rem;
-  padding: 0.55rem 0.9rem;
-}
-
-.page-empleados .p-datatable .p-datatable-tbody > tr > td,
-.page-empleados .p-datatable .p-datatable-thead > tr > th {
-  font-size: 0.8rem;
-  padding: 0.4rem 0.75rem;
-}
-
-.page-empleados .p-paginator {
-  font-size: 0.78rem;
-  padding: 0.35rem 0.5rem;
-}
-
-.page-empleados .p-paginator .p-paginator-page,
-.page-empleados .p-paginator .p-paginator-first,
-.page-empleados .p-paginator .p-paginator-prev,
-.page-empleados .p-paginator .p-paginator-next,
-.page-empleados .p-paginator .p-paginator-last {
-  min-width: 1.8rem;
-  height: 1.8rem;
-  font-size: 0.78rem;
-}
-
-.page-empleados .p-paginator .p-dropdown {
-  height: 1.8rem;
-  font-size: 0.78rem;
-}
-
-.page-empleados .p-paginator .p-dropdown .p-dropdown-label {
-  font-size: 0.78rem;
-  padding: 0.25rem 0.4rem;
-}
-
-.page-empleados .p-paginator {
-  position: relative;
-}
-
-.page-empleados .p-paginator-right-content {
-  position: absolute;
-  right: 0.5rem;
-}
-
-.total-registros {
-  font-size: 0.78rem;
-  color: #94a3b8;
-  white-space: nowrap;
-}
-
-.table-footer-right {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0.4rem 0.5rem;
-}
-
-.acciones-col {
-  display: flex;
-  justify-content: center;
-}
-
-/* Formulario del modal */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem 1.25rem;
-  padding-top: 0.5rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.form-field--full {
-  grid-column: 1 / -1;
-}
-
-.form-field label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #374151;
-}
-
-/* Tamaño compacto de los inputs: ver src/styles/compact-inputs.css
-   (global, importado una sola vez en main.jsx). */
+/* Toolbar, tamaño de tabla, paginador, form-grid/form-field, total-registros,
+   table-footer-right: ver styles/global-tables.css */
 
 .form-field--checkbox {
   flex-direction: row;
@@ -134,10 +31,6 @@
   font-size: 0.78rem;
   font-weight: 600;
   color: #374151;
-}
-
-.required {
-  color: #ef4444;
 }
 
 /* Título de sección dentro de una tab (Salario / Otros Datos / etc.) */
@@ -154,53 +47,7 @@
   margin-top: 0;
 }
 
-/* Footer del modal */
-.dialog-footer-btns {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding-top: 0.25rem;
-}
-
-.dialog-footer-btns .p-button {
-  padding: 0.5rem 1rem;
-  font-size: 0.82rem;
-}
-
-.dialog-footer-btns .p-button.p-button-text {
-  border: 1px solid #d1d5db;
-  color: #374151;
-}
-
-.dialog-footer-btns .p-button.p-button-text:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-}
-
-/* Botones del ConfirmDialog de eliminación */
-.p-confirm-dialog .p-dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-
-.p-confirm-dialog .p-confirm-dialog-reject {
-  padding: 0.5rem 1rem;
-  font-size: 0.82rem;
-  border: 1px solid #d1d5db !important;
-  color: #374151 !important;
-  background: transparent !important;
-}
-
-.p-confirm-dialog .p-confirm-dialog-reject:hover {
-  background: #f3f4f6 !important;
-  border-color: #9ca3af !important;
-}
-
-.p-confirm-dialog .p-confirm-dialog-accept {
-  padding: 0.5rem 1rem;
-  font-size: 0.82rem;
-}
+/* dialog-footer-btns y p-confirm-dialog: ver styles/global-tables.css */
 
 /* Tabs del modal empleado */
 .empleado-tabs .p-tabview-nav {
@@ -218,69 +65,4 @@
   overflow-y: auto;
 }
 
-/* Tabs de sub-recursos (Familiares / Novedades / Historial / Conceptos) */
-.sub-tab {
-  min-height: 200px;
-}
-
-.sub-tab-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 0.5rem;
-}
-
-.sub-tab .p-datatable .p-datatable-tbody > tr > td,
-.sub-tab .p-datatable .p-datatable-thead > tr > th {
-  font-size: 0.8rem;
-  padding: 0.4rem 0.75rem;
-}
-
-.sub-tab .p-button:not(.p-button-text) {
-  font-size: 0.82rem;
-  padding: 0.55rem 0.9rem;
-}
-
-.sub-tab .acciones-col .p-button.p-button-text {
-  padding: 0.2rem 0.22rem;
-  font-size: 0.82rem;
-}
-
-.sub-form {
-  background: #f8f9fa;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.sub-form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
-
-.sub-form-actions .p-button {
-  padding: 0.4rem 0.85rem;
-  font-size: 0.82rem;
-}
-
-.sub-form-actions .p-button.p-button-text {
-  border: 1px solid #d1d5db;
-  color: #374151;
-}
-
-/* Mensaje tab sin legajo guardado */
-.tab-empty-msg {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: #6b7280;
-  font-size: 0.85rem;
-  padding: 1.5rem 0;
-}
-
-.tab-empty-msg i {
-  font-size: 1rem;
-  color: #93c5fd;
-}
+/* .sub-tab, .sub-form, .tab-empty-msg: ver styles/global-tables.css */

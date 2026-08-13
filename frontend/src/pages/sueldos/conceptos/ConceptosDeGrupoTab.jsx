@@ -183,7 +183,7 @@ export default function ConceptosDeGrupoTab({ grupoId, toast }) {
         <Column field="importe_manual" header="Importe"    style={{ width: '110px' }} />
         <Column field="liquidacion"   header="Liquidación" style={{ width: '130px' }} />
         <Column body={vigenciaTemplate} header="Vigencia"  style={{ width: '170px' }} />
-        <Column body={accionesTemplate} header="Acciones"  style={{ width: '70px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '70px', textAlign: 'center' }} />
       </DataTable>
     </div>
   );
