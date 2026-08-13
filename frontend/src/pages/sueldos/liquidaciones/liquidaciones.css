@@ -1,0 +1,263 @@
+/* Estilos compartidos por las páginas del módulo Liquidaciones.
+   Reutiliza las clases utilitarias globales (page-title, table-toolbar,
+   form-grid, form-field, acciones-col, dialog-footer-btns — ver
+   EmpleadosPage.css) y agrega solo lo específico de este módulo. */
+
+.page-liquidaciones {
+  padding: 0 1.25rem 1.25rem;
+}
+
+/* Las pantallas con TabView (Recibos Recalculados, Recibo de Empleado)
+   quedaban con el contenido pegado a los bordes del panel blanco. */
+.page-liquidaciones .conceptos-tabs .p-tabview-panels {
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+
+.page-liquidaciones .conceptos-tabs .p-tabview-nav {
+  padding: 0 1.25rem;
+}
+
+.page-liquidaciones .table-toolbar .p-inputtext {
+  font-size: 0.82rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.page-liquidaciones .table-toolbar .p-icon-field .p-inputtext {
+  padding-left: 2rem;
+  width: 280px;
+}
+
+.page-liquidaciones .table-toolbar .p-button {
+  font-size: 0.82rem;
+  padding: 0.55rem 0.9rem;
+}
+
+/* Tamaño de letra de la tabla (igual que en Conceptos) */
+.page-liquidaciones .p-datatable .p-datatable-tbody > tr > td,
+.page-liquidaciones .p-datatable .p-datatable-thead > tr > th {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.75rem;
+}
+
+/* Paginador: mismo criterio que Conceptos para que quede centrado */
+.page-liquidaciones .p-paginator {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.5rem;
+  position: relative;
+}
+
+.page-liquidaciones .p-paginator .p-paginator-page,
+.page-liquidaciones .p-paginator .p-paginator-first,
+.page-liquidaciones .p-paginator .p-paginator-prev,
+.page-liquidaciones .p-paginator .p-paginator-next,
+.page-liquidaciones .p-paginator .p-paginator-last {
+  min-width: 1.8rem;
+  height: 1.8rem;
+  font-size: 0.78rem;
+}
+
+.page-liquidaciones .p-paginator .p-dropdown {
+  height: 1.8rem;
+  font-size: 0.78rem;
+}
+
+.page-liquidaciones .p-paginator .p-dropdown .p-dropdown-label {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.4rem;
+}
+
+.page-liquidaciones .p-paginator-right-content {
+  position: absolute;
+  right: 0.5rem;
+}
+
+.filtros-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: flex-end;
+  margin: 0.5rem 0 0.9rem;
+}
+
+.filtros-toolbar .form-field {
+  min-width: 140px;
+}
+
+.filtros-toolbar .form-field label {
+  font-size: 0.76rem;
+}
+
+/* Tamaño compacto de los inputs: ver src/styles/compact-inputs.css
+   (global, importado una sola vez en main.jsx, cubre cualquier .form-field). */
+
+.filtros-toolbar .p-button,
+.concepto-add-form .p-button,
+.candidatos-actions .p-button,
+.recibo-header-form ~ .dialog-footer-btns .p-button {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+}
+
+.filtros-toolbar .form-field,
+.concepto-add-form .form-field,
+.recibo-header-form .form-field {
+  gap: 3px;
+}
+
+/* El padding parejo de arriba (0.5rem 0.7rem) pisaba el padding-right que
+   el tema reserva para el ícono de limpiar (FiltroTexto) — se lo devuelve
+   acá, para que el texto largo no quede debajo de la "x". */
+.filtro-texto .p-inputtext {
+  padding-right: 1.9rem;
+}
+
+/* El panel de un Dropdown con "filter" se monta con un portal fuera de
+   .page-liquidaciones, así que no lo alcanzan las reglas de arriba —
+   necesita su propia clase (panelClassName="liquidaciones-dropdown-panel"
+   en cada <Dropdown filter ...> del módulo). */
+.liquidaciones-dropdown-panel .p-dropdown-filter {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.liquidaciones-dropdown-panel .p-dropdown-item {
+  font-size: 0.85rem;
+  padding: 0.45rem 0.9rem;
+}
+
+.filtro-texto-clear {
+  cursor: pointer;
+  color: #9ca3af;
+  font-size: 0.75rem;
+  /* El tema de PrimeReact centra el ícono con "margin-top: -0.5rem" fijo,
+     calibrado para un ícono de ~1rem. Como acá es más chico (0.75rem) por
+     la compactación del módulo, queda descentrado — se recalcula el
+     centrado según la altura real en vez de depender de ese valor fijo. */
+  margin-top: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%);
+}
+
+.filtro-texto-clear:hover {
+  color: #6b7280;
+}
+
+.filtro-texto-clear--hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.estado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+
+.estado-badge--abierta { color: #1d4ed8; background: #dbeafe; }
+.estado-badge--cerrada { color: #b45309; background: #fef3c7; }
+.estado-badge--activa  { color: #15803d; background: #dcfce7; }
+
+.row-expansion {
+  padding: 0.5rem 1rem 0.5rem 3rem;
+  background: #f8f9fa;
+}
+
+.row-expansion .p-datatable .p-datatable-tbody > tr > td,
+.row-expansion .p-datatable .p-datatable-thead > tr > th {
+  font-size: 0.78rem;
+  padding: 0.35rem 0.6rem;
+}
+
+/* Página de Recibo de Empleado */
+.recibo-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 1rem;
+  align-items: start;
+}
+
+.recibo-totales {
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.recibo-totales .total-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  font-size: 0.82rem;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.recibo-totales .total-row:last-child {
+  border-bottom: none;
+}
+
+.recibo-totales .total-row--main {
+  font-weight: 700;
+  color: #1d4ed8;
+  font-size: 0.9rem;
+}
+
+.recibo-header-form {
+  margin-bottom: 0.75rem;
+}
+
+.concepto-add-form {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.concepto-add-form .form-field {
+  min-width: 160px;
+}
+
+.warning-icon { color: #d97706; }
+.error-icon { color: #dc2626; }
+.ok-icon { color: #16a34a; }
+
+.candidatos-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.75rem 0;
+}
+
+.candidatos-actions label,
+.candidatos-actions .p-radiobutton-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.candidatos-actions .p-inputswitch {
+  width: 2.75rem;
+  height: 1.35rem;
+}
+
+.candidatos-actions .p-inputswitch .p-inputswitch-slider:before {
+  width: 1rem;
+  height: 1rem;
+  margin-top: -0.5rem;
+}
+
+.candidatos-actions .p-radiobutton,
+.candidatos-actions .p-radiobutton .p-radiobutton-box {
+  width: 1.25rem;
+  height: 1.25rem;
+}

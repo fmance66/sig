@@ -20,6 +20,11 @@ router.use('/novedades', require('./novedades'));
 router.use('/historial', require('./historial'));
 router.use('/conceptos-empleado', require('./conceptosEmpleado'));
 router.use('/conceptos-grupo', require('./conceptosGrupo'));
+router.use('/liquidaciones', require('./liquidaciones'));
+router.use('/recibos', require('./recibos'));
+router.use('/recibos-automaticos', require('./recibosAutomaticos'));
+router.use('/recibos-recalculados', require('./recibosRecalculados'));
+router.use('/listado-contribuciones', require('./contribuciones'));
 
 router.use('/convenios', catalogo('sld_convenio',
   ['descripcion', 'liquidacion', 'dias', 'horas', 'moneda', 'obra_social', 'grupo_de_conceptos', 'orden'],

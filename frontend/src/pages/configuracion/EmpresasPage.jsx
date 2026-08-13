@@ -218,7 +218,7 @@ export default function EmpresasPage() {
         <Column field="razon_social"     header="Razón Social"     sortable />
         <Column field="nombre_comercial" header="Nombre Comercial" sortable />
         <Column field="telefono"         header="Teléfono"         sortable style={{ width: '150px' }} />
-        <Column body={accionesTemplate} header="Acciones"  style={{ width: '100px', textAlign: 'center' }} />
+        <Column body={accionesTemplate}  header="Acciones"  style={{ width: '100px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog

@@ -10,6 +10,13 @@ import ConceptoGeneralPage from './pages/sueldos/conceptos/ConceptoGeneralPage';
 import ClasesConceptoPage from './pages/sueldos/conceptos/ClasesConceptoPage';
 import TablasPage from './pages/sueldos/conceptos/TablasPage';
 import TiposTablaPage from './pages/sueldos/conceptos/TiposTablaPage';
+import LiquidacionesPage from './pages/sueldos/liquidaciones/LiquidacionesPage';
+import RecibosPage from './pages/sueldos/liquidaciones/RecibosPage';
+import ReciboEmpleadoPage from './pages/sueldos/liquidaciones/ReciboEmpleadoPage';
+import RecibosAutomaticosPage from './pages/sueldos/liquidaciones/RecibosAutomaticosPage';
+import RecibosRecalculadosPage from './pages/sueldos/liquidaciones/RecibosRecalculadosPage';
+import ContribucionesPage from './pages/sueldos/liquidaciones/ContribucionesPage';
+import EliminacionMasivaPage from './pages/sueldos/liquidaciones/EliminacionMasivaPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import ConveniosPage from './pages/configuracion/ConveniosPage';
 import ObrasSocialesPage from './pages/configuracion/ObrasSocialesPage';
@@ -36,8 +43,15 @@ export default function App() {
           {/* sueldos */}
           <Route path="sueldos/empleados" element={<EmpleadosPage />} />
           <Route path="sueldos/empleados/:id" element={<div>Ficha de empleado</div>} />
-          <Route path="sueldos/liquidaciones" element={<div>Liquidaciones</div>} />
-          <Route path="sueldos/recibos" element={<div>Recibos</div>} />
+          <Route path="sueldos/liquidaciones" element={<LiquidacionesPage />} />
+          <Route path="sueldos/liquidaciones/recibos" element={<RecibosPage />} />
+          <Route path="sueldos/liquidaciones/recibo" element={<ReciboEmpleadoPage />} />
+          <Route path="sueldos/liquidaciones/recibo/:periodo/:empleado/:numero" element={<ReciboEmpleadoPage />} />
+          <Route path="sueldos/liquidaciones/recibos-automaticos" element={<RecibosAutomaticosPage />} />
+          <Route path="sueldos/liquidaciones/recibos-recalculados" element={<RecibosRecalculadosPage />} />
+          <Route path="sueldos/liquidaciones/contribuciones" element={<ContribucionesPage columna="CONTRIBUCION" />} />
+          <Route path="sueldos/liquidaciones/auxiliares" element={<ContribucionesPage columna="AUXILIAR" />} />
+          <Route path="sueldos/liquidaciones/eliminacion-masiva" element={<EliminacionMasivaPage />} />
           <Route path="sueldos/conceptos" element={<ConceptosPage />} />
           <Route path="sueldos/conceptos/formulas" element={<FormulasPage />} />
           <Route path="sueldos/conceptos/grupos" element={<GruposDeConceptosPage />} />

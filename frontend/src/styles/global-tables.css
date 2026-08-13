@@ -1,0 +1,8 @@
+/* Ajustes globales de DataTable aplicados a toda la app (importado una
+   sola vez en main.jsx), en la misma línea que compact-inputs.css. */
+
+/* Centrar el mensaje "No hay ... registrados/as" cuando la tabla está vacía. */
+.p-datatable-emptymessage > td {
+  text-align: center;
+  color: #6b7280;
+}

@@ -120,10 +120,8 @@
   color: #374151;
 }
 
-.form-field .p-inputtext,
-.form-field .p-dropdown {
-  font-size: 0.875rem;
-}
+/* Tamaño compacto de los inputs: ver src/styles/compact-inputs.css
+   (global, importado una sola vez en main.jsx). */
 
 .required {
   color: #ef4444;

@@ -119,12 +119,8 @@
   color: #374151;
 }
 
-.form-field .p-inputtext,
-.form-field .p-dropdown,
-.form-field .p-calendar .p-inputtext,
-.form-field .p-inputtextarea {
-  font-size: 0.875rem;
-}
+/* Tamaño compacto de los inputs: ver src/styles/compact-inputs.css
+   (global, importado una sola vez en main.jsx). */
 
 .form-field--checkbox {
   flex-direction: row;

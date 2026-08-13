@@ -81,7 +81,7 @@ export default function ConceptosPage() {
       const res = await api.getConceptos();
       setConceptos(res.data.resultado);
     } catch {
-      toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el listado de conceptos' });
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los conceptos' });
     } finally {
       setLoading(false);
     }
@@ -223,7 +223,7 @@ export default function ConceptosPage() {
   );
 
   const accionesTemplate = (row) => (
-    <div className="acciones-col">
+    <div className="acciones-col acciones-col--tight">
       <Button icon="fa-solid fa-pen" className="p-button-text p-button-sm" tooltip="Modificar" tooltipOptions={{ position: 'top' }} onClick={() => openEdit(row)} />
       <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleDelete(row)} />
     </div>
@@ -258,7 +258,7 @@ export default function ConceptosPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-tags" /> Listado de Conceptos</h2>
+      <h2 className="page-title"><i className="fa-solid fa-tags" /> Conceptos de liquidación</h2>
 
       <DataTable
         value={registrosFiltrados}

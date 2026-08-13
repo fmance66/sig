@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Scripts sueltos de verificación con Playwright (Claude los crea y
+# borra en el momento, pero por las dudas quedan ignorados por git)
+.pw-scratch/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

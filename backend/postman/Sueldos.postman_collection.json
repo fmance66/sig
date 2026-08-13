@@ -48,7 +48,10 @@
                 "method": "POST",
                 "url": "{{base_url}}/empresas",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -62,7 +65,10 @@
                 "method": "PUT",
                 "url": "{{base_url}}/empresas/7",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -95,10 +101,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/empleados?empresa=5",
-                  "host": ["{{base_url}}"],
-                  "path": ["empleados"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "empleados"
+                  ],
                   "query": [
-                    { "key": "empresa", "value": "5" }
+                    {
+                      "key": "empresa",
+                      "value": "5"
+                    }
                   ]
                 }
               }
@@ -109,10 +122,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/empleados?estado=activo",
-                  "host": ["{{base_url}}"],
-                  "path": ["empleados"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "empleados"
+                  ],
                   "query": [
-                    { "key": "estado", "value": "activo" }
+                    {
+                      "key": "estado",
+                      "value": "activo"
+                    }
                   ]
                 }
               }
@@ -123,10 +143,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/empleados?estado=inactivo",
-                  "host": ["{{base_url}}"],
-                  "path": ["empleados"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "empleados"
+                  ],
                   "query": [
-                    { "key": "estado", "value": "inactivo" }
+                    {
+                      "key": "estado",
+                      "value": "inactivo"
+                    }
                   ]
                 }
               }
@@ -144,7 +171,10 @@
                 "method": "POST",
                 "url": "{{base_url}}/empleados",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -158,7 +188,10 @@
                 "method": "PUT",
                 "url": "{{base_url}}/empleados/999",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -186,7 +219,10 @@
                 "method": "PUT",
                 "url": "{{base_url}}/empleados/999/lsd",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -205,10 +241,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/sucursales?empresa=1",
-                  "host": ["{{base_url}}"],
-                  "path": ["sucursales"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "sucursales"
+                  ],
                   "query": [
-                    { "key": "empresa", "value": "1" }
+                    {
+                      "key": "empresa",
+                      "value": "1"
+                    }
                   ]
                 }
               }
@@ -219,7 +262,10 @@
                 "method": "POST",
                 "url": "{{base_url}}/sucursales",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -233,7 +279,10 @@
                 "method": "PUT",
                 "url": "{{base_url}}/sucursales/1",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -259,10 +308,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/familiares?empleado=1",
-                  "host": ["{{base_url}}"],
-                  "path": ["familiares"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "familiares"
+                  ],
                   "query": [
-                    { "key": "empleado", "value": "1" }
+                    {
+                      "key": "empleado",
+                      "value": "1"
+                    }
                   ]
                 }
               }
@@ -273,7 +329,10 @@
                 "method": "POST",
                 "url": "{{base_url}}/familiares",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -287,7 +346,10 @@
                 "method": "PUT",
                 "url": "{{base_url}}/familiares/1/1",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -313,10 +375,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/novedades?empleado=1",
-                  "host": ["{{base_url}}"],
-                  "path": ["novedades"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "novedades"
+                  ],
                   "query": [
-                    { "key": "empleado", "value": "1" }
+                    {
+                      "key": "empleado",
+                      "value": "1"
+                    }
                   ]
                 }
               }
@@ -327,7 +396,10 @@
                 "method": "POST",
                 "url": "{{base_url}}/novedades",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -353,10 +425,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/historial?empleado=1",
-                  "host": ["{{base_url}}"],
-                  "path": ["historial"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "historial"
+                  ],
                   "query": [
-                    { "key": "empleado", "value": "1" }
+                    {
+                      "key": "empleado",
+                      "value": "1"
+                    }
                   ]
                 }
               }
@@ -367,7 +446,10 @@
                 "method": "POST",
                 "url": "{{base_url}}/historial",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -393,10 +475,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/conceptos-empleado?empleado=1",
-                  "host": ["{{base_url}}"],
-                  "path": ["conceptos-empleado"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "conceptos-empleado"
+                  ],
                   "query": [
-                    { "key": "empleado", "value": "1" }
+                    {
+                      "key": "empleado",
+                      "value": "1"
+                    }
                   ]
                 }
               }
@@ -407,7 +496,10 @@
                 "method": "POST",
                 "url": "{{base_url}}/conceptos-empleado",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -433,10 +525,17 @@
                 "method": "GET",
                 "url": {
                   "raw": "{{base_url}}/conceptos-grupo?grupo=1",
-                  "host": ["{{base_url}}"],
-                  "path": ["conceptos-grupo"],
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "conceptos-grupo"
+                  ],
                   "query": [
-                    { "key": "grupo", "value": "1" }
+                    {
+                      "key": "grupo",
+                      "value": "1"
+                    }
                   ]
                 }
               }
@@ -451,11 +550,17 @@
               "item": [
                 {
                   "name": "GET Convenios",
-                  "request": { "method": "GET", "url": "{{base_url}}/convenios" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/convenios"
+                  }
                 },
                 {
                   "name": "GET Convenio por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/convenios/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/convenios/1"
+                  }
                 },
                 {
                   "name": "POST Convenio",
@@ -463,7 +568,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/convenios",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -477,7 +585,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/convenios/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -487,7 +598,10 @@
                 },
                 {
                   "name": "DELETE Convenio",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/convenios/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/convenios/1"
+                  }
                 }
               ]
             },
@@ -496,11 +610,17 @@
               "item": [
                 {
                   "name": "GET Obras Sociales",
-                  "request": { "method": "GET", "url": "{{base_url}}/obras-sociales" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/obras-sociales"
+                  }
                 },
                 {
                   "name": "GET Obra Social por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/obras-sociales/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/obras-sociales/1"
+                  }
                 },
                 {
                   "name": "POST Obra Social",
@@ -508,7 +628,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/obras-sociales",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -522,7 +645,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/obras-sociales/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -532,7 +658,10 @@
                 },
                 {
                   "name": "DELETE Obra Social",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/obras-sociales/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/obras-sociales/1"
+                  }
                 }
               ]
             },
@@ -541,11 +670,17 @@
               "item": [
                 {
                   "name": "GET Sindicatos",
-                  "request": { "method": "GET", "url": "{{base_url}}/sindicatos" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/sindicatos"
+                  }
                 },
                 {
                   "name": "GET Sindicato por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/sindicatos/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/sindicatos/1"
+                  }
                 },
                 {
                   "name": "POST Sindicato",
@@ -553,7 +688,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/sindicatos",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -567,7 +705,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/sindicatos/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -577,7 +718,10 @@
                 },
                 {
                   "name": "DELETE Sindicato",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/sindicatos/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/sindicatos/1"
+                  }
                 }
               ]
             },
@@ -586,11 +730,17 @@
               "item": [
                 {
                   "name": "GET Situaciones de Revista",
-                  "request": { "method": "GET", "url": "{{base_url}}/situacion-revista" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/situacion-revista"
+                  }
                 },
                 {
                   "name": "GET Situacion de Revista por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/situacion-revista/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/situacion-revista/1"
+                  }
                 },
                 {
                   "name": "POST Situacion de Revista",
@@ -598,7 +748,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/situacion-revista",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -612,7 +765,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/situacion-revista/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -622,7 +778,10 @@
                 },
                 {
                   "name": "DELETE Situacion de Revista",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/situacion-revista/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/situacion-revista/1"
+                  }
                 }
               ]
             },
@@ -631,11 +790,17 @@
               "item": [
                 {
                   "name": "GET Condiciones Laborales",
-                  "request": { "method": "GET", "url": "{{base_url}}/condiciones-laborales" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/condiciones-laborales"
+                  }
                 },
                 {
                   "name": "GET Condicion Laboral por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/condiciones-laborales/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/condiciones-laborales/1"
+                  }
                 },
                 {
                   "name": "POST Condicion Laboral",
@@ -643,7 +808,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/condiciones-laborales",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -657,7 +825,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/condiciones-laborales/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -667,7 +838,10 @@
                 },
                 {
                   "name": "DELETE Condicion Laboral",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/condiciones-laborales/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/condiciones-laborales/1"
+                  }
                 }
               ]
             },
@@ -676,11 +850,17 @@
               "item": [
                 {
                   "name": "GET Actividades Laborales",
-                  "request": { "method": "GET", "url": "{{base_url}}/actividades-laborales" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/actividades-laborales"
+                  }
                 },
                 {
                   "name": "GET Actividad Laboral por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/actividades-laborales/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/actividades-laborales/1"
+                  }
                 },
                 {
                   "name": "POST Actividad Laboral",
@@ -688,7 +868,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/actividades-laborales",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -702,7 +885,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/actividades-laborales/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -712,7 +898,10 @@
                 },
                 {
                   "name": "DELETE Actividad Laboral",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/actividades-laborales/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/actividades-laborales/1"
+                  }
                 }
               ]
             },
@@ -721,11 +910,17 @@
               "item": [
                 {
                   "name": "GET Modalidades de Contrato",
-                  "request": { "method": "GET", "url": "{{base_url}}/modalidades-contrato" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/modalidades-contrato"
+                  }
                 },
                 {
                   "name": "GET Modalidad de Contrato por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/modalidades-contrato/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/modalidades-contrato/1"
+                  }
                 },
                 {
                   "name": "POST Modalidad de Contrato",
@@ -733,7 +928,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/modalidades-contrato",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -747,7 +945,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/modalidades-contrato/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -757,7 +958,10 @@
                 },
                 {
                   "name": "DELETE Modalidad de Contrato",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/modalidades-contrato/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/modalidades-contrato/1"
+                  }
                 }
               ]
             },
@@ -766,11 +970,17 @@
               "item": [
                 {
                   "name": "GET Incapacidades",
-                  "request": { "method": "GET", "url": "{{base_url}}/incapacidades" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/incapacidades"
+                  }
                 },
                 {
                   "name": "GET Incapacidad por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/incapacidades/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/incapacidades/1"
+                  }
                 },
                 {
                   "name": "POST Incapacidad",
@@ -778,7 +988,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/incapacidades",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -792,7 +1005,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/incapacidades/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -802,7 +1018,10 @@
                 },
                 {
                   "name": "DELETE Incapacidad",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/incapacidades/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/incapacidades/1"
+                  }
                 }
               ]
             },
@@ -811,11 +1030,17 @@
               "item": [
                 {
                   "name": "GET Codigos de Zona",
-                  "request": { "method": "GET", "url": "{{base_url}}/codigos-zona" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/codigos-zona"
+                  }
                 },
                 {
                   "name": "GET Codigo de Zona por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/codigos-zona/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/codigos-zona/1"
+                  }
                 },
                 {
                   "name": "POST Codigo de Zona",
@@ -823,7 +1048,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/codigos-zona",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -837,7 +1065,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/codigos-zona/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -847,7 +1078,10 @@
                 },
                 {
                   "name": "DELETE Codigo de Zona",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/codigos-zona/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/codigos-zona/1"
+                  }
                 }
               ]
             },
@@ -856,11 +1090,17 @@
               "item": [
                 {
                   "name": "GET Monedas",
-                  "request": { "method": "GET", "url": "{{base_url}}/monedas" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/monedas"
+                  }
                 },
                 {
                   "name": "GET Moneda por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/monedas/ARS" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/monedas/ARS"
+                  }
                 },
                 {
                   "name": "POST Moneda",
@@ -868,7 +1108,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/monedas",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -882,7 +1125,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/monedas/ARS",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -892,7 +1138,10 @@
                 },
                 {
                   "name": "DELETE Moneda",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/monedas/ARS" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/monedas/ARS"
+                  }
                 }
               ]
             },
@@ -901,11 +1150,17 @@
               "item": [
                 {
                   "name": "GET Localidades",
-                  "request": { "method": "GET", "url": "{{base_url}}/localidades" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/localidades"
+                  }
                 },
                 {
                   "name": "GET Localidad por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/localidades/Rosario" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/localidades/Rosario"
+                  }
                 },
                 {
                   "name": "POST Localidad",
@@ -913,7 +1168,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/localidades",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -927,7 +1185,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/localidades/Rosario",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -937,7 +1198,10 @@
                 },
                 {
                   "name": "DELETE Localidad",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/localidades/Rosario" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/localidades/Rosario"
+                  }
                 }
               ]
             },
@@ -946,11 +1210,17 @@
               "item": [
                 {
                   "name": "GET Paises",
-                  "request": { "method": "GET", "url": "{{base_url}}/paises" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/paises"
+                  }
                 },
                 {
                   "name": "GET Pais por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/paises/Argentina" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/paises/Argentina"
+                  }
                 },
                 {
                   "name": "POST Pais",
@@ -958,7 +1228,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/paises",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -972,7 +1245,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/paises/Chile",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -982,7 +1258,10 @@
                 },
                 {
                   "name": "DELETE Pais",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/paises/Chile" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/paises/Chile"
+                  }
                 }
               ]
             },
@@ -991,11 +1270,17 @@
               "item": [
                 {
                   "name": "GET Proyectos",
-                  "request": { "method": "GET", "url": "{{base_url}}/proyectos" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/proyectos"
+                  }
                 },
                 {
                   "name": "GET Proyecto por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/proyectos/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/proyectos/1"
+                  }
                 },
                 {
                   "name": "POST Proyecto",
@@ -1003,7 +1288,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/proyectos",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1017,7 +1305,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/proyectos/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1027,7 +1318,10 @@
                 },
                 {
                   "name": "DELETE Proyecto",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/proyectos/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/proyectos/1"
+                  }
                 }
               ]
             },
@@ -1036,11 +1330,17 @@
               "item": [
                 {
                   "name": "GET Fórmulas",
-                  "request": { "method": "GET", "url": "{{base_url}}/formulas" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/formulas"
+                  }
                 },
                 {
                   "name": "GET Fórmula por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/formulas/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/formulas/1"
+                  }
                 },
                 {
                   "name": "POST Fórmula",
@@ -1048,7 +1348,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/formulas",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1062,7 +1365,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/formulas/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1072,7 +1378,10 @@
                 },
                 {
                   "name": "DELETE Fórmula",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/formulas/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/formulas/1"
+                  }
                 }
               ]
             },
@@ -1081,11 +1390,17 @@
               "item": [
                 {
                   "name": "GET Grupos de Conceptos",
-                  "request": { "method": "GET", "url": "{{base_url}}/grupos-de-conceptos" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/grupos-de-conceptos"
+                  }
                 },
                 {
                   "name": "GET Grupo de Conceptos por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/grupos-de-conceptos/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/grupos-de-conceptos/1"
+                  }
                 },
                 {
                   "name": "POST Grupo de Conceptos",
@@ -1093,7 +1408,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/grupos-de-conceptos",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1107,7 +1425,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/grupos-de-conceptos/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1117,7 +1438,10 @@
                 },
                 {
                   "name": "DELETE Grupo de Conceptos",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/grupos-de-conceptos/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/grupos-de-conceptos/1"
+                  }
                 },
                 {
                   "name": "GET Conceptos de un Grupo",
@@ -1125,9 +1449,18 @@
                     "method": "GET",
                     "url": {
                       "raw": "{{base_url}}/conceptos-grupo?grupo=1",
-                      "host": ["{{base_url}}"],
-                      "path": ["conceptos-grupo"],
-                      "query": [{ "key": "grupo", "value": "1" }]
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "conceptos-grupo"
+                      ],
+                      "query": [
+                        {
+                          "key": "grupo",
+                          "value": "1"
+                        }
+                      ]
                     }
                   }
                 },
@@ -1137,7 +1470,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/conceptos-grupo",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1147,7 +1483,10 @@
                 },
                 {
                   "name": "DELETE Concepto de Grupo",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/conceptos-grupo/1/10/MENSUAL/0" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/conceptos-grupo/1/10/MENSUAL/0"
+                  }
                 }
               ]
             },
@@ -1156,7 +1495,10 @@
               "item": [
                 {
                   "name": "GET Conceptos Generales",
-                  "request": { "method": "GET", "url": "{{base_url}}/conceptos-general" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/conceptos-general"
+                  }
                 },
                 {
                   "name": "POST Concepto General",
@@ -1164,7 +1506,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/conceptos-general",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1174,7 +1519,10 @@
                 },
                 {
                   "name": "DELETE Concepto General",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/conceptos-general/10/MENSUAL/0" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/conceptos-general/10/MENSUAL/0"
+                  }
                 }
               ]
             },
@@ -1183,11 +1531,17 @@
               "item": [
                 {
                   "name": "GET Clases de Concepto",
-                  "request": { "method": "GET", "url": "{{base_url}}/clases-concepto" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/clases-concepto"
+                  }
                 },
                 {
                   "name": "GET Clase de Concepto por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/clases-concepto/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/clases-concepto/1"
+                  }
                 },
                 {
                   "name": "POST Clase de Concepto",
@@ -1195,7 +1549,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/clases-concepto",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1209,7 +1566,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/clases-concepto/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1219,11 +1579,17 @@
                 },
                 {
                   "name": "DELETE Clase de Concepto",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/clases-concepto/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/clases-concepto/1"
+                  }
                 },
                 {
                   "name": "GET Grupos de una Clase",
-                  "request": { "method": "GET", "url": "{{base_url}}/clases-concepto/1/grupos" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/clases-concepto/1/grupos"
+                  }
                 },
                 {
                   "name": "POST Grupo en Clase",
@@ -1231,7 +1597,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/clases-concepto/1/grupos",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1241,7 +1610,10 @@
                 },
                 {
                   "name": "DELETE Grupo de Clase",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/clases-concepto/1/grupos/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/clases-concepto/1/grupos/1"
+                  }
                 }
               ]
             },
@@ -1250,11 +1622,17 @@
               "item": [
                 {
                   "name": "GET Tipos de Tabla",
-                  "request": { "method": "GET", "url": "{{base_url}}/tipos-tabla" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/tipos-tabla"
+                  }
                 },
                 {
                   "name": "GET Tipo de Tabla por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/tipos-tabla/1" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/tipos-tabla/1"
+                  }
                 },
                 {
                   "name": "POST Tipo de Tabla",
@@ -1262,7 +1640,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/tipos-tabla",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1276,7 +1657,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/tipos-tabla/1",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1286,11 +1670,17 @@
                 },
                 {
                   "name": "DELETE Tipo de Tabla",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/tipos-tabla/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/tipos-tabla/1"
+                  }
                 },
                 {
                   "name": "GET Filas de una Tabla",
-                  "request": { "method": "GET", "url": "{{base_url}}/tipos-tabla/1/filas" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/tipos-tabla/1/filas"
+                  }
                 },
                 {
                   "name": "POST Fila en Tabla",
@@ -1298,7 +1688,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/tipos-tabla/1/filas",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1308,7 +1701,10 @@
                 },
                 {
                   "name": "DELETE Fila de Tabla",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/tipos-tabla/1/filas/1" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/tipos-tabla/1/filas/1"
+                  }
                 }
               ]
             },
@@ -1317,11 +1713,17 @@
               "item": [
                 {
                   "name": "GET Conceptos",
-                  "request": { "method": "GET", "url": "{{base_url}}/conceptos" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/conceptos"
+                  }
                 },
                 {
                   "name": "GET Concepto por ID",
-                  "request": { "method": "GET", "url": "{{base_url}}/conceptos/10" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/conceptos/10"
+                  }
                 },
                 {
                   "name": "POST Concepto",
@@ -1329,7 +1731,10 @@
                     "method": "POST",
                     "url": "{{base_url}}/conceptos",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1343,7 +1748,10 @@
                     "method": "PUT",
                     "url": "{{base_url}}/conceptos/999",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
@@ -1353,11 +1761,17 @@
                 },
                 {
                   "name": "DELETE Concepto",
-                  "request": { "method": "DELETE", "url": "{{base_url}}/conceptos/999" }
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/conceptos/999"
+                  }
                 },
                 {
                   "name": "GET LSD de Concepto",
-                  "request": { "method": "GET", "url": "{{base_url}}/conceptos/10/lsd" }
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/conceptos/10/lsd"
+                  }
                 },
                 {
                   "name": "PUT LSD de Concepto",
@@ -1365,11 +1779,474 @@
                     "method": "PUT",
                     "url": "{{base_url}}/conceptos/10/lsd",
                     "header": [
-                      { "key": "Content-Type", "value": "application/json" }
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
                     ],
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"aporte_sipa\": true,\n  \"contribucion_sipa\": true,\n  \"repetible\": false\n}"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Liquidaciones",
+          "item": [
+            {
+              "name": "Liquidación",
+              "item": [
+                {
+                  "name": "GET Liquidaciones",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/liquidaciones"
+                  }
+                },
+                {
+                  "name": "GET Liquidaciones filtradas",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/liquidaciones?periodo=2026&estado=ABIERTA",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "liquidaciones"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "2026"
+                        },
+                        {
+                          "key": "estado",
+                          "value": "ABIERTA"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Liquidación por Período",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/liquidaciones/08%2F2026"
+                  }
+                },
+                {
+                  "name": "POST Liquidación",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/liquidaciones",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"periodo\": \"08/2026\",\n  \"tipo\": \"MENSUAL\",\n  \"estado\": \"ABIERTA\",\n  \"fecha\": \"2026-08-01\",\n  \"fecha_desde\": \"2026-07-01\",\n  \"fecha_hasta\": \"2026-07-31\",\n  \"descripcion\": \"Julio 2026\",\n  \"fecha_pago\": \"2026-08-06\",\n  \"lugar_pago\": \"Av. de Mayo 347 Ramos Mejía Pcia.Bs.As.\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Liquidación",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/liquidaciones/08%2F2026",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"estado\": \"CERRADA\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Liquidación",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/liquidaciones/08%2F2026"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Recibos",
+              "item": [
+                {
+                  "name": "GET Listado de Recibos",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/recibos?periodo=08/2026&legajo=&convenio=&categoria=&grupo=&estado=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "recibos"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "08/2026"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": ""
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Recibo de Empleado",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/recibos/08%2F2026/1/1"
+                  }
+                },
+                {
+                  "name": "POST Recibo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/recibos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"periodo\": \"08/2026\",\n  \"empleado\": 1,\n  \"fecha_recibo\": \"2026-08-01\",\n  \"fecha_pago\": \"2026-08-06\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Recibo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/recibos/08%2F2026/1/1",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"observaciones\": \"Ajuste manual\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Recibo",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/recibos/08%2F2026/1/1"
+                  }
+                },
+                {
+                  "name": "POST Recalcular Recibo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/recibos/08%2F2026/1/1/recalcular"
+                  }
+                },
+                {
+                  "name": "GET Conceptos del Recibo",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/recibos/08%2F2026/1/1/conceptos"
+                  }
+                },
+                {
+                  "name": "POST Concepto en Recibo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/recibos/08%2F2026/1/1/conceptos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"concepto\": \"10\",\n  \"unidad_manual\": 1,\n  \"importe_manual\": 500000\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Concepto en Recibo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/recibos/08%2F2026/1/1/conceptos/10",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"importe_manual\": 520000\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Concepto en Recibo",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/recibos/08%2F2026/1/1/conceptos/10"
+                  }
+                },
+                {
+                  "name": "DELETE Recibos (masivo, filtrado)",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/recibos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"periodo\": \"08/2026\",\n  \"legajo\": \"\"\n}"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Recibos Automáticos",
+              "item": [
+                {
+                  "name": "GET Empleados candidatos",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/recibos-automaticos/empleados?legajo=&convenio=&grupo=&categoria=&estado=&provincia=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "recibos-automaticos",
+                        "empleados"
+                      ],
+                      "query": [
+                        {
+                          "key": "legajo",
+                          "value": ""
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        },
+                        {
+                          "key": "provincia",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "POST Generar Recibos",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/recibos-automaticos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"periodo\": \"08/2026\",\n  \"empleados\": [1, 2],\n  \"conceptosIndividuales\": true,\n  \"saldoCero\": false\n}"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Recibos Recalculados",
+              "item": [
+                {
+                  "name": "GET Recibos Recalculados (filtro)",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/recibos-recalculados?periodo=08/2026",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "recibos-recalculados"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "08/2026"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "POST Recalcular (lote)",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/recibos-recalculados/recalcular",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"filtro\": { \"periodo\": \"08/2026\" }\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "POST Adicionar Concepto (lote)",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/recibos-recalculados/adicionar-concepto",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"filtro\": { \"periodo\": \"08/2026\" },\n  \"concepto\": \"20\",\n  \"unidad_manual\": 1,\n  \"importe_manual\": 1000\n}"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Listado de Contribuciones y Auxiliares",
+              "item": [
+                {
+                  "name": "GET Listado de Contribuciones",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/listado-contribuciones?periodo=08/2026&columna=CONTRIBUCION",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "listado-contribuciones"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "08/2026"
+                        },
+                        {
+                          "key": "columna",
+                          "value": "CONTRIBUCION"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Listado de Auxiliares",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/listado-contribuciones?periodo=08/2026&columna=AUXILIAR",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "listado-contribuciones"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "08/2026"
+                        },
+                        {
+                          "key": "columna",
+                          "value": "AUXILIAR"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Detalle de Contribuciones de un Recibo",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/listado-contribuciones/08%2F2026/1/1/detalle?columna=CONTRIBUCION",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "listado-contribuciones",
+                        "08%2F2026",
+                        "1",
+                        "1",
+                        "detalle"
+                      ],
+                      "query": [
+                        {
+                          "key": "columna",
+                          "value": "CONTRIBUCION"
+                        }
+                      ]
                     }
                   }
                 }

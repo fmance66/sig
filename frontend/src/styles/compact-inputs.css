@@ -1,0 +1,29 @@
+/* Tamaño compacto GLOBAL para todos los campos de formulario de la app
+   (dentro de un Dialog o en contenido inline de página) — Empleados,
+   Conceptos, Empresas, catálogos genéricos, Liquidaciones, todo lo que
+   use la clase .form-field. Se define UNA sola vez acá (importado en
+   main.jsx) en vez de repetir la regla en el CSS de cada página. */
+
+.form-field .p-inputtext,
+.form-field .p-dropdown .p-dropdown-label,
+.form-field .p-calendar .p-inputtext,
+.form-field .p-inputtextarea,
+.form-field .p-multiselect .p-multiselect-label,
+.form-field .p-inputnumber-input {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.7rem;
+}
+
+.form-field .p-dropdown .p-dropdown-trigger,
+.form-field .p-multiselect .p-multiselect-trigger {
+  width: 2.4rem;
+}
+
+.form-field .p-calendar .p-datepicker-trigger.p-button {
+  width: 2.4rem;
+  padding: 0.5rem;
+}
+
+.form-field .p-calendar .p-datepicker-trigger .p-button-icon {
+  font-size: 0.85rem;
+}
