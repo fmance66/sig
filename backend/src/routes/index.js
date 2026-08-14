@@ -31,6 +31,7 @@ router.use('/recibos', require('./recibos'));
 router.use('/recibos-automaticos', require('./recibosAutomaticos'));
 router.use('/recibos-recalculados', require('./recibosRecalculados'));
 router.use('/listado-contribuciones', require('./contribuciones'));
+router.use('/informes', require('./informes'));
 
 router.use('/convenios', catalogo('sld_convenio',
   ['descripcion', 'liquidacion', 'dias', 'horas', 'moneda', 'obra_social', 'grupo_de_conceptos', 'orden'],
@@ -107,5 +108,27 @@ router.use('/tipos-tabla', tiposTablaRouter);
 
 router.use('/conceptos', require('./conceptos'));
 router.use('/conceptos-general', require('./conceptoGeneral'));
+
+const FORMULARIO_COLUMNS = [
+  'descripcion', 'orientacion', 'pagina', 'margen_superior', 'margen_inferior', 'margen_izquierdo',
+  'margen_derecho', 'formulario_hermano', 'formula_archivo', 'columnas', 'filas', 'copias',
+  'propiedad', 'etiquetas', 'orden',
+];
+const FORMULARIO_NUMERIC = ['margen_superior', 'margen_inferior', 'margen_izquierdo', 'margen_derecho', 'columnas', 'filas', 'copias', 'orden'];
+
+const { createParametroModel } = require('../models/formularioParametro');
+const { createParametroController } = require('../controllers/formularioParametro');
+
+function formularioRouter(tableName, parametroTable) {
+  const router = catalogo(tableName, FORMULARIO_COLUMNS, FORMULARIO_NUMERIC, 'formulario');
+  const parametroController = createParametroController(createParametroModel(parametroTable));
+  router.get('/:id/parametros', parametroController.list);
+  router.post('/:id/parametros', parametroController.create);
+  router.delete('/:id/parametros/:parametro', parametroController.remove);
+  return router;
+}
+
+router.use('/informes/formularios-recibo', formularioRouter('sld_formulario_recibo', 'sld_formulario_recibo_parametro'));
+router.use('/informes/formularios-libro', formularioRouter('sld_formulario_libro', 'sld_formulario_libro_parametro'));
 
 module.exports = router;

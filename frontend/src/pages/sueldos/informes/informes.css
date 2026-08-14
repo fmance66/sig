@@ -1,0 +1,50 @@
+/* Estilos compartidos por las pantallas de Informes. Reutiliza page-title,
+   form-grid/form-field, row-expansion, total-registros (ver
+   styles/global-tables.css) y agrega solo el panel de filtro y las bandas
+   de grupo/totales que no existen en ningún otro módulo todavía. */
+
+.page-informes {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.informe-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: flex-end;
+  margin: 0.5rem 0 0.9rem;
+}
+
+.informe-filtro .form-field {
+  min-width: 140px;
+  gap: 3px;
+}
+
+.informe-filtro .form-field label {
+  font-size: 0.76rem;
+}
+
+.informe-filtro .p-button {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+}
+
+/* Fila de subtotal de un grupo (Conceptos por Grupo, Remuneración por
+   Grupos, Recibos Agrupados) — misma banda celeste que el sistema legacy. */
+.informe-fila-grupo > td {
+  background: #dbeafe !important;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+/* Fila de total general, al pie de la tabla. */
+.informe-fila-total > td {
+  background: #eff6ff !important;
+  font-weight: 700;
+  color: #1d4ed8;
+  border-top: 2px solid #93c5fd !important;
+}
+
+.informe-toolbar-extra {
+  min-width: 170px;
+}

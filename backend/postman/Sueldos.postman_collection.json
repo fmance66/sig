@@ -2914,6 +2914,734 @@
               ]
             }
           ]
+        },
+        {
+          "name": "Informes",
+          "item": [
+            {
+              "name": "Conceptos Agrupados",
+              "item": [
+                {
+                  "name": "GET Conceptos por Grupo",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/conceptos-por-grupo?periodo=01/2017&legajo=11&convenio=&categoria=&grupo=&estado=&agrupadoPor=proyecto",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "conceptos-por-grupo"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "01/2017"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        },
+                        {
+                          "key": "agrupadoPor",
+                          "value": "proyecto"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Conceptos Acumulados",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/conceptos-acumulados?periodo=01/2017&legajo=11&convenio=&categoria=&grupo=&estado=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "conceptos-acumulados"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "01/2017"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Conceptos por Empleado",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/conceptos-por-empleado?legajo=11&concepto=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "conceptos-por-empleado"
+                      ],
+                      "query": [
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "concepto",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Conceptos por Recibo",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/conceptos-por-recibo?periodo=01/2017&legajo=11&convenio=&categoria=&grupo=&estado=&concepto=&orden=empleado",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "conceptos-por-recibo"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "01/2017"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        },
+                        {
+                          "key": "concepto",
+                          "value": ""
+                        },
+                        {
+                          "key": "orden",
+                          "value": "empleado"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Remuneracion",
+              "item": [
+                {
+                  "name": "GET Remuneracion por Conceptos",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/remuneracion-por-conceptos?periodo=01/2017&legajo=11&convenio=&categoria=&grupo=&estado=&concepto=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "remuneracion-por-conceptos"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "01/2017"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        },
+                        {
+                          "key": "concepto",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Remuneracion por Empleados",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/remuneracion-por-empleados?legajo=11",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "remuneracion-por-empleados"
+                      ],
+                      "query": [
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Remuneracion por Grupos",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/remuneracion-por-grupos?periodo=01/2017&legajo=11&convenio=&categoria=&grupo=&estado=&agrupadoPor=proyecto",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "remuneracion-por-grupos"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "01/2017"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        },
+                        {
+                          "key": "agrupadoPor",
+                          "value": "proyecto"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Recibos de Sueldo y Libro de Sueldos",
+              "item": [
+                {
+                  "name": "GET Recibos de Sueldo (vista previa)",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/recibos-sueldo?periodo=01/2017&legajo=11&convenio=&categoria=&grupo=&estado=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "recibos-sueldo"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "01/2017"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Recibos de Sueldo PDF",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/recibos-sueldo/pdf?periodo=01/2017&legajo=11&convenio=&categoria=&grupo=&estado=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "recibos-sueldo",
+                        "pdf"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "01/2017"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "GET Libro de Sueldos PDF",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/libro-sueldos/pdf?periodo=01/2017&legajo=11&convenio=&categoria=&grupo=&estado=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "libro-sueldos",
+                        "pdf"
+                      ],
+                      "query": [
+                        {
+                          "key": "periodo",
+                          "value": "01/2017"
+                        },
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "convenio",
+                          "value": ""
+                        },
+                        {
+                          "key": "categoria",
+                          "value": ""
+                        },
+                        {
+                          "key": "grupo",
+                          "value": ""
+                        },
+                        {
+                          "key": "estado",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Diseno de Recibos de Sueldo",
+              "item": [
+                {
+                  "name": "GET informes/formularios-recibo",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/informes/formularios-recibo"
+                  }
+                },
+                {
+                  "name": "POST Formulario de Recibo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/informes/formularios-recibo",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"RECIBO_A5\",\n  \"descripcion\": \"Recibo A5 x2\",\n  \"orientacion\": \"VERTICAL\",\n  \"pagina\": \"A5\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Formulario de Recibo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Recibo A5 x2 (editado)\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Formulario de Recibo",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5"
+                  }
+                },
+                {
+                  "name": "GET informes/formularios-recibo/RECIBO_A5/parametros",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5/parametros"
+                  }
+                },
+                {
+                  "name": "POST Parametro de Recibo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5/parametros",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"parametro\": \"LEGAJO\",\n  \"descripcion\": \"Legajo\",\n  \"x\": 10,\n  \"y\": 10,\n  \"ancho\": 30,\n  \"alto\": 8\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Parametro de Recibo",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5/parametros/LEGAJO"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Diseno de Libro de Sueldos",
+              "item": [
+                {
+                  "name": "GET informes/formularios-libro",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/informes/formularios-libro"
+                  }
+                },
+                {
+                  "name": "POST Formulario de Libro",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/informes/formularios-libro",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"LIBRO_A4\",\n  \"descripcion\": \"Libro de Sueldos\",\n  \"orientacion\": \"HORIZONTAL\",\n  \"pagina\": \"A4\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Formulario de Libro",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Libro de Sueldos (editado)\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Formulario de Libro",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4"
+                  }
+                },
+                {
+                  "name": "GET informes/formularios-libro/LIBRO_A4/parametros",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4/parametros"
+                  }
+                },
+                {
+                  "name": "POST Parametro de Libro",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4/parametros",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"parametro\": \"LEGAJO\",\n  \"descripcion\": \"Legajo\",\n  \"x\": 10,\n  \"y\": 10,\n  \"ancho\": 30,\n  \"alto\": 8\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Parametro de Libro",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4/parametros/LEGAJO"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Informes Personalizados",
+              "item": [
+                {
+                  "name": "GET informes/personalizados",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/informes/personalizados"
+                  }
+                },
+                {
+                  "name": "GET Campos Disponibles",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/personalizados-campos-disponibles?tabla=RECIBO",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "personalizados-campos-disponibles"
+                      ],
+                      "query": [
+                        {
+                          "key": "tabla",
+                          "value": "RECIBO"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "POST Informe Personalizado",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/informes/personalizados",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"SUELDOS_BASICO\",\n  \"descripcion\": \"Sueldos basico\",\n  \"tabla\": \"RECIBO\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Informe Personalizado",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/informes/personalizados/SUELDOS_BASICO",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Sueldos basico (editado)\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Informe Personalizado",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/informes/personalizados/SUELDOS_BASICO"
+                  }
+                },
+                {
+                  "name": "GET informes/personalizados/SUELDOS_BASICO/campos",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/informes/personalizados/SUELDOS_BASICO/campos"
+                  }
+                },
+                {
+                  "name": "POST Campo de Informe Personalizado",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/informes/personalizados/SUELDOS_BASICO/campos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"campo_clave\": \"legajo\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Campo de Informe Personalizado",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/informes/personalizados/SUELDOS_BASICO/campos/1"
+                  }
+                },
+                {
+                  "name": "GET Ejecutar Informe Personalizado",
+                  "request": {
+                    "method": "GET",
+                    "url": {
+                      "raw": "{{base_url}}/informes/personalizados/SUELDOS_BASICO/ejecutar?legajo=11&periodo=",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "informes",
+                        "personalizados",
+                        "SUELDOS_BASICO",
+                        "ejecutar"
+                      ],
+                      "query": [
+                        {
+                          "key": "legajo",
+                          "value": "11"
+                        },
+                        {
+                          "key": "periodo",
+                          "value": ""
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     }

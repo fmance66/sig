@@ -34,6 +34,21 @@ import RecibosAutomaticosPage from './pages/sueldos/liquidaciones/RecibosAutomat
 import RecibosRecalculadosPage from './pages/sueldos/liquidaciones/RecibosRecalculadosPage';
 import ContribucionesPage from './pages/sueldos/liquidaciones/ContribucionesPage';
 import EliminacionMasivaPage from './pages/sueldos/liquidaciones/EliminacionMasivaPage';
+import ConceptosPorGrupoPage from './pages/sueldos/informes/ConceptosPorGrupoPage';
+import ConceptosAcumuladosPage from './pages/sueldos/informes/ConceptosAcumuladosPage';
+import ConceptosPorEmpleadoPage from './pages/sueldos/informes/ConceptosPorEmpleadoPage';
+import ConceptosPorReciboPage from './pages/sueldos/informes/ConceptosPorReciboPage';
+import RemuneracionPorConceptosPage from './pages/sueldos/informes/RemuneracionPorConceptosPage';
+import RemuneracionPorEmpleadosPage from './pages/sueldos/informes/RemuneracionPorEmpleadosPage';
+import RemuneracionPorGruposPage from './pages/sueldos/informes/RemuneracionPorGruposPage';
+import RecibosAgrupadosPeriodoPage from './pages/sueldos/informes/RecibosAgrupadosPeriodoPage';
+import RecibosAgrupadosEmpleadoPage from './pages/sueldos/informes/RecibosAgrupadosEmpleadoPage';
+import RecibosSueldoPage from './pages/sueldos/informes/RecibosSueldoPage';
+import LibroSueldoPage from './pages/sueldos/informes/LibroSueldoPage';
+import DisenoRecibosSueldoPage from './pages/sueldos/informes/DisenoRecibosSueldoPage';
+import DisenoLibroSueldosPage from './pages/sueldos/informes/DisenoLibroSueldosPage';
+import InformesPersonalizadosPage from './pages/sueldos/informes/InformesPersonalizadosPage';
+import DisenoInformesPersonalizadosPage from './pages/sueldos/informes/DisenoInformesPersonalizadosPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import ConveniosPage from './pages/configuracion/ConveniosPage';
 import ObrasSocialesPage from './pages/configuracion/ObrasSocialesPage';
@@ -93,6 +108,22 @@ export default function App() {
           <Route path="sueldos/asistencia/presentismo" element={<PresentismoPage />} />
           <Route path="sueldos/asistencia/jornada-laboral" element={<JornadaLaboralPage />} />
           <Route path="sueldos/asistencia/feriados" element={<FeriadosPage />} />
+          {/* informes */}
+          <Route path="sueldos/informes/conceptos-por-grupo" element={<ConceptosPorGrupoPage />} />
+          <Route path="sueldos/informes/conceptos-acumulados" element={<ConceptosAcumuladosPage />} />
+          <Route path="sueldos/informes/conceptos-por-empleado" element={<ConceptosPorEmpleadoPage />} />
+          <Route path="sueldos/informes/conceptos-por-recibo" element={<ConceptosPorReciboPage />} />
+          <Route path="sueldos/informes/remuneracion-por-conceptos" element={<RemuneracionPorConceptosPage />} />
+          <Route path="sueldos/informes/remuneracion-por-empleados" element={<RemuneracionPorEmpleadosPage />} />
+          <Route path="sueldos/informes/remuneracion-por-grupos" element={<RemuneracionPorGruposPage />} />
+          <Route path="sueldos/informes/recibos-agrupados-periodo" element={<RecibosAgrupadosPeriodoPage />} />
+          <Route path="sueldos/informes/recibos-agrupados-empleado" element={<RecibosAgrupadosEmpleadoPage />} />
+          <Route path="sueldos/informes/recibos-sueldo" element={<RecibosSueldoPage />} />
+          <Route path="sueldos/informes/libro-sueldos" element={<LibroSueldoPage />} />
+          <Route path="sueldos/informes/diseno-recibos-sueldo" element={<DisenoRecibosSueldoPage />} />
+          <Route path="sueldos/informes/diseno-libro-sueldos" element={<DisenoLibroSueldosPage />} />
+          <Route path="sueldos/informes/personalizados" element={<InformesPersonalizadosPage />} />
+          <Route path="sueldos/informes/diseno-personalizados" element={<DisenoInformesPersonalizadosPage />} />
           {/* ayuda */}
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}

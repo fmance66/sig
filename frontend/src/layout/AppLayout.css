@@ -232,7 +232,17 @@ body {
   letter-spacing: 0.1px;
 }
 
-.app-menubar .p-menubar .p-menubar-root-list > .p-menuitem .p-menuitem-link .p-submenu-icon {
+/* Ojo: el <a class="p-menuitem-link"> real va DENTRO de un
+   <div class="p-menuitem-content"> que es hijo directo del <li>, no el link
+   directo (ver selectores propios del tema: "> .p-menuitem-content
+   .p-menuitem-link"). Con combinador directo hasta .p-menuitem-link la
+   regla no matcheaba nunca y mostraba la flecha en la barra superior; con
+   descendiente simple en todo el selector terminaba ocultando también la
+   flecha de los submenús anidados (Conceptos Agrupados, Remuneración, etc.)
+   porque esos <a> quedan "dentro" del <li> raíz aunque estén varios niveles
+   más abajo. La combinación correcta es directa hasta .p-menuitem-content
+   (así no se cuela al <ul> de submenú, que es hermano del content, no hijo). */
+.app-menubar .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-content .p-menuitem-link .p-submenu-icon {
   display: none;
 }
 
@@ -241,6 +251,18 @@ body {
   border: 1px solid #2c5282;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   background: #ffffff;
+}
+
+/* Flyouts de 2do nivel (Conceptos Agrupados, Remuneración, etc.): PrimeReact
+   los ancla por arriba (top:0) del ítem que los dispara, sin detectar el
+   borde inferior de la ventana. Con listas de Informes tan largas, los
+   ítems del final (ej. "Asistencia") quedan cerca del piso y el flyout se
+   corta contra el borde de la pantalla. Se ancla por abajo en vez de por
+   arriba: como estos flyouts son cortos (2 a 4 ítems), crecen hacia arriba
+   y entran cómodos incluso cuando el disparador está al final de la lista. */
+.app-menubar .p-menubar .p-submenu-list .p-menuitem .p-submenu-list {
+  top: auto;
+  bottom: -0.5rem;
 }
 
 .app-menubar .p-menubar .p-submenu-list .p-menuitem-link {
