@@ -51,13 +51,13 @@ const LIQUIDACION_OPTIONS = [
 ];
 
 const EMPTY_FORM = {
-  legajo: '', apellido: '', nombre: '', cuil: '', grupo: '', estado: '', tarea: '',
+  legajo: '', apellido: '', nombre: '', cuil: '', grupo: '', estado: null, tarea: '',
   fecha_ingreso: null, fecha_egreso: null, fecha_antiguedad: null, antiguedad: '',
-  sexo: '', fecha_nacimiento: null, nacionalidad: '', estado_civil: '',
+  sexo: null, fecha_nacimiento: null, nacionalidad: '', estado_civil: null,
   tipo_documento: '', numero_documento: '', direccion: '', localidad: '', provincia: '', cpa: '',
   telefono: '', email: '', orden: '',
   convenio: '', categoria: '', sueldo: '', adicional: '', auxiliar: '',
-  dias: '', horas: '', porcentaje: '', jornada: '', proporcional: false, liquidacion: '', moneda: '',
+  dias: '', horas: '', porcentaje: '', jornada: null, proporcional: false, liquidacion: null, moneda: '',
   vacaciones: '', obra_social: '', sindicato: '', proyecto: '', empresa: '', lugar_trabajo: '',
   banco: '', cuenta: '', cbu: '', grupo_de_conceptos: '', observaciones: '',
   situacion: '', condicion: '', actividad: '', modalidad: '', incapacidad: '', codigo_zona: '',
@@ -123,18 +123,18 @@ export default function EmpleadosPage() {
         id: emp.id ?? '',
         legajo: emp.legajo ?? '',
         apellido: emp.apellido ?? '', nombre: emp.nombre ?? '', cuil: emp.cuil ?? '',
-        grupo: emp.grupo ?? '', estado: emp.estado ?? '', tarea: emp.tarea ?? '',
+        grupo: emp.grupo ?? '', estado: emp.estado ?? null, tarea: emp.tarea ?? '',
         fecha_ingreso: toDate(emp.fecha_ingreso), fecha_egreso: toDate(emp.fecha_egreso),
         fecha_antiguedad: toDate(emp.fecha_antiguedad), antiguedad: emp.antiguedad ?? '',
-        sexo: emp.sexo ?? '', fecha_nacimiento: toDate(emp.fecha_nacimiento),
-        nacionalidad: emp.nacionalidad ?? '', estado_civil: emp.estado_civil ?? '',
+        sexo: emp.sexo ?? null, fecha_nacimiento: toDate(emp.fecha_nacimiento),
+        nacionalidad: emp.nacionalidad ?? '', estado_civil: emp.estado_civil ?? null,
         tipo_documento: emp.tipo_documento ?? '', numero_documento: emp.numero_documento ?? '',
         direccion: emp.direccion ?? '', localidad: emp.localidad ?? '', provincia: emp.provincia ?? '',
         cpa: emp.cpa ?? '', telefono: emp.telefono ?? '', email: emp.email ?? '', orden: emp.orden ?? '',
         convenio: emp.convenio ?? '', categoria: emp.categoria ?? '', sueldo: emp.sueldo ?? '',
         adicional: emp.adicional ?? '', auxiliar: emp.auxiliar ?? '', dias: emp.dias ?? '',
-        horas: emp.horas ?? '', porcentaje: emp.porcentaje ?? '', jornada: emp.jornada ?? '',
-        proporcional: emp.proporcional ?? false, liquidacion: emp.liquidacion ?? '', moneda: emp.moneda ?? '',
+        horas: emp.horas ?? '', porcentaje: emp.porcentaje ?? '', jornada: emp.jornada ?? null,
+        proporcional: emp.proporcional ?? false, liquidacion: emp.liquidacion ?? null, moneda: emp.moneda ?? '',
         vacaciones: emp.vacaciones ?? '', obra_social: emp.obra_social ?? '', sindicato: emp.sindicato ?? '',
         proyecto: emp.proyecto ?? '', empresa: emp.empresa ?? '', lugar_trabajo: emp.lugar_trabajo ?? '',
         banco: emp.banco ?? '', cuenta: emp.cuenta ?? '', cbu: emp.cbu ?? '',
@@ -430,13 +430,15 @@ export default function EmpleadosPage() {
                 <label>Teléfono</label>
                 <InputText name="telefono" value={form.telefono} onChange={handleChange} />
               </div>
-              <div className="form-field form-field--full">
-                <label>e-mail</label>
-                <InputText name="email" value={form.email} onChange={handleChange} />
-              </div>
-              <div className="form-field">
-                <label>Orden</label>
-                <InputText name="orden" value={form.orden} onChange={handleChange} type="number" />
+              <div className="form-row-12">
+                <div className="form-field" style={{ gridColumn: 'span 8' }}>
+                  <label>e-mail</label>
+                  <InputText name="email" value={form.email} onChange={handleChange} />
+                </div>
+                <div className="form-field" style={{ gridColumn: 'span 4' }}>
+                  <label>Orden</label>
+                  <InputText name="orden" value={form.orden} onChange={handleChange} type="number" />
+                </div>
               </div>
             </div>
           </TabPanel>
@@ -486,18 +488,20 @@ export default function EmpleadosPage() {
                 <label>Moneda</label>
                 <InputText name="moneda" value={form.moneda} onChange={handleChange} />
               </div>
-              <div className="form-field">
-                <label>Adicional</label>
-                <InputText name="adicional" value={form.adicional} onChange={handleChange} type="number" />
-              </div>
-              <div className="form-field">
-                <label>Auxiliar</label>
-                <InputText name="auxiliar" value={form.auxiliar} onChange={handleChange} type="number" />
-              </div>
-              <div className="form-field form-field--checkbox">
-                <Checkbox inputId="proporcional" checked={form.proporcional}
-                  onChange={e => setForm(prev => ({ ...prev, proporcional: e.checked }))} />
-                <label htmlFor="proporcional">Proporcional</label>
+              <div className="form-row-12">
+                <div className="form-field" style={{ gridColumn: 'span 5' }}>
+                  <label>Adicional</label>
+                  <InputText name="adicional" value={form.adicional} onChange={handleChange} type="number" />
+                </div>
+                <div className="form-field" style={{ gridColumn: 'span 5' }}>
+                  <label>Auxiliar</label>
+                  <InputText name="auxiliar" value={form.auxiliar} onChange={handleChange} type="number" />
+                </div>
+                <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 2' }}>
+                  <Checkbox inputId="proporcional" checked={form.proporcional}
+                    onChange={e => setForm(prev => ({ ...prev, proporcional: e.checked }))} />
+                  <label htmlFor="proporcional">Proporcional</label>
+                </div>
               </div>
             </div>
 

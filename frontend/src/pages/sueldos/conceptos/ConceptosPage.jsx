@@ -299,13 +299,19 @@ export default function ConceptosPage() {
               <InputText name="id" value={form.id} onChange={handleChange} />
             </div>
           )}
-          <div className="form-field form-field--full">
-            <label>Nombre <span className="required">*</span></label>
-            <InputText name="descripcion" value={form.descripcion} onChange={handleChange} />
+          <div className="form-row-12">
+            <div className="form-field" style={{ gridColumn: 'span 10' }}>
+              <label>Nombre <span className="required">*</span></label>
+              <InputText name="descripcion" value={form.descripcion} onChange={handleChange} />
+            </div>
+            <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 2' }}>
+              <Checkbox inputId="activo" checked={form.activo} onChange={e => handleCheck('activo', e.checked)} />
+              <label htmlFor="activo">Activo</label>
+            </div>
           </div>
           <div className="form-field">
             <label>Columna Recibo</label>
-            <Dropdown name="columna" value={form.columna} options={COLUMNA_OPTIONS} onChange={handleChange} />
+            <Dropdown name="columna" value={form.columna} options={COLUMNA_OPTIONS} onChange={handleChange} showClear />
           </div>
           <div className="form-field">
             <label>Código AFIP</label>
@@ -320,51 +326,55 @@ export default function ConceptosPage() {
             <InputText name="orden" value={form.orden} onChange={handleChange} type="number" />
           </div>
 
-          <div className="form-field">
-            <label>Símbolo Unidad</label>
-            <InputText name="simbolo_unidad" value={form.simbolo_unidad} onChange={handleChange} />
-          </div>
-          <div className="form-field">
-            <label>Decimales Unidad</label>
-            <InputText name="decimales_unidad" value={form.decimales_unidad} onChange={handleChange} type="number" />
-          </div>
-          <div className="form-field form-field--checkbox">
-            <Checkbox inputId="unidad_visible" checked={form.unidad_visible} onChange={e => handleCheck('unidad_visible', e.checked)} />
-            <label htmlFor="unidad_visible">Unidad Visible</label>
-          </div>
-
-          <div className="form-field">
-            <label>Símbolo Unitario</label>
-            <InputText name="simbolo_unitario" value={form.simbolo_unitario} onChange={handleChange} />
-          </div>
-          <div className="form-field">
-            <label>Decimales Unitario</label>
-            <InputText name="decimales_unitario" value={form.decimales_unitario} onChange={handleChange} />
-          </div>
-          <div className="form-field form-field--checkbox">
-            <Checkbox inputId="unitario_visible" checked={form.unitario_visible} onChange={e => handleCheck('unitario_visible', e.checked)} />
-            <label htmlFor="unitario_visible">Valor Unitario Visible</label>
+          <div className="form-row-12">
+            <div className="form-field" style={{ gridColumn: 'span 5' }}>
+              <label>Símbolo Unidad</label>
+              <InputText name="simbolo_unidad" value={form.simbolo_unidad} onChange={handleChange} />
+            </div>
+            <div className="form-field" style={{ gridColumn: 'span 5' }}>
+              <label>Decimales Unidad</label>
+              <InputText name="decimales_unidad" value={form.decimales_unidad} onChange={handleChange} type="number" />
+            </div>
+            <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 2' }}>
+              <Checkbox inputId="unidad_visible" checked={form.unidad_visible} onChange={e => handleCheck('unidad_visible', e.checked)} />
+              <label htmlFor="unidad_visible">Unidad Visible</label>
+            </div>
           </div>
 
-          <div className="form-field form-field--checkbox">
-            <Checkbox inputId="campo_unidad" checked={form.campo_unidad} onChange={e => handleCheck('campo_unidad', e.checked)} />
-            <label htmlFor="campo_unidad">Unidad x Teclado</label>
+          <div className="form-row-12">
+            <div className="form-field" style={{ gridColumn: 'span 5' }}>
+              <label>Símbolo Unitario</label>
+              <InputText name="simbolo_unitario" value={form.simbolo_unitario} onChange={handleChange} />
+            </div>
+            <div className="form-field" style={{ gridColumn: 'span 5' }}>
+              <label>Decimales Unitario</label>
+              <InputText name="decimales_unitario" value={form.decimales_unitario} onChange={handleChange} />
+            </div>
+            <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 2' }}>
+              <Checkbox inputId="unitario_visible" checked={form.unitario_visible} onChange={e => handleCheck('unitario_visible', e.checked)} />
+              <label htmlFor="unitario_visible">Valor Unitario Visible</label>
+            </div>
           </div>
-          <div className="form-field form-field--full">
-            <label>Leyenda Unidad</label>
-            <InputText name="leyenda_unidad" value={form.leyenda_unidad} onChange={handleChange} disabled={!form.campo_unidad} />
+
+          <div className="form-row-12">
+            <div className="form-field" style={{ gridColumn: 'span 10' }}>
+              <label>Leyenda Unidad</label>
+              <InputText name="leyenda_unidad" value={form.leyenda_unidad} onChange={handleChange} disabled={!form.campo_unidad} />
+            </div>
+            <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 2' }}>
+              <Checkbox inputId="campo_unidad" checked={form.campo_unidad} onChange={e => handleCheck('campo_unidad', e.checked)} />
+              <label htmlFor="campo_unidad">Unidad x Teclado</label>
+            </div>
           </div>
-          <div className="form-field form-field--checkbox">
-            <Checkbox inputId="campo_importe" checked={form.campo_importe} onChange={e => handleCheck('campo_importe', e.checked)} />
-            <label htmlFor="campo_importe">Importe x Teclado</label>
-          </div>
-          <div className="form-field form-field--full">
-            <label>Leyenda Importe</label>
-            <InputText name="leyenda_importe" value={form.leyenda_importe} onChange={handleChange} disabled={!form.campo_importe} />
-          </div>
-          <div className="form-field form-field--checkbox">
-            <Checkbox inputId="activo" checked={form.activo} onChange={e => handleCheck('activo', e.checked)} />
-            <label htmlFor="activo">Activo</label>
+          <div className="form-row-12">
+            <div className="form-field" style={{ gridColumn: 'span 10' }}>
+              <label>Leyenda Importe</label>
+              <InputText name="leyenda_importe" value={form.leyenda_importe} onChange={handleChange} disabled={!form.campo_importe} />
+            </div>
+            <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 2' }}>
+              <Checkbox inputId="campo_importe" checked={form.campo_importe} onChange={e => handleCheck('campo_importe', e.checked)} />
+              <label htmlFor="campo_importe">Importe x Teclado</label>
+            </div>
           </div>
         </div>
 
@@ -372,18 +382,18 @@ export default function ConceptosPage() {
 
           <TabPanel header="Fórmulas">
             <div className="form-field form-field--full">
-              <label>Fórmula de Unidad</label>
-              <InputTextarea name="formula_unidad" value={form.formula_unidad} onChange={handleChange} rows={4} autoResize />
-              <div className="sub-form-actions">
+              <div className="form-field-label-row">
+                <label>Fórmula de Unidad</label>
                 <Button label="Validar" icon="fa-solid fa-circle-check" size="small" className="p-button-text" onClick={() => handleValidar('formula_unidad')} />
               </div>
+              <InputTextarea name="formula_unidad" value={form.formula_unidad} onChange={handleChange} rows={4} autoResize />
             </div>
-            <div className="form-field form-field--full">
-              <label>Fórmula de Importe</label>
-              <InputTextarea name="formula_importe" value={form.formula_importe} onChange={handleChange} rows={4} autoResize />
-              <div className="sub-form-actions">
+            <div className="form-field form-field--full" style={{ marginTop: '0.75rem' }}>
+              <div className="form-field-label-row">
+                <label>Fórmula de Importe</label>
                 <Button label="Validar" icon="fa-solid fa-circle-check" size="small" className="p-button-text" onClick={() => handleValidar('formula_importe')} />
               </div>
+              <InputTextarea name="formula_importe" value={form.formula_importe} onChange={handleChange} rows={4} autoResize />
             </div>
           </TabPanel>
 

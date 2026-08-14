@@ -202,13 +202,13 @@ body {
 }
 
 .app-menubar .p-menubar .p-menubar-root-list {
-  gap: 0;
+  gap: 0.5rem;
 }
 
 .app-menubar .p-menubar .p-menuitem-link {
   padding: 0.45rem 0.75rem;
   border-radius: 6px;
-  gap: 0.4rem;
+  gap: 0.05rem;
   transition: background 0.15s;
 }
 
@@ -232,9 +232,8 @@ body {
   letter-spacing: 0.1px;
 }
 
-.app-menubar .p-menubar .p-menuitem-link .p-submenu-icon {
-  font-size: 0.6rem;
-  color: #bee3f8;
+.app-menubar .p-menubar .p-menubar-root-list > .p-menuitem .p-menuitem-link .p-submenu-icon {
+  display: none;
 }
 
 /* Submenú desplegable */

@@ -17,6 +17,7 @@ router.use('/empleados', require('./empleados'));
 router.use('/sucursales', require('./sucursales'));
 router.use('/familiares', require('./familiares'));
 router.use('/novedades', require('./novedades'));
+router.use('/novedades-automaticas', require('./novedadesAutomaticas'));
 router.use('/historial', require('./historial'));
 router.use('/conceptos-empleado', require('./conceptosEmpleado'));
 router.use('/conceptos-grupo', require('./conceptosGrupo'));
@@ -45,6 +46,10 @@ router.use('/modalidades-contrato', catalogo('sld_modalidad_contrato', ['descrip
 router.use('/incapacidades',        catalogo('sld_incapacidad',        ['descripcion', 'orden'], ['orden'], 'incapacidad'));
 router.use('/codigos-zona',         catalogo('sld_codigo_zona',        ['descripcion', 'orden'], ['orden'], 'código de zona'));
 
+router.use('/tipos-novedad', catalogo('sld_tipo_novedad',
+  ['descripcion', 'data_type', 'length', 'decimals', 'orden'],
+  ['length', 'decimals', 'orden'], 'tipo de novedad'));
+
 router.use('/monedas', catalogo('bas_moneda',
   ['nombre', 'simbolo', 'simbolos', 'cotizacion', 'color', 'icono', 'orden'],
   ['cotizacion', 'orden'], 'moneda'));
@@ -53,7 +58,7 @@ router.use('/localidades', catalogo('bas_localidad',
   ['zona', 'provincia', 'cpa'], [], 'localidad', { idColumn: 'localidad' }));
 
 router.use('/paises', catalogo('bas_pais',
-  ['codigo'], [], 'país', { idColumn: 'pais' }));
+  ['pais'], [], 'país', { idColumn: 'codigo' }));
 
 router.use('/proyectos', catalogo('bas_proyecto',
   ['descripcion', 'grupo', 'fecha', 'fecha_fin', 'horas', 'valor_hora', 'presupuesto',

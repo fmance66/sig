@@ -176,7 +176,7 @@ export default function ConceptosTab({ empleadoId, grupoDeConceptos, toast }) {
                 </div>
                 <div className="form-field">
                   <label>Liquidación</label>
-                  <Dropdown name="liquidacion" value={form.liquidacion} options={LIQUIDACION_OPTIONS} onChange={handleChange} />
+                  <Dropdown name="liquidacion" value={form.liquidacion} options={LIQUIDACION_OPTIONS} onChange={handleChange} showClear />
                 </div>
                 <div className="form-field">
                   <label>Unidad</label>
@@ -202,7 +202,7 @@ export default function ConceptosTab({ empleadoId, grupoDeConceptos, toast }) {
             </div>
           )}
 
-          <div className="sub-tab-header">
+          <div className="sub-tab-header pt-1">
             {!showForm && (
               <Button label="Nuevo concepto" icon="fa-solid fa-plus" size="small" onClick={openNew} />
             )}

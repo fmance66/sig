@@ -31,4 +31,12 @@
   gap: 0.5rem;
 }
 
+/* Fila con proporciones libres (grid de 12 columnas) dentro del form-grid de 2 columnas */
+.form-row-12 {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem 1.25rem;
+}
+
 /* dialog-footer-btns y p-confirm-dialog: ver styles/global-tables.css */

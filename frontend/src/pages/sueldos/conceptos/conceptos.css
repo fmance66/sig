@@ -31,6 +31,55 @@
 
 /* .row-expansion: ver styles/global-tables.css */
 
+.form-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 1.5rem;
+}
+
+/* Fila con proporciones libres (grid de 12 columnas) dentro del form-grid de 2 columnas */
+.form-row-12 {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem 1.25rem;
+}
+
+.form-row-12 .form-field--checkbox {
+  padding-top: 1.5rem;
+}
+
+.form-row-12 .form-field--checkbox label {
+  text-align: center;
+}
+
+/* Label + botón Validar en la misma línea (arriba del textarea) */
+.form-field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.form-field-label-row .p-button {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+}
+
+.form-field-label-row .p-button.p-button-text {
+  border: 1px solid #d1d5db;
+  color: #374151;
+  background-color: #f3f4f6;
+}
+
+.form-field--checkbox label {
+  padding-top: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+}
+
 /* Grilla de columnas del formulario Tipo de Tabla */
 .tabla-columnas-grid {
   display: grid;

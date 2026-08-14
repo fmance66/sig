@@ -19,6 +19,27 @@
   width: 2.4rem;
 }
 
+/* El tema reserva el padding-right del label y la posición del ícono "x"
+   (p-dropdown-clear-icon) asumiendo un trigger de 3rem. Como lo achicamos
+   a 2.4rem arriba, hay que recalcular ambos valores acá o el texto largo
+   queda por debajo de la "x" y esta queda separada de la flecha. */
+.form-field .p-dropdown.p-dropdown-clearable .p-dropdown-label {
+  padding-right: 3.3rem;
+}
+
+.form-field .p-dropdown .p-dropdown-clear-icon {
+  right: 2.2rem;
+  top: 50%;
+  margin-top: -0.42rem;
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.form-field .p-dropdown .p-dropdown-trigger-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
 .form-field .p-calendar .p-datepicker-trigger.p-button {
   width: 2.4rem;
   padding: 0.5rem;
@@ -26,4 +47,73 @@
 
 .form-field .p-calendar .p-datepicker-trigger .p-button-icon {
   font-size: 0.85rem;
+}
+
+/* Panel del Calendar (días/meses/años). Se renderiza en un portal fuera de
+   .form-field, así que las reglas van sin ese prefijo — quedan globales
+   para toda la app, no solo para los Calendar dentro de un formulario. */
+.p-datepicker {
+  font-size: 0.82rem;
+}
+
+.p-datepicker .p-datepicker-header {
+  padding: 0.4rem 0.5rem;
+}
+
+.p-datepicker .p-datepicker-header .p-datepicker-title {
+  font-size: 0.85rem;
+}
+
+.p-datepicker .p-datepicker-title .p-datepicker-month,
+.p-datepicker .p-datepicker-title .p-datepicker-year {
+  font-size: 0.85rem;
+  padding: 0.15rem 0.3rem;
+}
+
+.p-datepicker .p-datepicker-prev,
+.p-datepicker .p-datepicker-next {
+  width: 1.7rem;
+  height: 1.7rem;
+}
+
+.p-datepicker table {
+  font-size: 0.82rem;
+}
+
+.p-datepicker table th,
+.p-datepicker table td {
+  padding: 0.15rem;
+}
+
+.p-datepicker table td > span {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.p-datepicker .p-monthpicker .p-monthpicker-month {
+  padding: 0.4rem;
+  font-size: 0.82rem;
+}
+
+.p-datepicker .p-yearpicker .p-yearpicker-year {
+  padding: 0.4rem;
+  font-size: 0.82rem;
+}
+
+.p-datepicker .p-datepicker-buttonbar {
+  padding: 0.4rem 0.5rem;
+}
+
+.p-datepicker .p-datepicker-buttonbar .p-button {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+}
+
+/* Tooltips (prop tooltip="..." de Button y demás componentes PrimeReact).
+   También se renderizan en un portal fuera de cualquier contenedor, van
+   globales para toda la app. */
+.p-tooltip .p-tooltip-text {
+  font-size: 0.76rem;
+  padding: 0.35rem 0.55rem;
+  line-height: 1.3;
 }

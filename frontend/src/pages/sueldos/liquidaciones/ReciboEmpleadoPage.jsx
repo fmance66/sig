@@ -25,7 +25,7 @@ const EMPTY_HEADER = {
   proyecto: '', orden: '', mail: false, visible: true, observaciones: '',
 };
 
-const EMPTY_ADD = { concepto: '', unidad_manual: '', importe_manual: '' };
+const EMPTY_ADD = { concepto: null, unidad_manual: '', importe_manual: '' };
 
 export default function ReciboEmpleadoPage() {
   const { periodo, empleado, numero } = useParams();
@@ -43,7 +43,7 @@ export default function ReciboEmpleadoPage() {
 
   const [liquidaciones, setLiquidaciones] = useState([]);
   const [empleados, setEmpleados] = useState([]);
-  const [nuevoPeriodo, setNuevoPeriodo] = useState('');
+  const [nuevoPeriodo, setNuevoPeriodo] = useState(null);
   const [nuevoEmpleado, setNuevoEmpleado] = useState(null);
   const [creando, setCreando] = useState(false);
 
@@ -208,11 +208,11 @@ export default function ReciboEmpleadoPage() {
         <div className="form-grid recibo-header-form">
           <div className="form-field">
             <label>Período <span className="required">*</span></label>
-            <Dropdown value={nuevoPeriodo} options={periodoOptions} onChange={e => setNuevoPeriodo(e.value)} filter placeholder="Seleccionar período" style={{ width: '320px' }} panelClassName="liquidaciones-dropdown-panel" />
+            <Dropdown value={nuevoPeriodo} options={periodoOptions} onChange={e => setNuevoPeriodo(e.value)} filter showClear placeholder="Seleccionar período" style={{ width: '320px' }} panelClassName="liquidaciones-dropdown-panel" />
           </div>
           <div className="form-field">
             <label>Empleado <span className="required">*</span></label>
-            <Dropdown value={nuevoEmpleado} options={empleadoOptions} onChange={e => setNuevoEmpleado(e.value)} filter placeholder="Seleccionar empleado" style={{ width: '320px' }} panelClassName="liquidaciones-dropdown-panel" />
+            <Dropdown value={nuevoEmpleado} options={empleadoOptions} onChange={e => setNuevoEmpleado(e.value)} filter showClear placeholder="Seleccionar empleado" style={{ width: '320px' }} panelClassName="liquidaciones-dropdown-panel" />
           </div>
         </div>
         <Button label="Crear recibo" icon="fa-solid fa-check" size="small" onClick={handleCrear} loading={creando} className="mt-2" />
@@ -263,17 +263,19 @@ export default function ReciboEmpleadoPage() {
               <label>Fecha de Pago</label>
               <Calendar value={header.fecha_pago} onChange={e => setHeader(p => ({ ...p, fecha_pago: e.value }))} dateFormat="dd/mm/yy" showIcon />
             </div>
-            <div className="form-field">
-              <label>Orden</label>
-              <InputText name="orden" value={header.orden} onChange={handleHeaderChange} type="number" />
-            </div>
-            <div className="form-field form-field--checkbox">
-              <Checkbox inputId="visible" checked={header.visible} onChange={e => setHeader(p => ({ ...p, visible: e.checked }))} />
-              <label htmlFor="visible">Visible</label>
-            </div>
-            <div className="form-field form-field--checkbox">
-              <Checkbox inputId="mail" checked={header.mail} onChange={e => setHeader(p => ({ ...p, mail: e.checked }))} />
-              <label htmlFor="mail">Enviado por mail</label>
+            <div className="form-row-12">
+              <div className="form-field" style={{ gridColumn: 'span 8' }}>
+                <label>Orden</label>
+                <InputText name="orden" value={header.orden} onChange={handleHeaderChange} type="number" />
+              </div>
+              <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 2' }}>
+                <Checkbox inputId="visible" checked={header.visible} onChange={e => setHeader(p => ({ ...p, visible: e.checked }))} />
+                <label htmlFor="visible">Visible</label>
+              </div>
+              <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 2' }}>
+                <Checkbox inputId="mail" checked={header.mail} onChange={e => setHeader(p => ({ ...p, mail: e.checked }))} />
+                <label htmlFor="mail">Enviado por mail</label>
+              </div>
             </div>
           </div>
           <div className="dialog-footer-btns" style={{ justifyContent: 'flex-start', gap: '0.6rem' }}>
@@ -286,7 +288,7 @@ export default function ReciboEmpleadoPage() {
               <div className="concepto-add-form">
                 <div className="form-field">
                   <label>Concepto</label>
-                  <Dropdown value={addForm.concepto} options={conceptoOptions} filter
+                  <Dropdown value={addForm.concepto} options={conceptoOptions} filter showClear
                     onChange={e => setAddForm(p => ({ ...p, concepto: e.value }))} placeholder="Seleccionar" style={{ width: '260px' }}
                     panelClassName="liquidaciones-dropdown-panel" />
                 </div>
@@ -341,7 +343,6 @@ export default function ReciboEmpleadoPage() {
                   <InputTextarea name="observaciones" value={header.observaciones} onChange={handleHeaderChange} rows={10} autoResize={false} />
                 </div>
               </div>
-              <Button label="Guardar" icon="fa-solid fa-check" size="small" onClick={handleGuardar} loading={saving} />
             </TabPanel>
           </TabView>
         </div>

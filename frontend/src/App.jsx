@@ -10,6 +10,12 @@ import ConceptoGeneralPage from './pages/sueldos/conceptos/ConceptoGeneralPage';
 import ClasesConceptoPage from './pages/sueldos/conceptos/ClasesConceptoPage';
 import TablasPage from './pages/sueldos/conceptos/TablasPage';
 import TiposTablaPage from './pages/sueldos/conceptos/TiposTablaPage';
+import NovedadesPage from './pages/sueldos/novedades/NovedadesPage';
+import NovedadesPorTablaPage from './pages/sueldos/novedades/NovedadesPorTablaPage';
+import NovedadesSecuencialesPage from './pages/sueldos/novedades/NovedadesSecuencialesPage';
+import NovedadesAutomaticasPage from './pages/sueldos/novedades/NovedadesAutomaticasPage';
+import TipoNovedadPage from './pages/sueldos/novedades/TipoNovedadPage';
+import EliminarNovedadesPage from './pages/sueldos/novedades/EliminarNovedadesPage';
 import LiquidacionesPage from './pages/sueldos/liquidaciones/LiquidacionesPage';
 import RecibosPage from './pages/sueldos/liquidaciones/RecibosPage';
 import ReciboEmpleadoPage from './pages/sueldos/liquidaciones/ReciboEmpleadoPage';
@@ -59,7 +65,12 @@ export default function App() {
           <Route path="sueldos/conceptos/clases" element={<ClasesConceptoPage />} />
           <Route path="sueldos/conceptos/tablas" element={<TablasPage />} />
           <Route path="sueldos/conceptos/tipos-tabla" element={<TiposTablaPage />} />
-          <Route path="sueldos/novedades" element={<div>Novedades</div>} />
+          <Route path="sueldos/novedades" element={<NovedadesPage />} />
+          <Route path="sueldos/novedades/por-tabla" element={<NovedadesPorTablaPage />} />
+          <Route path="sueldos/novedades/secuenciales" element={<NovedadesSecuencialesPage />} />
+          <Route path="sueldos/novedades/automaticas" element={<NovedadesAutomaticasPage />} />
+          <Route path="sueldos/novedades/tipos" element={<TipoNovedadPage />} />
+          <Route path="sueldos/novedades/eliminar" element={<EliminarNovedadesPage />} />
           {/* ayuda */}
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}

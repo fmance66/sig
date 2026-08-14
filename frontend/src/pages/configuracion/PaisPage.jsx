@@ -7,14 +7,16 @@ export default function PaisPage() {
       icon="fa-solid fa-flag"
       basePath="/paises"
       entityLabel="país"
-      idLabel="País"
-      filterFields={['id']}
+      idLabel="Código"
+      idSpan={3}
+      deleteLabelField="pais"
+      filterFields={['id', 'pais']}
       columns={[
-        { field: 'id', header: 'País' },
-        { field: 'codigo', header: 'Código', style: { width: '120px' } },
+        { field: 'id', header: 'Código', style: { width: '120px' } },
+        { field: 'pais', header: 'País' },
       ]}
       fields={[
-        { name: 'codigo', label: 'Código' },
+        { name: 'pais', label: 'País', required: true },
       ]}
     />
   );

@@ -2,9 +2,8 @@ const model = require('../models/novedades');
 
 async function list(req, res, next) {
   try {
-    const { empleado } = req.query;
-    if (!empleado) return res.status(400).json({ estado: 'error', mensaje: 'empleado es requerido' });
-    const data = await model.listByEmpleado(empleado);
+    const { empleado, tipoNovedad, fecha } = req.query;
+    const data = await model.list({ empleado, tipoNovedad, fecha });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }
@@ -20,6 +19,15 @@ async function create(req, res, next) {
   } catch (e) { next(e); }
 }
 
+async function update(req, res, next) {
+  try {
+    const { empleado, tipo_novedad, fecha } = req.params;
+    const data = await model.update(empleado, tipo_novedad, fecha, req.body.value);
+    if (!data) return res.status(404).json({ estado: 'error', mensaje: 'Novedad no encontrada' });
+    res.json({ estado: 'ok', data });
+  } catch (e) { next(e); }
+}
+
 async function remove(req, res, next) {
   try {
     const { empleado, tipo_novedad, fecha } = req.params;
@@ -29,4 +37,32 @@ async function remove(req, res, next) {
   } catch (e) { next(e); }
 }
 
-module.exports = { list, create, remove };
+async function removeMasivo(req, res, next) {
+  try {
+    const { empleado, tipoNovedad, fecha } = req.body;
+    const cantidad = await model.removeMasivo({ empleado, tipoNovedad, fecha });
+    res.json({ estado: 'ok', mensaje: `${cantidad} novedad(es) eliminada(s)`, resultado: { cantidad } });
+  } catch (e) { next(e); }
+}
+
+async function matrizGet(req, res, next) {
+  try {
+    const { fecha, empleado, tipoNovedad } = req.query;
+    if (!fecha) return res.status(400).json({ estado: 'error', mensaje: 'fecha es requerida' });
+    const data = await model.matrizGet(fecha, { empleado, tipoNovedad });
+    res.json({ estado: 'ok', registros: data.length, resultado: data });
+  } catch (e) { next(e); }
+}
+
+async function matrizSave(req, res, next) {
+  try {
+    const { fecha, filas } = req.body;
+    if (!fecha || !Array.isArray(filas)) {
+      return res.status(400).json({ estado: 'error', mensaje: 'fecha y filas[] son requeridos' });
+    }
+    const guardados = await model.matrizSave(fecha, filas);
+    res.json({ estado: 'ok', resultado: { guardados } });
+  } catch (e) { next(e); }
+}
+
+module.exports = { list, create, update, remove, removeMasivo, matrizGet, matrizSave };

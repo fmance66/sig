@@ -225,19 +225,19 @@ export default function FamiliaresTab({ empleadoId, toast }) {
             </div>
             <div className="form-field">
               <label>Adherente Obra Social</label>
-              <Dropdown name="adherente" value={form.adherente} options={SI_NO_OPTIONS} onChange={handleChange} />
+              <Dropdown name="adherente" value={form.adherente} options={SI_NO_OPTIONS} onChange={handleChange} showClear />
             </div>
             <div className="form-field">
               <label>Discapacidad</label>
-              <Dropdown name="discapacidad" value={form.discapacidad} options={SI_NO_OPTIONS} onChange={handleChange} />
+              <Dropdown name="discapacidad" value={form.discapacidad} options={SI_NO_OPTIONS} onChange={handleChange} showClear />
             </div>
             <div className="form-field">
               <label>Adopción</label>
-              <Dropdown name="adopcion" value={form.adopcion} options={SI_NO_OPTIONS} onChange={handleChange} />
+              <Dropdown name="adopcion" value={form.adopcion} options={SI_NO_OPTIONS} onChange={handleChange} showClear />
             </div>
             <div className="form-field">
               <label>Deducible</label>
-              <Dropdown name="deducible" value={form.deducible} options={SI_NO_OPTIONS} onChange={handleChange} />
+              <Dropdown name="deducible" value={form.deducible} options={SI_NO_OPTIONS} onChange={handleChange} showClear />
             </div>
             <div className="form-field">
               <label>Porcentaje</label>

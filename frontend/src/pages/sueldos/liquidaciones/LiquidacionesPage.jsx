@@ -28,6 +28,23 @@ const CONCEPTO_PREDEF_OPTIONS = [
   'TODO', 'GRUPAL', 'INDIVIDUAL', 'GENERAL', 'GRUPAL_INDIVIDUAL', 'GRUPAL_GENERAL', 'INDIVIDUAL_GENERAL',
 ].map(v => ({ label: v.replaceAll('_', ' + '), value: v }));
 
+function periodoToDate(periodo) {
+  const [mm, aaaa] = (periodo || '').split('/');
+  if (!mm || !aaaa) return null;
+  return new Date(Number(aaaa), Number(mm) - 1, 1);
+}
+
+function dateToPeriodo(date) {
+  if (!date) return '';
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
+}
+
+function mesAnteriorPeriodo() {
+  const hoy = new Date();
+  return dateToPeriodo(new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1));
+}
+
 const EMPTY_FORM = {
   periodo: '', tipo: 'MENSUAL', estado: 'ABIERTA', fecha: null, fecha_desde: null, fecha_hasta: null,
   descripcion: '', concepto_predef: 'TODO', fecha_pago: null, lugar_pago: '',
@@ -60,7 +77,7 @@ export default function LiquidacionesPage() {
   }
 
   function openNew() {
-    setForm(EMPTY_FORM);
+    setForm({ ...EMPTY_FORM, periodo: mesAnteriorPeriodo() });
     setEditMode(false);
     setDialogVisible(true);
   }
@@ -216,17 +233,27 @@ export default function LiquidacionesPage() {
         resizable={false}
       >
         <div className="form-grid">
-          <div className="form-field">
-            <label>Período <span className="required">*</span></label>
-            <InputText name="periodo" value={form.periodo} onChange={handleChange} disabled={editMode} placeholder="08/2026" />
-          </div>
-          <div className="form-field">
-            <label>Tipo</label>
-            <Dropdown name="tipo" value={form.tipo} options={TIPO_OPTIONS} onChange={handleChange} />
-          </div>
-          <div className="form-field">
-            <label>Estado</label>
-            <Dropdown name="estado" value={form.estado} options={ESTADO_OPTIONS} onChange={handleChange} />
+          <div className="form-row-12">
+            <div className="form-field" style={{ gridColumn: 'span 4' }}>
+              <label>Período <span className="required">*</span></label>
+              <Calendar
+                value={periodoToDate(form.periodo)}
+                onChange={e => setForm(p => ({ ...p, periodo: dateToPeriodo(e.value) }))}
+                view="month"
+                dateFormat="mm/yy"
+                disabled={editMode}
+                placeholder="08/2026"
+                showIcon
+              />
+            </div>
+            <div className="form-field" style={{ gridColumn: 'span 4' }}>
+              <label>Tipo</label>
+              <Dropdown name="tipo" value={form.tipo} options={TIPO_OPTIONS} onChange={handleChange} showClear />
+            </div>
+            <div className="form-field" style={{ gridColumn: 'span 4' }}>
+              <label>Estado</label>
+              <Dropdown name="estado" value={form.estado} options={ESTADO_OPTIONS} onChange={handleChange} showClear />
+            </div>
           </div>
           <div className="form-field form-field--full">
             <label>Descripción</label>
@@ -254,7 +281,7 @@ export default function LiquidacionesPage() {
           </div>
           <div className="form-field">
             <label>Conceptos</label>
-            <Dropdown name="concepto_predef" value={form.concepto_predef} options={CONCEPTO_PREDEF_OPTIONS} onChange={handleChange} />
+            <Dropdown name="concepto_predef" value={form.concepto_predef} options={CONCEPTO_PREDEF_OPTIONS} onChange={handleChange} showClear />
           </div>
           <div className="form-field">
             <label>Orden</label>

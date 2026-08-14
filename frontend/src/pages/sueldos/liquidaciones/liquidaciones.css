@@ -111,6 +111,32 @@
 
 /* .row-expansion: ver styles/global-tables.css */
 
+.form-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 1.5rem;
+}
+
+.form-field--checkbox label {
+  padding-top: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Fila con proporciones libres (grid de 12 columnas) dentro del form-grid de 2 columnas */
+.form-row-12 {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem 1.25rem;
+}
+
+.form-row-12 .form-field--checkbox label {
+  text-align: center;
+}
+
 /* Página de Recibo de Empleado */
 .recibo-layout {
   display: grid;

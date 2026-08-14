@@ -53,7 +53,7 @@ function cap(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export default function CatalogoPage({ title, icon, basePath, entityLabel, columns, fields, dialogWidth = '600px', filterFields = ['id', 'descripcion'], idLabel = 'Código' }) {
+export default function CatalogoPage({ title, icon, basePath, entityLabel, columns, fields, dialogWidth = '600px', filterFields = ['id', 'descripcion'], idLabel = 'Código', idFirst = true, idSpan = null, deleteLabelField = 'descripcion' }) {
   const api = useRef(createCatalogoApi(basePath)).current;
 
   const [registros, setRegistros]       = useState([]);
@@ -137,7 +137,7 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
 
   function handleDelete(row) {
     confirmDialog({
-      message: `¿Está seguro de eliminar "${row.descripcion || row.id}"?`,
+      message: `¿Está seguro de eliminar "${row[deleteLabelField] || row.id}"?`,
       header: 'Confirmar eliminación',
       icon: 'fa-solid fa-triangle-exclamation',
       acceptLabel: 'Eliminar',
@@ -172,6 +172,61 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
     <div className="acciones-col">
       <Button icon="fa-solid fa-pen" className="p-button-text p-button-sm" tooltip="Modificar" tooltipOptions={{ position: 'top' }} onClick={() => openEdit(row)} />
       <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleDelete(row)} />
+    </div>
+  );
+
+  function renderField(f) {
+    return (
+      <div key={f.name} className={`form-field${f.full ? ' form-field--full' : ''}${f.type === 'checkbox' ? ' form-field--checkbox' : ''}`} style={f.span ? { gridColumn: `span ${f.span}` } : undefined}>
+        {f.type === 'checkbox' ? (
+          <label className="checkbox-label">
+            <Checkbox checked={!!form[f.name]} onChange={e => handleSelectChange(f.name, e.checked)} />
+            {f.label}
+          </label>
+        ) : (
+          <label>{f.label} {f.required && <span className="required">*</span>}</label>
+        )}
+        {f.type === 'select' ? (
+          <Dropdown
+            value={form[f.name]}
+            options={f.options}
+            onChange={e => handleSelectChange(f.name, e.value)}
+            placeholder="Seleccionar..."
+            showClear
+          />
+        ) : f.type === 'date' ? (
+          <Calendar
+            value={form[f.name]}
+            onChange={e => handleSelectChange(f.name, e.value)}
+            dateFormat="dd/mm/yy"
+            showIcon
+            showButtonBar
+          />
+        ) : f.type === 'textarea' ? (
+          <InputTextarea
+            name={f.name}
+            value={form[f.name] ?? ''}
+            onChange={handleChange}
+            rows={3}
+            autoResize
+          />
+        ) : f.type === 'checkbox' ? null : (
+          <InputText
+            name={f.name}
+            value={form[f.name] ?? ''}
+            onChange={handleChange}
+            type={f.type === 'number' ? 'number' : 'text'}
+            placeholder={f.placeholder}
+          />
+        )}
+      </div>
+    );
+  }
+
+  const idField = (
+    <div className="form-field" style={idSpan ? { gridColumn: `span ${idSpan}` } : undefined}>
+      <label>{idLabel} {!editMode && <span className="required">*</span>}</label>
+      <InputText name="id" value={form.id} onChange={handleChange} disabled={editMode} />
     </div>
   );
 
@@ -222,56 +277,17 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
         resizable={false}
       >
         <div className="form-grid">
-          {!editMode && (
-            <div className="form-field">
-              <label>{idLabel} <span className="required">*</span></label>
-              <InputText name="id" value={form.id} onChange={handleChange} />
+          {idSpan ? (
+            <div className="form-row-12">
+              {idFirst && idField}
+              {fields[0] && renderField({ ...fields[0], span: 12 - idSpan })}
+              {!idFirst && idField}
             </div>
+          ) : (
+            idFirst && idField
           )}
-          {fields.map(f => (
-            <div key={f.name} className={`form-field${f.full ? ' form-field--full' : ''}${f.type === 'checkbox' ? ' form-field--checkbox' : ''}`}>
-              {f.type === 'checkbox' ? (
-                <label className="checkbox-label">
-                  <Checkbox checked={!!form[f.name]} onChange={e => handleSelectChange(f.name, e.checked)} />
-                  {f.label}
-                </label>
-              ) : (
-                <label>{f.label} {f.required && <span className="required">*</span>}</label>
-              )}
-              {f.type === 'select' ? (
-                <Dropdown
-                  value={form[f.name]}
-                  options={f.options}
-                  onChange={e => handleSelectChange(f.name, e.value)}
-                  placeholder="Seleccionar..."
-                />
-              ) : f.type === 'date' ? (
-                <Calendar
-                  value={form[f.name]}
-                  onChange={e => handleSelectChange(f.name, e.value)}
-                  dateFormat="dd/mm/yy"
-                  showIcon
-                  showButtonBar
-                />
-              ) : f.type === 'textarea' ? (
-                <InputTextarea
-                  name={f.name}
-                  value={form[f.name] ?? ''}
-                  onChange={handleChange}
-                  rows={3}
-                  autoResize
-                />
-              ) : f.type === 'checkbox' ? null : (
-                <InputText
-                  name={f.name}
-                  value={form[f.name] ?? ''}
-                  onChange={handleChange}
-                  type={f.type === 'number' ? 'number' : 'text'}
-                  placeholder={f.placeholder}
-                />
-              )}
-            </div>
-          ))}
+          {(idSpan ? fields.slice(1) : fields).map(f => renderField(f))}
+          {!idFirst && !idSpan && idField}
         </div>
       </Dialog>
     </div>

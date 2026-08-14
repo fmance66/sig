@@ -370,6 +370,21 @@
           "name": "Novedades",
           "item": [
             {
+              "name": "GET Novedades",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/novedades",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "novedades"
+                  ]
+                }
+              }
+            },
+            {
               "name": "GET Novedades por Empleado",
               "request": {
                 "method": "GET",
@@ -403,7 +418,24 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"empleado\": \"1\",\n  \"tipo_novedad\": 1,\n  \"fecha\": \"2024-03-01\",\n  \"value\": \"1\"\n}"
+                  "raw": "{\n  \"empleado\": \"1\",\n  \"tipo_novedad\": \"HORA_EXTRA\",\n  \"fecha\": \"2024-03-01\",\n  \"value\": \"1\"\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Novedad",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/novedades/1/HORA_EXTRA/2024-03-01",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": \"2\"\n}"
                 }
               }
             },
@@ -411,7 +443,92 @@
               "name": "DELETE Novedad",
               "request": {
                 "method": "DELETE",
-                "url": "{{base_url}}/novedades/1/1/2024-03-01"
+                "url": "{{base_url}}/novedades/1/HORA_EXTRA/2024-03-01"
+              }
+            },
+            {
+              "name": "DELETE Novedades Masivo",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/novedades",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipoNovedad\": \"HORA_EXTRA\",\n  \"fecha\": \"2024-03-01\"\n}"
+                }
+              }
+            },
+            {
+              "name": "GET Matriz de Novedades",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/novedades/matriz?fecha=2024-03-01",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "novedades",
+                    "matriz"
+                  ],
+                  "query": [
+                    {
+                      "key": "fecha",
+                      "value": "2024-03-01"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "POST Guardar Matriz de Novedades",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/novedades/matriz",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fecha\": \"2024-03-01\",\n  \"filas\": [\n    { \"empleado\": 1, \"tipo_novedad\": \"HORA_EXTRA\", \"value\": \"3\" }\n  ]\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Novedades Automáticas",
+          "item": [
+            {
+              "name": "GET Empleados Candidatos",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/novedades-automaticas/empleados"
+              }
+            },
+            {
+              "name": "POST Generar Novedades Automáticas",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/novedades-automaticas",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipoNovedad\": \"HORA_EXTRA\",\n  \"fecha\": \"2024-03-01\",\n  \"value\": \"1\",\n  \"empleados\": [1, 2]\n}"
+                }
               }
             }
           ]
@@ -1219,7 +1336,7 @@
                   "name": "GET Pais por ID",
                   "request": {
                     "method": "GET",
-                    "url": "{{base_url}}/paises/Argentina"
+                    "url": "{{base_url}}/paises/208"
                   }
                 },
                 {
@@ -1235,7 +1352,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"id\": \"Chile\",\n  \"codigo\": \"208\"\n}"
+                      "raw": "{\n  \"id\": \"208\",\n  \"pais\": \"Chile\"\n}"
                     }
                   }
                 },
@@ -1243,7 +1360,7 @@
                   "name": "PUT Pais",
                   "request": {
                     "method": "PUT",
-                    "url": "{{base_url}}/paises/Chile",
+                    "url": "{{base_url}}/paises/208",
                     "header": [
                       {
                         "key": "Content-Type",
@@ -1252,7 +1369,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"codigo\": \"209\"\n}"
+                      "raw": "{\n  \"pais\": \"Chile\"\n}"
                     }
                   }
                 },
@@ -1260,7 +1377,7 @@
                   "name": "DELETE Pais",
                   "request": {
                     "method": "DELETE",
-                    "url": "{{base_url}}/paises/Chile"
+                    "url": "{{base_url}}/paises/208"
                   }
                 }
               ]
@@ -1788,6 +1905,66 @@
                       "mode": "raw",
                       "raw": "{\n  \"aporte_sipa\": true,\n  \"contribucion_sipa\": true,\n  \"repetible\": false\n}"
                     }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Tipos de Novedad",
+              "item": [
+                {
+                  "name": "GET Tipos de Novedad",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/tipos-novedad"
+                  }
+                },
+                {
+                  "name": "GET Tipo de Novedad por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/tipos-novedad/HORA_EXTRA"
+                  }
+                },
+                {
+                  "name": "POST Tipo de Novedad",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/tipos-novedad",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"HORA_EXTRA\",\n  \"descripcion\": \"Hora extra del empleado\",\n  \"data_type\": \"DECIMAL\",\n  \"length\": 4,\n  \"decimals\": 2,\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Tipo de Novedad",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/tipos-novedad/HORA_EXTRA",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Hora extra del empleado\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Tipo de Novedad",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/tipos-novedad/HORA_EXTRA"
                   }
                 }
               ]

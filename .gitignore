@@ -30,3 +30,6 @@ db/postgresql/data/
 frontend/dist/
 frontend/dist-ssr/
 .copilot-commit-message-instructions.md
+
+# Documentación original (Word, binarios pesados, no aportan al diff de Copilot)
+frontend/docs/original/*.docx

@@ -33,6 +33,18 @@
   color: #374151;
 }
 
+/* Fila con proporciones libres (grid de 12 columnas) dentro del form-grid de 2 columnas */
+.form-row-12 {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem 1.25rem;
+}
+
+.form-row-12 .form-field--checkbox label {
+  text-align: center;
+}
+
 /* Título de sección dentro de una tab (Salario / Otros Datos / etc.) */
 .form-section-title {
   font-size: 0.82rem;

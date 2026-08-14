@@ -138,7 +138,7 @@ export default function ConceptosDeGrupoTab({ grupoId, toast }) {
             </div>
             <div className="form-field">
               <label>Liquidación</label>
-              <Dropdown name="liquidacion" value={form.liquidacion} options={LIQUIDACION_OPTIONS} onChange={handleChange} />
+              <Dropdown name="liquidacion" value={form.liquidacion} options={LIQUIDACION_OPTIONS} onChange={handleChange} showClear />
             </div>
             <div className="form-field">
               <label>Unidad</label>

@@ -24,7 +24,7 @@ export default function RecibosRecalculadosPage() {
   const toast = useRef(null);
 
   const [conceptosCatalogo, setConceptosCatalogo] = useState([]);
-  const [conceptoForm, setConceptoForm] = useState({ concepto: '', unidad_manual: '', importe_manual: '' });
+  const [conceptoForm, setConceptoForm] = useState({ concepto: null, unidad_manual: '', importe_manual: '' });
   const [aplicando, setAplicando] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -81,7 +81,7 @@ export default function RecibosRecalculadosPage() {
     try {
       const res = await api.adicionarConceptoLote({ filtro, ...conceptoForm });
       toast.current.show({ severity: 'success', summary: 'OK', detail: res.data.mensaje });
-      setConceptoForm({ concepto: '', unidad_manual: '', importe_manual: '' });
+      setConceptoForm({ concepto: null, unidad_manual: '', importe_manual: '' });
     } catch (err) {
       const msg = err.response?.data?.mensaje || 'No se pudo adicionar el concepto';
       toast.current.show({ severity: 'error', summary: 'Error', detail: msg });
@@ -156,7 +156,7 @@ export default function RecibosRecalculadosPage() {
           <div className="concepto-add-form">
             <div className="form-field">
               <label>Concepto</label>
-              <Dropdown value={conceptoForm.concepto} options={conceptoOptions} filter
+              <Dropdown value={conceptoForm.concepto} options={conceptoOptions} filter showClear
                 onChange={e => setConceptoForm(p => ({ ...p, concepto: e.value }))} placeholder="Seleccionar" style={{ width: '280px' }}
                 panelClassName="liquidaciones-dropdown-panel" />
             </div>
