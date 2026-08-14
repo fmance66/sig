@@ -19,6 +19,11 @@ router.use('/familiares', require('./familiares'));
 router.use('/novedades', require('./novedades'));
 router.use('/novedades-automaticas', require('./novedadesAutomaticas'));
 router.use('/historial', require('./historial'));
+router.use('/historial-empleado', require('./historialEmpleado'));
+router.use('/historial-automatico', require('./historialAutomatico'));
+router.use('/ausentismos', require('./ausentismo'));
+router.use('/presentismos', require('./presentismo'));
+router.use('/jornada-laboral', require('./jornadaLaboral'));
 router.use('/conceptos-empleado', require('./conceptosEmpleado'));
 router.use('/conceptos-grupo', require('./conceptosGrupo'));
 router.use('/liquidaciones', require('./liquidaciones'));
@@ -49,6 +54,16 @@ router.use('/codigos-zona',         catalogo('sld_codigo_zona',        ['descrip
 router.use('/tipos-novedad', catalogo('sld_tipo_novedad',
   ['descripcion', 'data_type', 'length', 'decimals', 'orden'],
   ['length', 'decimals', 'orden'], 'tipo de novedad'));
+
+router.use('/campos-historial', catalogo('sld_campo_historial',
+  ['descripcion', 'data_type', 'length', 'decimals', 'orden'],
+  ['length', 'decimals', 'orden'], 'campo de historial'));
+
+router.use('/motivos-ausentismo', catalogo('sld_motivo_ausentismo',
+  ['tipo', 'descripcion', 'simbolo', 'orden'], ['orden'], 'motivo de ausentismo'));
+
+router.use('/feriados', catalogo('sld_feriado',
+  ['descripcion'], [], 'feriado', { idColumn: 'fecha' }));
 
 router.use('/monedas', catalogo('bas_moneda',
   ['nombre', 'simbolo', 'simbolos', 'cotizacion', 'color', 'icono', 'orden'],

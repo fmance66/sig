@@ -129,7 +129,7 @@ export default function TablasPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-table" /> Tabla</h2>
+      <h2 className="page-title"><i className="fa-solid fa-table" /> Tablas</h2>
 
       <div className="form-grid" style={{ marginBottom: '1rem' }}>
         <div className="form-field">

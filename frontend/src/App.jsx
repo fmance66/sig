@@ -16,6 +16,17 @@ import NovedadesSecuencialesPage from './pages/sueldos/novedades/NovedadesSecuen
 import NovedadesAutomaticasPage from './pages/sueldos/novedades/NovedadesAutomaticasPage';
 import TipoNovedadPage from './pages/sueldos/novedades/TipoNovedadPage';
 import EliminarNovedadesPage from './pages/sueldos/novedades/EliminarNovedadesPage';
+import HistorialesPage from './pages/sueldos/historial/HistorialesPage';
+import HistorialesEmpleadoPage from './pages/sueldos/historial/HistorialesEmpleadoPage';
+import HistorialesAutomaticosPage from './pages/sueldos/historial/HistorialesAutomaticosPage';
+import CampoHistorialPage from './pages/sueldos/historial/CampoHistorialPage';
+import EliminarHistorialesPage from './pages/sueldos/historial/EliminarHistorialesPage';
+import EliminarHistorialesEmpleadoPage from './pages/sueldos/historial/EliminarHistorialesEmpleadoPage';
+import MotivoAusentismoPage from './pages/sueldos/asistencia/MotivoAusentismoPage';
+import AusentismoPage from './pages/sueldos/asistencia/AusentismoPage';
+import PresentismoPage from './pages/sueldos/asistencia/PresentismoPage';
+import JornadaLaboralPage from './pages/sueldos/asistencia/JornadaLaboralPage';
+import FeriadosPage from './pages/sueldos/asistencia/FeriadosPage';
 import LiquidacionesPage from './pages/sueldos/liquidaciones/LiquidacionesPage';
 import RecibosPage from './pages/sueldos/liquidaciones/RecibosPage';
 import ReciboEmpleadoPage from './pages/sueldos/liquidaciones/ReciboEmpleadoPage';
@@ -71,6 +82,17 @@ export default function App() {
           <Route path="sueldos/novedades/automaticas" element={<NovedadesAutomaticasPage />} />
           <Route path="sueldos/novedades/tipos" element={<TipoNovedadPage />} />
           <Route path="sueldos/novedades/eliminar" element={<EliminarNovedadesPage />} />
+          <Route path="sueldos/historial" element={<HistorialesPage />} />
+          <Route path="sueldos/historial/empleado" element={<HistorialesEmpleadoPage />} />
+          <Route path="sueldos/historial/automaticos" element={<HistorialesAutomaticosPage />} />
+          <Route path="sueldos/historial/campos" element={<CampoHistorialPage />} />
+          <Route path="sueldos/historial/eliminar" element={<EliminarHistorialesPage />} />
+          <Route path="sueldos/historial/empleado/eliminar" element={<EliminarHistorialesEmpleadoPage />} />
+          <Route path="sueldos/asistencia/motivos-ausentismo" element={<MotivoAusentismoPage />} />
+          <Route path="sueldos/asistencia/ausentismo" element={<AusentismoPage />} />
+          <Route path="sueldos/asistencia/presentismo" element={<PresentismoPage />} />
+          <Route path="sueldos/asistencia/jornada-laboral" element={<JornadaLaboralPage />} />
+          <Route path="sueldos/asistencia/feriados" element={<FeriadosPage />} />
           {/* ayuda */}
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}

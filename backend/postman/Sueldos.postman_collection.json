@@ -537,28 +537,14 @@
           "name": "Historial",
           "item": [
             {
-              "name": "GET Historial por Empleado",
+              "name": "GET Historiales",
               "request": {
                 "method": "GET",
-                "url": {
-                  "raw": "{{base_url}}/historial?empleado=1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "historial"
-                  ],
-                  "query": [
-                    {
-                      "key": "empleado",
-                      "value": "1"
-                    }
-                  ]
-                }
+                "url": "{{base_url}}/historial"
               }
             },
             {
-              "name": "POST Registro de Historial",
+              "name": "POST Historial",
               "request": {
                 "method": "POST",
                 "url": "{{base_url}}/historial",
@@ -570,16 +556,514 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"empleado\": \"1\",\n  \"campo\": 1,\n  \"fecha_desde\": \"2024-03-01\",\n  \"fecha_hasta\": \"2024-06-30\",\n  \"valor\": \"280000\"\n}"
+                  "raw": "{\n  \"campo\": \"SUELDO_BASICO\",\n  \"fecha_desde\": \"2024-03-01\",\n  \"fecha_hasta\": \"2024-06-30\",\n  \"valor\": \"280000\"\n}"
                 }
               }
             },
             {
-              "name": "DELETE Registro de Historial",
+              "name": "PUT Historial",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/historial/SUELDO_BASICO/2024-03-01",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fecha_hasta\": \"2024-07-31\",\n  \"valor\": \"290000\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Historial",
               "request": {
                 "method": "DELETE",
-                "url": "{{base_url}}/historial/1/1/2024-03-01"
+                "url": "{{base_url}}/historial/SUELDO_BASICO/2024-03-01"
               }
+            },
+            {
+              "name": "DELETE Historiales Masivo",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/historial",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"campo\": \"SUELDO_BASICO\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Historial de Empleado",
+          "item": [
+            {
+              "name": "GET Historial por Empleado",
+              "request": {
+                "method": "GET",
+                "url": {
+                  "raw": "{{base_url}}/historial-empleado?empleado=1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "historial-empleado"
+                  ],
+                  "query": [
+                    {
+                      "key": "empleado",
+                      "value": "1"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "POST Registro de Historial de Empleado",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/historial-empleado",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empleado\": 1,\n  \"campo\": \"SUELDO_BASICO\",\n  \"fecha_desde\": \"2024-03-01\",\n  \"fecha_hasta\": \"2024-06-30\",\n  \"valor\": \"280000\"\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Registro de Historial de Empleado",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/historial-empleado/1/SUELDO_BASICO/2024-03-01",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fecha_hasta\": \"2024-07-31\",\n  \"valor\": \"290000\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Registro de Historial de Empleado",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/historial-empleado/1/SUELDO_BASICO/2024-03-01"
+              }
+            },
+            {
+              "name": "DELETE Historiales de Empleado Masivo",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/historial-empleado",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empleado\": 1\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Historial Automático",
+          "item": [
+            {
+              "name": "GET Empleados Candidatos",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/historial-automatico/empleados"
+              }
+            },
+            {
+              "name": "POST Generar Historiales Automáticos",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/historial-automatico",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"campo\": \"SUELDO_BASICO\",\n  \"fechaDesde\": \"2024-03-01\",\n  \"fechaHasta\": \"2024-06-30\",\n  \"valor\": \"280000\",\n  \"empleados\": [1, 2]\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Campos de Historial",
+          "item": [
+            {
+              "name": "GET Campos de Historial",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/campos-historial"
+              }
+            },
+            {
+              "name": "GET Campo de Historial por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/campos-historial/SUELDO_BASICO"
+              }
+            },
+            {
+              "name": "POST Campo de Historial",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/campos-historial",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"SUELDO_BASICO\",\n  \"descripcion\": \"Sueldo básico\",\n  \"data_type\": \"DECIMAL\",\n  \"length\": 10,\n  \"decimals\": 2,\n  \"orden\": 1\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Campo de Historial",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/campos-historial/SUELDO_BASICO",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descripcion\": \"Sueldo básico mensual\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Campo de Historial",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/campos-historial/SUELDO_BASICO"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Asistencia",
+          "item": [
+            {
+              "name": "Motivos de Ausentismo",
+              "item": [
+                {
+                  "name": "GET Motivos de Ausentismo",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/motivos-ausentismo"
+                  }
+                },
+                {
+                  "name": "GET Motivo de Ausentismo por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/motivos-ausentismo/ENFERMEDAD"
+                  }
+                },
+                {
+                  "name": "POST Motivo de Ausentismo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/motivos-ausentismo",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"ENFERMEDAD\",\n  \"tipo\": \"INVOLUNTARIO\",\n  \"descripcion\": \"Ausencia por enfermedad\",\n  \"simbolo\": \"ENF\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Motivo de Ausentismo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/motivos-ausentismo/ENFERMEDAD",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Ausencia por enfermedad (actualizado)\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Motivo de Ausentismo",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/motivos-ausentismo/ENFERMEDAD"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Ausentismo",
+              "item": [
+                {
+                  "name": "GET Ausentismos",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/ausentismos?empleado=1"
+                  }
+                },
+                {
+                  "name": "POST Ausentismo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/ausentismos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"empleado\": 1,\n  \"motivo\": \"ENFERMEDAD\",\n  \"fecha_desde\": \"2024-03-01\",\n  \"fecha_hasta\": \"2024-03-05\",\n  \"observaciones\": \"Reposo por gripe\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Ausentismo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/ausentismos/1/ENFERMEDAD/2024-03-01",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"fecha_hasta\": \"2024-03-07\",\n  \"observaciones\": \"Reposo extendido\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Ausentismo",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/ausentismos/1/ENFERMEDAD/2024-03-01"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Presentismo",
+              "item": [
+                {
+                  "name": "GET Presentismos",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/presentismos?empleado=1"
+                  }
+                },
+                {
+                  "name": "POST Presentismo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/presentismos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"empleado\": 1,\n  \"fecha\": \"2024-03-01\",\n  \"hora\": \"08:00:00\",\n  \"tipo\": \"ENTRADA\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Presentismo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/presentismos/1/2024-03-01/08:00:00",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"tipo\": \"SALIDA\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Presentismo",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/presentismos/1/2024-03-01/08:00:00"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Jornada Laboral",
+              "item": [
+                {
+                  "name": "GET Jornadas Laborales",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/jornada-laboral"
+                  }
+                },
+                {
+                  "name": "GET Jornada Laboral por Empleado",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/jornada-laboral/1"
+                  }
+                },
+                {
+                  "name": "POST Jornada Laboral",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/jornada-laboral",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"empleado\": 1,\n  \"horario\": \"FIJO\",\n  \"feriados\": \"NO\",\n  \"horarios\": [\n    {\n      \"dia\": \"LUNES\",\n      \"entrada\": \"08:00:00\",\n      \"salida\": \"17:00:00\"\n    },\n    {\n      \"dia\": \"MARTES\",\n      \"entrada\": \"08:00:00\",\n      \"salida\": \"17:00:00\"\n    },\n    {\n      \"dia\": \"MIERCOLES\",\n      \"entrada\": \"08:00:00\",\n      \"salida\": \"17:00:00\"\n    },\n    {\n      \"dia\": \"JUEVES\",\n      \"entrada\": \"08:00:00\",\n      \"salida\": \"17:00:00\"\n    },\n    {\n      \"dia\": \"VIERNES\",\n      \"entrada\": \"08:00:00\",\n      \"salida\": \"17:00:00\"\n    }\n  ]\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Jornada Laboral",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/jornada-laboral/1",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"horario\": \"ROTATIVO\",\n  \"feriados\": \"SI\",\n  \"horarios\": [\n    {\n      \"dia\": \"LUNES\",\n      \"entrada\": \"09:00:00\",\n      \"salida\": \"18:00:00\"\n    }\n  ]\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Jornada Laboral",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/jornada-laboral/1"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Feriados",
+              "item": [
+                {
+                  "name": "GET Feriados",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/feriados"
+                  }
+                },
+                {
+                  "name": "GET Feriado por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/feriados/2024-05-25"
+                  }
+                },
+                {
+                  "name": "POST Feriado",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/feriados",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"2024-05-25\",\n  \"descripcion\": \"Día de la Revolución de Mayo\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Feriado",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/feriados/2024-05-25",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Revolución de Mayo (actualizado)\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Feriado",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/feriados/2024-05-25"
+                  }
+                }
+              ]
             }
           ]
         },

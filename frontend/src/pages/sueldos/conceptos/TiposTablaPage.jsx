@@ -177,7 +177,7 @@ export default function TiposTablaPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-table-cells" /> Tipo de Tabla</h2>
+      <h2 className="page-title"><i className="fa-solid fa-table-cells" /> Tipos de Tabla</h2>
 
       <DataTable
         value={tipos}

@@ -251,12 +251,14 @@ body {
   font-size: 0.78rem;
   font-weight: 400;
   color: #1a365d;
+  flex: 1 1 auto;
 }
 
 .app-menubar .p-menubar .p-submenu-list .p-menuitem-link .p-menuitem-icon {
   font-size: 0.7rem;
   color: #2b6cb0;
   width: 1rem;
+  flex-shrink: 0;
   text-align: center;
 }
 

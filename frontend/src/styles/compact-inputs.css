@@ -109,6 +109,21 @@
   padding: 0.35rem 0.6rem;
 }
 
+/* Buscador dentro del panel de un Dropdown con filter (prop `filter`).
+   El panel también se renderiza en un portal fuera de .form-field, así que
+   sin esto el input de búsqueda queda con el tamaño default de PrimeReact
+   (font-size: 1rem; padding: 0.75rem) mientras el resto de la app usa el
+   tamaño compacto — se ve mucho más grande que todo lo demás. */
+.p-dropdown-filter-container .p-dropdown-filter {
+  font-size: 0.85rem;
+  padding: 0.5rem 1.75rem 0.5rem 0.7rem;
+}
+
+.p-dropdown-filter-container .p-dropdown-filter-icon {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
 /* Tooltips (prop tooltip="..." de Button y demás componentes PrimeReact).
    También se renderizan en un portal fuera de cualquier contenedor, van
    globales para toda la app. */

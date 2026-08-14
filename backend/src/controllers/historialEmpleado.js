@@ -1,28 +1,28 @@
-const model = require('../models/historial');
+const model = require('../models/historialEmpleado');
 
 async function list(req, res, next) {
   try {
-    const { campo, fechaDesde, fechaHasta } = req.query;
-    const data = await model.list({ campo, fechaDesde, fechaHasta });
+    const { empleado, campo, fechaDesde, fechaHasta } = req.query;
+    const data = await model.list({ empleado, campo, fechaDesde, fechaHasta });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }
 
 async function create(req, res, next) {
   try {
-    const { campo, fecha_desde } = req.body;
-    if (!campo || !fecha_desde) {
-      return res.status(400).json({ estado: 'error', mensaje: 'campo y fecha_desde son requeridos' });
+    const { empleado, campo, fecha_desde } = req.body;
+    if (!empleado || !campo || !fecha_desde) {
+      return res.status(400).json({ estado: 'error', mensaje: 'empleado, campo y fecha_desde son requeridos' });
     }
-    const data = await model.create(req.body);
+    const data = await model.create(empleado, req.body);
     res.status(201).json({ estado: 'ok', data });
   } catch (e) { next(e); }
 }
 
 async function update(req, res, next) {
   try {
-    const { campo, fecha_desde } = req.params;
-    const data = await model.update(campo, fecha_desde, req.body);
+    const { empleado, campo, fecha_desde } = req.params;
+    const data = await model.update(empleado, campo, fecha_desde, req.body);
     if (!data) return res.status(404).json({ estado: 'error', mensaje: 'Registro de historial no encontrado' });
     res.json({ estado: 'ok', data });
   } catch (e) { next(e); }
@@ -30,8 +30,8 @@ async function update(req, res, next) {
 
 async function remove(req, res, next) {
   try {
-    const { campo, fecha_desde } = req.params;
-    const ok = await model.remove(campo, fecha_desde);
+    const { empleado, campo, fecha_desde } = req.params;
+    const ok = await model.remove(empleado, campo, fecha_desde);
     if (!ok) return res.status(404).json({ estado: 'error', mensaje: 'Registro de historial no encontrado' });
     res.json({ estado: 'ok', mensaje: 'Registro eliminado' });
   } catch (e) { next(e); }
@@ -39,8 +39,8 @@ async function remove(req, res, next) {
 
 async function removeMasivo(req, res, next) {
   try {
-    const { campo, fechaDesde } = req.body;
-    const cantidad = await model.removeMasivo({ campo, fechaDesde });
+    const { empleado, campo, fechaDesde } = req.body;
+    const cantidad = await model.removeMasivo({ empleado, campo, fechaDesde });
     res.json({ estado: 'ok', mensaje: `${cantidad} registro(s) eliminado(s)`, resultado: { cantidad } });
   } catch (e) { next(e); }
 }

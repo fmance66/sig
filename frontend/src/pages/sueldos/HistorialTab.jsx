@@ -6,7 +6,7 @@ import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { toIsoDate } from '../../utils/dates';
-import * as api from '../../api/historial';
+import * as api from '../../api/historialEmpleado';
 
 const EMPTY = { campo: '', fecha_desde: null, fecha_hasta: null, valor: '' };
 
@@ -55,7 +55,7 @@ export default function HistorialTab({ empleadoId, toast }) {
     }
     setSaving(true);
     try {
-      await api.createHistorial({
+      await api.createHistorialEmpleado({
         empleado: empleadoId,
         campo: form.campo,
         fecha_desde: toIsoDate(form.fecha_desde),
