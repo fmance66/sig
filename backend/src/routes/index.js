@@ -109,18 +109,13 @@ router.use('/tipos-tabla', tiposTablaRouter);
 router.use('/conceptos', require('./conceptos'));
 router.use('/conceptos-general', require('./conceptoGeneral'));
 
-const FORMULARIO_COLUMNS = [
-  'descripcion', 'orientacion', 'pagina', 'margen_superior', 'margen_inferior', 'margen_izquierdo',
-  'margen_derecho', 'formulario_hermano', 'formula_archivo', 'columnas', 'filas', 'copias',
-  'propiedad', 'etiquetas', 'orden',
-];
-const FORMULARIO_NUMERIC = ['margen_superior', 'margen_inferior', 'margen_izquierdo', 'margen_derecho', 'columnas', 'filas', 'copias', 'orden'];
-
+const { createFormularioModel } = require('../models/formulario');
+const { createFormularioController } = require('../controllers/formulario');
 const { createParametroModel } = require('../models/formularioParametro');
 const { createParametroController } = require('../controllers/formularioParametro');
 
 function formularioRouter(tableName, parametroTable) {
-  const router = catalogo(tableName, FORMULARIO_COLUMNS, FORMULARIO_NUMERIC, 'formulario');
+  const router = createCatalogoRouter(createFormularioController(createFormularioModel(tableName), 'formulario'));
   const parametroController = createParametroController(createParametroModel(parametroTable));
   router.get('/:id/parametros', parametroController.list);
   router.post('/:id/parametros', parametroController.create);

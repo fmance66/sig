@@ -11,6 +11,19 @@ function filtroDesdeQuery(q) {
   };
 }
 
+// Recibos elegidos a mano en la grilla (checkbox de selección) — si viene, el PDF se arma
+// solo con esos en vez de re-correr el filtro. q.recibos: JSON de [periodo,empleado,numero][].
+function recibosSeleccionados(q) {
+  if (!q.recibos) return null;
+  try {
+    const arr = JSON.parse(q.recibos);
+    if (!Array.isArray(arr) || !arr.length) return null;
+    return arr.map(([periodo, empleado, numero]) => ({ periodo, empleado, numero }));
+  } catch {
+    return null;
+  }
+}
+
 function wrap(fn) {
   return async (req, res, next) => {
     try {
@@ -40,8 +53,7 @@ module.exports = {
 
   recibosSueldoPdf: async (req, res, next) => {
     try {
-      const filtro = filtroDesdeQuery(req.query);
-      const rows = await recibosModel.list(filtro);
+      const rows = recibosSeleccionados(req.query) ?? await recibosModel.list(filtroDesdeQuery(req.query));
       if (!rows.length) return res.status(404).json({ estado: 'error', mensaje: 'No hay recibos para los filtros seleccionados' });
       if (rows.length > MAX_RECIBOS_PDF) {
         return res.status(400).json({ estado: 'error', mensaje: `Demasiados recibos para exportar (máx. ${MAX_RECIBOS_PDF}) — acote los filtros` });
@@ -55,9 +67,11 @@ module.exports = {
 
   libroSueldoPdf: async (req, res, next) => {
     try {
-      const filtro = filtroDesdeQuery(req.query);
-      const rows = await recibosModel.list(filtro);
+      const rows = recibosSeleccionados(req.query) ?? await recibosModel.list(filtroDesdeQuery(req.query));
       if (!rows.length) return res.status(404).json({ estado: 'error', mensaje: 'No hay recibos para los filtros seleccionados' });
+      if (rows.length > MAX_RECIBOS_PDF) {
+        return res.status(400).json({ estado: 'error', mensaje: `Demasiados recibos para exportar (máx. ${MAX_RECIBOS_PDF}) — acote los filtros` });
+      }
       const stream = await pdfInformes.streamLibroPdf(rows);
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', 'inline; filename="libro-sueldos.pdf"');

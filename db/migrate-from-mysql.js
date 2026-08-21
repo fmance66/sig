@@ -111,6 +111,7 @@ const TARGET_TABLES = new Set([
   'sld_historial','sld_fila',
   'sld_importacion','sld_importacion_novedad',
   'sld_informe','sld_informe_campo',
+  'bas_formulario','bas_formulario_parametro',
 ]);
 
 // ---------------------------------------------------------------------------
@@ -322,6 +323,149 @@ function convertTokens(tableName, tokens, colNames, resolverMaps) {
 }
 
 // ---------------------------------------------------------------------------
+// bas_formulario / bas_formulario_parametro (legacy): tabla única compartida
+// por varios módulos del ERP vía la columna `tipo` (FACTURA_VTA, ITEM, COBRO,
+// SUELDO, LIBRO_SUELDO, etc.). Acá solo nos interesan SUELDO → recibo y
+// LIBRO_SUELDO → libro; el resto son de otros módulos y se descartan.
+//
+// A diferencia del resto de las tablas (mapeo 1:1 de columnas), acá hay que:
+//  - elegir la tabla destino según el valor de `tipo` de cada fila,
+//  - renombrar/reordenar columnas (id→nombre, top_margin→margen_superior, etc.),
+//  - agregar `empresa` (antes cada empresa era una base MySQL separada; ahora
+//    conviven todas en sld_formulario_recibo/libro, con UNIQUE(empresa,nombre)),
+//  - resolver formulario_hno (auto-referencia) y bas_formulario_parametro.formulario
+//    (FK al padre) contra el `id` numérico nuevo — que no existe todavía en este
+//    script porque lo asigna Postgres al insertar (SERIAL). Se resuelve con un
+//    INSERT ... SELECT / UPDATE ... FROM que busca por (empresa, nombre) en vez
+//    de por id, ya en el propio SQL generado (no hace falta un mapa en JS).
+// ---------------------------------------------------------------------------
+const FORMULARIO_TIPO_TABLE = { SUELDO: 'sld_formulario_recibo', LIBRO_SUELDO: 'sld_formulario_libro' };
+
+function sqlLiteral(str) {
+  return `'${str.replace(/'/g, "''")}'`;
+}
+
+// Token ya parseado por parseValueTokens (con comillas PG y '' escapado) → valor real.
+function unquoteToken(tok) {
+  if (tok === undefined || tok === 'NULL' || tok === '__BINARY__') return null;
+  if (tok.startsWith("'")) return tok.slice(1, -1).replace(/''/g, "'");
+  return tok;
+}
+
+function truncateLiteral(tok, maxLen) {
+  const raw = unquoteToken(tok);
+  if (raw === null) return 'NULL';
+  return sqlLiteral(raw.length > maxLen ? raw.slice(0, maxLen) : raw);
+}
+
+const FORMULARIO_COLS = ['empresa', 'nombre', 'descripcion', 'orientacion', 'pagina', 'margen_superior',
+  'margen_inferior', 'margen_izquierdo', 'margen_derecho', 'formula_archivo', 'columnas', 'filas',
+  'copias', 'propiedad', 'etiquetas', 'orden'];
+
+function transformBasFormulario(line, colNames, empresaNum) {
+  const valuesIdx = line.indexOf(' VALUES ');
+  if (valuesIdx === -1 || !colNames.length) return '';
+  const rest = line.slice(valuesIdx + 8);
+
+  const byTable = { sld_formulario_recibo: [], sld_formulario_libro: [] };
+  const hermanos = { sld_formulario_recibo: [], sld_formulario_libro: [] };
+
+  for (const tContent of splitTuples(rest)) {
+    const tokens = parseValueTokens(tContent);
+    const row = {};
+    colNames.forEach((c, i) => { row[c] = tokens[i]; });
+
+    const targetTable = FORMULARIO_TIPO_TABLE[unquoteToken(row.tipo)];
+    if (!targetTable) continue;   // otro módulo del ERP (FACTURA_VTA, ITEM, etc.) — no aplica
+
+    const nombre = unquoteToken(row.id);
+    if (!nombre) continue;
+
+    const etiquetas = row.etiquetas === '1' ? 'TRUE' : (row.etiquetas === '0' ? 'FALSE' : 'NULL');
+
+    byTable[targetTable].push({
+      empresa: String(empresaNum),
+      nombre: sqlLiteral(nombre),
+      descripcion: row.descripcion,
+      orientacion: row.orientation,
+      pagina: row.page_size,
+      margen_superior: row.top_margin,
+      margen_inferior: row.bottom_margin,
+      margen_izquierdo: row.left_margin,
+      margen_derecho: row.right_margin,
+      formula_archivo: row.archivo,
+      columnas: row.columnas,
+      filas: row.filas,
+      copias: row.copias,
+      propiedad: row.propiedad,
+      etiquetas,
+      orden: row.orden,
+    });
+
+    const hno = unquoteToken(row.formulario_hno);
+    if (hno) hermanos[targetTable].push({ nombre, hno });
+  }
+
+  const statements = [];
+  for (const [table, rows] of Object.entries(byTable)) {
+    if (!rows.length) continue;
+    const tuples = rows.map(r => `(${FORMULARIO_COLS.map(c => r[c]).join(',')})`).join(',');
+    statements.push(`INSERT INTO ${table} (${FORMULARIO_COLS.join(',')}) VALUES ${tuples} ON CONFLICT (empresa, nombre) DO NOTHING;`);
+  }
+  for (const [table, pairs] of Object.entries(hermanos)) {
+    for (const { nombre, hno } of pairs) {
+      statements.push(
+        `UPDATE ${table} AS t SET formulario_hermano = h.id FROM ${table} AS h ` +
+        `WHERE t.empresa = ${empresaNum} AND t.nombre = ${sqlLiteral(nombre)} AND h.empresa = ${empresaNum} AND h.nombre = ${sqlLiteral(hno)};`
+      );
+    }
+  }
+  return statements.join('\n');
+}
+
+const FORMULARIO_PARAMETRO_COLS = ['formulario', 'parametro', 'descripcion', 'texto', 'x', 'y', 'ancho', 'alto',
+  'orden', 'alignment', 'font', 'border_color', 'background_color', 'auto_height', 'print', 'condicion'];
+
+function transformBasFormularioParametro(line, colNames, empresaNum) {
+  const valuesIdx = line.indexOf(' VALUES ');
+  if (valuesIdx === -1 || !colNames.length) return '';
+  const rest = line.slice(valuesIdx + 8);
+
+  const statements = [];
+  for (const tContent of splitTuples(rest)) {
+    const tokens = parseValueTokens(tContent);
+    const row = {};
+    colNames.forEach((c, i) => { row[c] = tokens[i]; });
+
+    const targetTable = FORMULARIO_TIPO_TABLE[unquoteToken(row.tipo)];
+    if (!targetTable) continue;
+
+    const formularioNombre = unquoteToken(row.formulario);
+    if (!formularioNombre) continue;
+
+    const values = {
+      parametro: row.parametro,
+      descripcion: row.descripcion,
+      texto: truncateLiteral(row.texto, 255),
+      x: row.x, y: row.y, ancho: row.width, alto: row.height, orden: row.orden,
+      alignment: row.alignment, font: row.font,
+      border_color: row.border_color, background_color: row.background_color,
+      auto_height: row.auto_height === '1' ? 'TRUE' : 'FALSE',
+      print: row.print === '0' ? 'FALSE' : 'TRUE',
+      condicion: row.condicion,
+    };
+
+    const selectCols = ['f.id', ...FORMULARIO_PARAMETRO_COLS.slice(1).map(c => values[c])].join(',');
+    statements.push(
+      `INSERT INTO ${targetTable}_parametro (${FORMULARIO_PARAMETRO_COLS.join(',')}) ` +
+      `SELECT ${selectCols} FROM ${targetTable} f WHERE f.empresa = ${empresaNum} AND f.nombre = ${sqlLiteral(formularioNombre)} ` +
+      `ON CONFLICT DO NOTHING;`
+    );
+  }
+  return statements.join('\n');
+}
+
+// ---------------------------------------------------------------------------
 // Transforma una línea de INSERT completa.
 // colNames: nombres de columna en orden MySQL (para INSERT con columnas explícitas).
 // resolverMaps: ver convertTokens.
@@ -330,6 +474,9 @@ function transformInsert(line, tableName, resolverMaps, colNames) {
   line = line.replace(/`/g, '');
   line = line.replace(/'0000-00-00 00:00:00'/g, 'NULL');
   line = line.replace(/'0000-00-00'/g, 'NULL');
+
+  if (tableName === 'bas_formulario') return transformBasFormulario(line, colNames, resolverMaps.empresaNum);
+  if (tableName === 'bas_formulario_parametro') return transformBasFormularioParametro(line, colNames, resolverMaps.empresaNum);
 
   const needsConversion = COL_TYPES[tableName] || NOT_NULL_DEFAULTS[tableName] || VARCHAR_LIMITS[tableName]
     || Object.values(ID_RESOLVERS).some(r => r.columns[tableName]);
@@ -494,6 +641,7 @@ function processDump(inputFile, empresaNum, empleadoIdMap) {
   const resolverMaps = {
     empresa:  srcId ? { [srcId]: empresaNum } : {},
     empleado: empleadoIdMap || {},
+    empresaNum,
   };
 
   console.error(`  ID original: ${srcId ?? '(no encontrado)'} → ID canónico: ${empresaStr} → id numérico: ${empresaNum ?? '(sin asignar)'}`);

@@ -13,14 +13,24 @@ export const getRemuneracionPorGrupos    = (params) => client.get('/informes/rem
 
 // Recibos de Sueldo / Libro de Sueldos
 export const getRecibosSueldo = (params) => client.get('/informes/recibos-sueldo', { params });
-export const getReciboSueldoPdfUrl = (params) =>
-  `/api/informes/recibos-sueldo/pdf?${new URLSearchParams(params).toString()}`;
-export const getLibroSueldoPdfUrl = (params) =>
-  `/api/informes/libro-sueldos/pdf?${new URLSearchParams(params).toString()}`;
+
+// seleccion: recibos elegidos a mano en la grilla (checkbox) — si viene con elementos, el PDF
+// se arma solo con esos en vez de re-correr el filtro de búsqueda.
+function pdfParams(params, seleccion) {
+  if (seleccion?.length) {
+    return { recibos: JSON.stringify(seleccion.map(r => [r.periodo, r.empleado, r.numero])) };
+  }
+  return params;
+}
+
+export const getReciboSueldoPdfUrl = (params, seleccion) =>
+  `/api/informes/recibos-sueldo/pdf?${new URLSearchParams(pdfParams(params, seleccion)).toString()}`;
+export const getLibroSueldoPdfUrl = (params, seleccion) =>
+  `/api/informes/libro-sueldos/pdf?${new URLSearchParams(pdfParams(params, seleccion)).toString()}`;
 
 // Diseño de Recibos de Sueldo / Diseño de Libro de Sueldos
 export const formulariosRecibo = {
-  getAll:  ()             => client.get('/informes/formularios-recibo'),
+  getAll:  (empresa)      => client.get('/informes/formularios-recibo', { params: { empresa } }),
   getOne:  (id)           => client.get(`/informes/formularios-recibo/${encodeURIComponent(id)}`),
   create:  (data)         => client.post('/informes/formularios-recibo', data),
   update:  (id, data)     => client.put(`/informes/formularios-recibo/${encodeURIComponent(id)}`, data),
@@ -31,7 +41,7 @@ export const formulariosRecibo = {
 };
 
 export const formulariosLibro = {
-  getAll:  ()             => client.get('/informes/formularios-libro'),
+  getAll:  (empresa)      => client.get('/informes/formularios-libro', { params: { empresa } }),
   getOne:  (id)           => client.get(`/informes/formularios-libro/${encodeURIComponent(id)}`),
   create:  (data)         => client.post('/informes/formularios-libro', data),
   update:  (id, data)     => client.put(`/informes/formularios-libro/${encodeURIComponent(id)}`, data),

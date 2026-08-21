@@ -73,8 +73,6 @@
 
 .empleado-tabs .p-tabview-panels {
   padding: 0.75rem 0 0 0;
-  max-height: 60vh;
-  overflow-y: auto;
 }
 
 /* .sub-tab, .sub-form, .tab-empty-msg: ver styles/global-tables.css */

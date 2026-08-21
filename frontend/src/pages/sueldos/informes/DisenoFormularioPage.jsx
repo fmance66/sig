@@ -8,6 +8,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import './informes.css';
 
@@ -15,7 +16,7 @@ const ORIENTACION_OPTIONS = [{ label: 'Vertical', value: 'VERTICAL' }, { label: 
 const PAGINA_OPTIONS = ['A4', 'A5', 'TICKET', 'LEGAL', 'LETTER', 'CUSTOM'].map(v => ({ label: v, value: v }));
 
 const EMPTY_FORM = {
-  id: '', descripcion: '', orientacion: 'VERTICAL', pagina: 'A4',
+  nombre: '', descripcion: '', orientacion: 'VERTICAL', pagina: 'A4',
   margen_superior: '', margen_inferior: '', margen_izquierdo: '', margen_derecho: '',
   columnas: '', filas: '', copias: '', propiedad: '', etiquetas: false, orden: '',
 };
@@ -26,11 +27,13 @@ const EMPTY_PARAM = { parametro: '', descripcion: '', texto: '', x: '', y: '', a
 // parámetros con posición X/Y/Ancho/Alto). Por ahora es gestión de
 // metadatos: el PDF real usa una plantilla fija en código (ver plan).
 export default function DisenoFormularioPage({ api, titulo, icono }) {
+  const { empresa } = useEmpresa();
   const [formularios, setFormularios] = useState([]);
   const [loading, setLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
   const [dialogVisible, setDialogVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
 
@@ -42,12 +45,12 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
 
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getAll();
+      const res = await api.getAll(empresa.id);
       setFormularios(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el listado' });
@@ -72,6 +75,7 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
   function openNew() {
     setForm(EMPTY_FORM);
     setEditMode(false);
+    setEditId(null);
     setParametros([]);
     setShowParamForm(false);
     setDialogVisible(true);
@@ -79,13 +83,14 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
 
   function openEdit(row) {
     setForm({
-      id: row.id, descripcion: row.descripcion ?? '', orientacion: row.orientacion ?? 'VERTICAL', pagina: row.pagina ?? 'A4',
+      nombre: row.nombre, descripcion: row.descripcion ?? '', orientacion: row.orientacion ?? 'VERTICAL', pagina: row.pagina ?? 'A4',
       margen_superior: row.margen_superior ?? '', margen_inferior: row.margen_inferior ?? '',
       margen_izquierdo: row.margen_izquierdo ?? '', margen_derecho: row.margen_derecho ?? '',
       columnas: row.columnas ?? '', filas: row.filas ?? '', copias: row.copias ?? '',
       propiedad: row.propiedad ?? '', etiquetas: row.etiquetas ?? false, orden: row.orden ?? '',
     });
     setEditMode(true);
+    setEditId(row.id);
     setShowParamForm(false);
     setDialogVisible(true);
     loadParametros(row.id);
@@ -97,8 +102,8 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
   }
 
   async function handleSave() {
-    if (!editMode && !form.id.trim()) {
-      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'El código es requerido' });
+    if (!form.nombre.trim()) {
+      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'El nombre es requerido' });
       return;
     }
     if (!form.descripcion.trim()) {
@@ -107,12 +112,12 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
     }
     setSaving(true);
     try {
-      const { id, ...payload } = form;
       if (editMode) {
-        await api.update(form.id, payload);
+        await api.update(editId, form);
         toast.current.show({ severity: 'success', summary: 'OK', detail: 'Formulario actualizado' });
       } else {
-        await api.create(form);
+        const res = await api.create({ ...form, empresa: empresa.id });
+        setEditId(res.data.resultado.id);
         toast.current.show({ severity: 'success', summary: 'OK', detail: 'Formulario creado' });
         setEditMode(true);
       }
@@ -127,7 +132,7 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
 
   function handleDelete(row) {
     confirmDialog({
-      message: `¿Está seguro de eliminar el formulario "${row.descripcion || row.id}"?`,
+      message: `¿Está seguro de eliminar el formulario "${row.descripcion || row.nombre}"?`,
       header: 'Confirmar eliminación',
       icon: 'fa-solid fa-triangle-exclamation',
       acceptLabel: 'Eliminar',
@@ -157,11 +162,11 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
     }
     setSavingParam(true);
     try {
-      await api.addParametro(form.id, paramForm);
+      await api.addParametro(editId, paramForm);
       toast.current.show({ severity: 'success', summary: 'OK', detail: 'Parámetro agregado' });
       setShowParamForm(false);
       setParamForm(EMPTY_PARAM);
-      loadParametros(form.id);
+      loadParametros(editId);
     } catch (err) {
       const msg = err.response?.data?.mensaje || 'Error al guardar';
       toast.current.show({ severity: 'error', summary: 'Error', detail: msg });
@@ -180,9 +185,9 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
       acceptClassName: 'p-button-danger',
       accept: async () => {
         try {
-          await api.removeParametro(form.id, row.parametro);
+          await api.removeParametro(editId, row.parametro);
           toast.current.show({ severity: 'success', summary: 'OK', detail: 'Parámetro eliminado' });
-          loadParametros(form.id);
+          loadParametros(editId);
         } catch {
           toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar' });
         }
@@ -235,14 +240,14 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
         rowsPerPageOptions={[10, 15, 25, 50]}
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
-        globalFilterFields={['id', 'descripcion']}
+        globalFilterFields={['nombre', 'descripcion']}
         header={tableHeader}
         emptyMessage="No hay formularios registrados"
         size="small"
         stripedRows
         removableSort
       >
-        <Column field="id" header="Formulario" sortable style={{ width: '160px' }} />
+        <Column field="nombre" header="Formulario" sortable style={{ width: '160px' }} />
         <Column field="descripcion" header="Descripción" sortable />
         <Column field="orientacion" header="Orientación" style={{ width: '120px' }} />
         <Column field="pagina" header="Página" style={{ width: '100px' }} />
@@ -255,19 +260,17 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
         onHide={() => setDialogVisible(false)}
         header={editMode ? `Modificar ${titulo.toLowerCase()}` : `Agregar ${titulo.toLowerCase()}`}
         footer={dialogFooter}
-        style={{ width: '820px' }}
+        style={{ width: '1020px' }}
         contentStyle={{ maxHeight: '78vh', overflowY: 'auto' }}
         modal
         draggable={false}
         resizable={false}
       >
         <div className="form-grid">
-          {!editMode && (
-            <div className="form-field">
-              <label>Formulario <span className="required">*</span></label>
-              <InputText name="id" value={form.id} onChange={handleChange} />
-            </div>
-          )}
+          <div className="form-field">
+            <label>Nombre <span className="required">*</span></label>
+            <InputText name="nombre" value={form.nombre} onChange={handleChange} />
+          </div>
           <div className="form-field">
             <label>Descripción <span className="required">*</span></label>
             <InputText name="descripcion" value={form.descripcion} onChange={handleChange} />
@@ -380,16 +383,18 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
                 <Button label="Nuevo parámetro" icon="fa-solid fa-plus" size="small" onClick={() => setShowParamForm(true)} />
               )}
             </div>
-            <DataTable value={parametros} loading={loadingParametros} emptyMessage="Este formulario no tiene parámetros" size="small" stripedRows>
-              <Column field="parametro" header="Parámetro" style={{ width: '140px' }} />
-              <Column field="descripcion" header="Descripción" />
-              <Column field="texto" header="Texto" />
-              <Column field="x" header="X" style={{ width: '70px' }} />
-              <Column field="y" header="Y" style={{ width: '70px' }} />
-              <Column field="ancho" header="Ancho" style={{ width: '80px' }} />
-              <Column field="alto" header="Alto" style={{ width: '80px' }} />
-              <Column body={accionesParamTemplate} header="Acciones" alignHeader="center" style={{ width: '70px', textAlign: 'center' }} />
-            </DataTable>
+            <div className="table-scroll-x">
+              <DataTable value={parametros} loading={loadingParametros} emptyMessage="Este formulario no tiene parámetros" size="small" stripedRows>
+                <Column field="parametro" header="Parámetro" style={{ width: '130px' }} />
+                <Column field="descripcion" header="Descripción" style={{ maxWidth: '160px' }} className="col-ellipsis" />
+                <Column field="texto" header="Texto" style={{ maxWidth: '200px' }} className="col-ellipsis" />
+                <Column field="x" header="X" style={{ width: '65px' }} />
+                <Column field="y" header="Y" style={{ width: '65px' }} />
+                <Column field="ancho" header="Ancho" style={{ width: '75px' }} />
+                <Column field="alto" header="Alto" style={{ width: '75px' }} />
+                <Column body={accionesParamTemplate} header="Acciones" alignHeader="center" style={{ width: '70px', textAlign: 'center' }} />
+              </DataTable>
+            </div>
           </div>
         )}
       </Dialog>

@@ -143,6 +143,19 @@
   padding: 0.25rem 0.4rem;
 }
 
+/* Panel de PeriodoSelect (components/PeriodoSelect.jsx): se monta con un
+   portal fuera de cualquier página, así que necesita estilos globales para
+   mantener el tamaño compacto del resto de la app. */
+.periodo-select-panel .p-dropdown-filter {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.periodo-select-panel .p-dropdown-item {
+  font-size: 0.85rem;
+  padding: 0.45rem 0.9rem;
+}
+
 .p-paginator-right-content {
   position: absolute;
   right: 0.5rem;
@@ -240,6 +253,21 @@
    Conceptos de un empleado, Clases/Tablas de un grupo de conceptos, etc.) */
 .sub-tab {
   min-height: 200px;
+}
+
+/* Contenedor de tablas angostas con columnas de ancho fijo (ej. grillas de
+   parámetros con X/Y/Ancho/Alto): si el contenido no entra, scrollea en vez
+   de desbordar el modal. */
+.table-scroll-x {
+  overflow-x: auto;
+}
+
+/* Trunca con "…" columnas de texto libre (descripción, texto fijo) que si no
+   podrían estirar la tabla más allá del modal con un solo valor largo. */
+.col-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sub-tab-header {

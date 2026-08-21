@@ -11,8 +11,14 @@ const rowId = r => `${r.periodo}|${r.empleado}|${r.numero}`;
 // lógica que RecibosPage.jsx), reusada por Recibos Agrupados por Período y
 // por Empleado — en ambas pantallas, el nivel más interno es siempre
 // "recibos de esta agrupación, expandibles a sus conceptos".
-export default function RecibosConceptosTable({ recibos }) {
+// selection/onSelectionChange son opcionales: si vienen, se agrega la columna de
+// checkboxes (con "seleccionar todos" en el header) — la usan Recibos/Libro de
+// Sueldo para elegir qué imprimir; los Agrupados no la necesitan y no la pasan.
+export default function RecibosConceptosTable({ recibos, selection, onSelectionChange }) {
   const rows = useMemo(() => recibos.map(r => ({ ...r, _id: rowId(r) })), [recibos]);
+  // El padre puede setear la selección por defecto con los recibos "crudos" (sin _id,
+  // que es un campo interno de esta tabla) — se normaliza acá para que el dataKey matchee.
+  const normalizedSelection = useMemo(() => selection?.map(r => ({ ...r, _id: rowId(r) })), [selection]);
   const [expandedRows, setExpandedRows] = useState(null);
   const [conceptosPorRecibo, setConceptosPorRecibo] = useState({});
 
@@ -58,7 +64,10 @@ export default function RecibosConceptosTable({ recibos }) {
       rowExpansionTemplate={detalleTemplate}
       dataKey="_id"
       emptyMessage="Sin recibos"
+      selection={normalizedSelection}
+      onSelectionChange={onSelectionChange}
     >
+      {onSelectionChange && <Column selectionMode="multiple" style={{ width: '3rem' }} />}
       <Column expander style={{ width: '3rem' }} />
       <Column field="legajo" header="Legajo" style={{ width: '90px' }} />
       <Column body={nombreTemplate} header="Apellido y Nombre" />

@@ -1,12 +1,15 @@
 import { Button } from 'primereact/button';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
+import PeriodoSelect from '../../../components/PeriodoSelect';
 
 // Panel de filtro compartido por las pantallas de Informes: mismo set de
 // campos que ya filtra recibos.list() en el backend (período/legajo/
 // convenio/categoría/grupo/estado). El campo extra de cada informe
 // (Agrupado por, Concepto, etc.) se pasa como children y se renderiza
 // antes de los botones.
-export default function InformeFiltro({ filtro, onChange, onBuscar, onLimpiar, loading, children, ocultar = [] }) {
+export default function InformeFiltro({
+  filtro, onChange, onBuscar, onLimpiar, loading, children, actions, ocultar = [], periodoDropdown = false,
+}) {
   function handleChange(e) {
     const { name, value } = e.target;
     onChange(prev => ({ ...prev, [name]: value }));
@@ -19,7 +22,16 @@ export default function InformeFiltro({ filtro, onChange, onBuscar, onLimpiar, l
       {!oculto('periodo') && (
         <div className="form-field">
           <label>Período</label>
-          <FiltroTexto name="periodo" value={filtro.periodo} onChange={handleChange} />
+          {periodoDropdown
+            ? (
+              <PeriodoSelect
+                value={filtro.periodo}
+                onChange={e => onChange(prev => ({ ...prev, periodo: e.value || '' }))}
+                placeholder=""
+                style={{ width: '220px' }}
+              />
+            )
+            : <FiltroTexto name="periodo" value={filtro.periodo} onChange={handleChange} />}
         </div>
       )}
       <div className="form-field">
@@ -47,6 +59,7 @@ export default function InformeFiltro({ filtro, onChange, onBuscar, onLimpiar, l
       {children}
       <Button label="Buscar" icon="fa-solid fa-magnifying-glass" size="small" onClick={onBuscar} loading={loading} />
       <Button label="Limpiar" icon="fa-solid fa-eraser" size="small" className="p-button-outlined" onClick={onLimpiar} />
+      {actions}
     </div>
   );
 }

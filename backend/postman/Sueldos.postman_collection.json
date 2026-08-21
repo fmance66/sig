@@ -3346,7 +3346,7 @@
                   "name": "GET informes/formularios-recibo",
                   "request": {
                     "method": "GET",
-                    "url": "{{base_url}}/informes/formularios-recibo"
+                    "url": "{{base_url}}/informes/formularios-recibo?empresa=2"
                   }
                 },
                 {
@@ -3362,7 +3362,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"id\": \"RECIBO_A5\",\n  \"descripcion\": \"Recibo A5 x2\",\n  \"orientacion\": \"VERTICAL\",\n  \"pagina\": \"A5\"\n}"
+                      "raw": "{\n  \"empresa\": 2,\n  \"nombre\": \"RECIBO_A5\",\n  \"descripcion\": \"Recibo A5 x2\",\n  \"orientacion\": \"VERTICAL\",\n  \"pagina\": \"A5\"\n}"
                     }
                   }
                 },
@@ -3370,7 +3370,7 @@
                   "name": "PUT Formulario de Recibo",
                   "request": {
                     "method": "PUT",
-                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5",
+                    "url": "{{base_url}}/informes/formularios-recibo/1",
                     "header": [
                       {
                         "key": "Content-Type",
@@ -3387,21 +3387,21 @@
                   "name": "DELETE Formulario de Recibo",
                   "request": {
                     "method": "DELETE",
-                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5"
+                    "url": "{{base_url}}/informes/formularios-recibo/1"
                   }
                 },
                 {
-                  "name": "GET informes/formularios-recibo/RECIBO_A5/parametros",
+                  "name": "GET informes/formularios-recibo/:id/parametros",
                   "request": {
                     "method": "GET",
-                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5/parametros"
+                    "url": "{{base_url}}/informes/formularios-recibo/1/parametros"
                   }
                 },
                 {
                   "name": "POST Parametro de Recibo",
                   "request": {
                     "method": "POST",
-                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5/parametros",
+                    "url": "{{base_url}}/informes/formularios-recibo/1/parametros",
                     "header": [
                       {
                         "key": "Content-Type",
@@ -3418,7 +3418,7 @@
                   "name": "DELETE Parametro de Recibo",
                   "request": {
                     "method": "DELETE",
-                    "url": "{{base_url}}/informes/formularios-recibo/RECIBO_A5/parametros/LEGAJO"
+                    "url": "{{base_url}}/informes/formularios-recibo/1/parametros/LEGAJO"
                   }
                 }
               ]
@@ -3430,7 +3430,7 @@
                   "name": "GET informes/formularios-libro",
                   "request": {
                     "method": "GET",
-                    "url": "{{base_url}}/informes/formularios-libro"
+                    "url": "{{base_url}}/informes/formularios-libro?empresa=2"
                   }
                 },
                 {
@@ -3446,7 +3446,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"id\": \"LIBRO_A4\",\n  \"descripcion\": \"Libro de Sueldos\",\n  \"orientacion\": \"HORIZONTAL\",\n  \"pagina\": \"A4\"\n}"
+                      "raw": "{\n  \"empresa\": 2,\n  \"nombre\": \"LIBRO_A4\",\n  \"descripcion\": \"Libro de Sueldos\",\n  \"orientacion\": \"HORIZONTAL\",\n  \"pagina\": \"A4\"\n}"
                     }
                   }
                 },
@@ -3454,7 +3454,7 @@
                   "name": "PUT Formulario de Libro",
                   "request": {
                     "method": "PUT",
-                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4",
+                    "url": "{{base_url}}/informes/formularios-libro/1",
                     "header": [
                       {
                         "key": "Content-Type",
@@ -3471,21 +3471,21 @@
                   "name": "DELETE Formulario de Libro",
                   "request": {
                     "method": "DELETE",
-                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4"
+                    "url": "{{base_url}}/informes/formularios-libro/1"
                   }
                 },
                 {
-                  "name": "GET informes/formularios-libro/LIBRO_A4/parametros",
+                  "name": "GET informes/formularios-libro/:id/parametros",
                   "request": {
                     "method": "GET",
-                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4/parametros"
+                    "url": "{{base_url}}/informes/formularios-libro/1/parametros"
                   }
                 },
                 {
                   "name": "POST Parametro de Libro",
                   "request": {
                     "method": "POST",
-                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4/parametros",
+                    "url": "{{base_url}}/informes/formularios-libro/1/parametros",
                     "header": [
                       {
                         "key": "Content-Type",
@@ -3502,7 +3502,7 @@
                   "name": "DELETE Parametro de Libro",
                   "request": {
                     "method": "DELETE",
-                    "url": "{{base_url}}/informes/formularios-libro/LIBRO_A4/parametros/LEGAJO"
+                    "url": "{{base_url}}/informes/formularios-libro/1/parametros/LEGAJO"
                   }
                 }
               ]

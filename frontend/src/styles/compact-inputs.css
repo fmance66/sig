@@ -132,3 +132,21 @@
   padding: 0.35rem 0.55rem;
   line-height: 1.3;
 }
+
+/* Checkbox de selección de filas en tablas (Column selectionMode="multiple").
+   El tamaño default de PrimeReact (22px) queda grande al lado del texto
+   compacto de las tablas (0.8rem, ver convención de tablas en global-tables.css). */
+.p-datatable .p-checkbox,
+.p-datatable .p-checkbox .p-checkbox-box {
+  width: 16px;
+  height: 16px;
+}
+
+.p-datatable .p-checkbox .p-checkbox-box {
+  border-radius: 4px;
+}
+
+.p-datatable .p-checkbox .p-checkbox-box .p-checkbox-icon.p-icon {
+  width: 10px;
+  height: 10px;
+}

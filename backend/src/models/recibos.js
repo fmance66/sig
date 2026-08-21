@@ -34,11 +34,33 @@ async function list({ periodo, legajo, empresa, convenio, categoria, grupo, esta
   return rows;
 }
 
+// Columnas extra (empresa/convenio/categoría/obra social/liquidación) usadas por el
+// intérprete de diseño del PDF (backend/src/pdf/reciboInterprete.js) — no se usan en la
+// grilla JSON de RecibosSueldoPage, solo al armar el recibo para el PDF.
+const HEADER_DISENO_COLS = `
+  e.empresa AS empresa_id,
+  e.fecha_ingreso, e.fecha_egreso, e.fecha_nacimiento, e.provincia, e.estado_civil, e.jornada,
+  e.direccion AS empleado_direccion, e.localidad AS empleado_localidad,
+  e.sueldo, e.banco, e.cuenta, e.cbu,
+  cv.descripcion AS convenio_desc, cat.descripcion AS categoria_desc, os.descripcion AS obra_social_desc,
+  l.fecha_pago AS liq_fecha_pago, l.lugar_pago AS liq_lugar_pago,
+  l.fecha_deposito AS liq_fecha_deposito, l.periodo_deposito AS liq_periodo_deposito,
+  l.banco_deposito AS liq_banco_deposito,
+  emp.razon_social AS empresa_razon_social, emp.cuit AS empresa_cuit, emp.actividad AS empresa_actividad,
+  emp.direccion AS empresa_direccion, emp.localidad AS empresa_localidad, emp.logo AS empresa_logo
+`;
+
 async function getHeader(periodo, empleado, numero) {
   const { rows } = await pool.query(
-    `SELECT ${HEADER_COLS}, e.legajo, e.apellido, e.nombre, e.cuil, e.convenio, e.categoria, e.tarea
+    `SELECT ${HEADER_COLS}, e.legajo, e.apellido, e.nombre, e.cuil, e.convenio, e.categoria, e.tarea,
+            ${HEADER_DISENO_COLS}
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_convenio cv ON cv.id = e.convenio
+     LEFT JOIN sld_categoria cat ON cat.convenio = e.convenio AND cat.id = e.categoria
+     LEFT JOIN sld_obra_social os ON os.id = e.obra_social
+     LEFT JOIN sys_empresa emp ON emp.id = e.empresa
      WHERE r.periodo = $1 AND r.empleado = $2 AND r.numero = $3`,
     [periodo, empleado, numero]
   );

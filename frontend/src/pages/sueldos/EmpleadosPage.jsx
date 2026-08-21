@@ -327,6 +327,8 @@ export default function EmpleadosPage() {
         header={editMode ? 'Modificar empleado' : 'Agregar empleado'}
         footer={dialogFooter}
         style={{ width: '900px' }}
+        contentStyle={{ maxHeight: '78vh', overflowY: 'auto' }}
+        onShow={() => document.querySelector('.p-dialog-content')?.scrollTo(0, 0)}
         modal
         draggable={false}
         resizable={false}

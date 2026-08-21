@@ -9,6 +9,7 @@ import './informes.css';
 export default function LibroSueldoPage() {
   const [filtro, setFiltro] = useState(FILTRO_VACIO);
   const [recibos, setRecibos] = useState([]);
+  const [seleccion, setSeleccion] = useState([]);
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
 
@@ -16,7 +17,9 @@ export default function LibroSueldoPage() {
     setLoading(true);
     try {
       const res = await api.getRecibosSueldo(f);
-      setRecibos(res.data.resultado.recibos);
+      const data = res.data.resultado.recibos;
+      setRecibos(data);
+      setSeleccion(data);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los recibos' });
     } finally {
@@ -26,7 +29,8 @@ export default function LibroSueldoPage() {
 
   function limpiar() {
     setFiltro(FILTRO_VACIO);
-    buscar(FILTRO_VACIO);
+    setRecibos([]);
+    setSeleccion([]);
   }
 
   function descargarPdf() {
@@ -34,7 +38,7 @@ export default function LibroSueldoPage() {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Primero buscá los recibos a exportar' });
       return;
     }
-    window.open(api.getLibroSueldoPdfUrl(filtro), '_blank');
+    window.open(api.getLibroSueldoPdfUrl(filtro, seleccion), '_blank');
   }
 
   return (
@@ -42,11 +46,17 @@ export default function LibroSueldoPage() {
       <Toast ref={toast} />
       <h2 className="page-title"><i className="fa-solid fa-book" /> Libro de Sueldos</h2>
 
-      <InformeFiltro filtro={filtro} onChange={setFiltro} onBuscar={() => buscar()} onLimpiar={limpiar} loading={loading}>
-        <Button label="Descargar PDF" icon="fa-solid fa-file-pdf" size="small" className="p-button-outlined" onClick={descargarPdf} />
-      </InformeFiltro>
+      <InformeFiltro
+        filtro={filtro} onChange={setFiltro} onBuscar={() => buscar()} onLimpiar={limpiar} loading={loading} periodoDropdown
+        actions={(
+          <Button
+            label={seleccion.length ? `Descargar PDF (${seleccion.length})` : 'Descargar PDF'}
+            icon="fa-solid fa-file-pdf" size="small" className="p-button-outlined" onClick={descargarPdf}
+          />
+        )}
+      />
 
-      <RecibosConceptosTable recibos={recibos} />
+      <RecibosConceptosTable recibos={recibos} selection={seleccion} onSelectionChange={e => setSeleccion(e.value)} />
     </div>
   );
 }

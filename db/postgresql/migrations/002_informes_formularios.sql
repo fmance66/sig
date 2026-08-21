@@ -6,7 +6,9 @@
 BEGIN;
 
 CREATE TABLE IF NOT EXISTS sld_formulario_recibo (
-    id                VARCHAR(20) PRIMARY KEY,
+    id                SERIAL PRIMARY KEY,
+    empresa           INTEGER NOT NULL REFERENCES sys_empresa(id),
+    nombre            VARCHAR(20) NOT NULL,
     descripcion       VARCHAR(50),
     orientacion       VARCHAR(12) CHECK (orientacion IN ('VERTICAL','HORIZONTAL')) DEFAULT 'VERTICAL',
     pagina            VARCHAR(8)  CHECK (pagina IN ('A4','A5','TICKET','LEGAL','LETTER','CUSTOM')) DEFAULT 'A4',
@@ -14,18 +16,19 @@ CREATE TABLE IF NOT EXISTS sld_formulario_recibo (
     margen_inferior   NUMERIC(5,2),
     margen_izquierdo  NUMERIC(5,2),
     margen_derecho    NUMERIC(5,2),
-    formulario_hermano VARCHAR(20),
+    formulario_hermano INTEGER REFERENCES sld_formulario_recibo(id) ON DELETE SET NULL,
     formula_archivo   VARCHAR(256),
     columnas          INTEGER,
     filas             INTEGER,
     copias            INTEGER,
     propiedad         VARCHAR(30),
     etiquetas         BOOLEAN DEFAULT FALSE,
-    orden             INTEGER
+    orden             INTEGER,
+    UNIQUE (empresa, nombre)
 );
 
 CREATE TABLE IF NOT EXISTS sld_formulario_recibo_parametro (
-    formulario  VARCHAR(20) NOT NULL REFERENCES sld_formulario_recibo(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    formulario  INTEGER NOT NULL REFERENCES sld_formulario_recibo(id) ON DELETE CASCADE ON UPDATE CASCADE,
     parametro   VARCHAR(50) NOT NULL,
     descripcion VARCHAR(100),
     texto       VARCHAR(255),
@@ -38,7 +41,9 @@ CREATE TABLE IF NOT EXISTS sld_formulario_recibo_parametro (
 );
 
 CREATE TABLE IF NOT EXISTS sld_formulario_libro (
-    id                VARCHAR(20) PRIMARY KEY,
+    id                SERIAL PRIMARY KEY,
+    empresa           INTEGER NOT NULL REFERENCES sys_empresa(id),
+    nombre            VARCHAR(20) NOT NULL,
     descripcion       VARCHAR(50),
     orientacion       VARCHAR(12) CHECK (orientacion IN ('VERTICAL','HORIZONTAL')) DEFAULT 'HORIZONTAL',
     pagina            VARCHAR(8)  CHECK (pagina IN ('A4','A5','TICKET','LEGAL','LETTER','CUSTOM')) DEFAULT 'A4',
@@ -46,18 +51,19 @@ CREATE TABLE IF NOT EXISTS sld_formulario_libro (
     margen_inferior   NUMERIC(5,2),
     margen_izquierdo  NUMERIC(5,2),
     margen_derecho    NUMERIC(5,2),
-    formulario_hermano VARCHAR(20),
+    formulario_hermano INTEGER REFERENCES sld_formulario_libro(id) ON DELETE SET NULL,
     formula_archivo   VARCHAR(256),
     columnas          INTEGER,
     filas             INTEGER,
     copias            INTEGER,
     propiedad         VARCHAR(30),
     etiquetas         BOOLEAN DEFAULT FALSE,
-    orden             INTEGER
+    orden             INTEGER,
+    UNIQUE (empresa, nombre)
 );
 
 CREATE TABLE IF NOT EXISTS sld_formulario_libro_parametro (
-    formulario  VARCHAR(20) NOT NULL REFERENCES sld_formulario_libro(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    formulario  INTEGER NOT NULL REFERENCES sld_formulario_libro(id) ON DELETE CASCADE ON UPDATE CASCADE,
     parametro   VARCHAR(50) NOT NULL,
     descripcion VARCHAR(100),
     texto       VARCHAR(255),
