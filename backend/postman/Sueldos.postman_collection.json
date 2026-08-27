@@ -3415,6 +3415,23 @@
                   }
                 },
                 {
+                  "name": "PUT Parametro de Recibo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/informes/formularios-recibo/1/parametros/LEGAJO",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"parametro\": \"LEGAJO\",\n  \"descripcion\": \"Legajo\",\n  \"x\": 10,\n  \"y\": 10,\n  \"ancho\": 30,\n  \"alto\": 8,\n  \"alignment\": \"CENTER\",\n  \"font\": \"COURIER|BOLD|8|\",\n  \"border_color\": \"0,0,0\",\n  \"background_color\": null,\n  \"auto_height\": false,\n  \"print\": true,\n  \"condicion\": null\n}"
+                    }
+                  }
+                },
+                {
                   "name": "DELETE Parametro de Recibo",
                   "request": {
                     "method": "DELETE",
@@ -3495,6 +3512,23 @@
                     "body": {
                       "mode": "raw",
                       "raw": "{\n  \"parametro\": \"LEGAJO\",\n  \"descripcion\": \"Legajo\",\n  \"x\": 10,\n  \"y\": 10,\n  \"ancho\": 30,\n  \"alto\": 8\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Parametro de Libro",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/informes/formularios-libro/1/parametros/LEGAJO",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"parametro\": \"LEGAJO\",\n  \"descripcion\": \"Legajo\",\n  \"x\": 10,\n  \"y\": 10,\n  \"ancho\": 30,\n  \"alto\": 8,\n  \"alignment\": \"CENTER\",\n  \"font\": \"COURIER|BOLD|8|\",\n  \"border_color\": \"0,0,0\",\n  \"background_color\": null,\n  \"auto_height\": false,\n  \"print\": true,\n  \"condicion\": null\n}"
                     }
                   }
                 },

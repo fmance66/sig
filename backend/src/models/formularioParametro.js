@@ -33,6 +33,25 @@ function createParametroModel(tableName) {
     return rows[0];
   }
 
+  async function update(formulario, parametro, data) {
+    const num = v => (v === '' || v === undefined ? null : v);
+    const bool = (v, def) => (v === undefined ? def : Boolean(v));
+    const { rows } = await pool.query(
+      `UPDATE ${tableName}
+         SET parametro = $3, descripcion = $4, texto = $5, x = $6, y = $7, ancho = $8, alto = $9,
+             orden = $10, alignment = $11, font = $12, border_color = $13, background_color = $14,
+             auto_height = $15, print = $16, condicion = $17
+       WHERE formulario = $1 AND parametro = $2
+       RETURNING ${COLUMNS}`,
+      [formulario, parametro, data.parametro, data.descripcion || null, data.texto || null,
+        num(data.x), num(data.y), num(data.ancho), num(data.alto), num(data.orden),
+        data.alignment || null, data.font || null, data.border_color || null,
+        data.background_color || null, bool(data.auto_height, false), bool(data.print, true),
+        data.condicion || null]
+    );
+    return rows[0] ?? null;
+  }
+
   async function remove(formulario, parametro) {
     const { rowCount } = await pool.query(
       `DELETE FROM ${tableName} WHERE formulario = $1 AND parametro = $2`, [formulario, parametro]
@@ -40,7 +59,7 @@ function createParametroModel(tableName) {
     return rowCount > 0;
   }
 
-  return { list, create, remove };
+  return { list, create, update, remove };
 }
 
 module.exports = { createParametroModel };

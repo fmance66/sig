@@ -6,6 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Checkbox } from 'primereact/checkbox';
+import { ColorPicker } from 'primereact/colorpicker';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { useEmpresa } from '../../../context/EmpresaContext';
@@ -15,17 +16,64 @@ import './informes.css';
 const ORIENTACION_OPTIONS = [{ label: 'Vertical', value: 'VERTICAL' }, { label: 'Horizontal', value: 'HORIZONTAL' }];
 const PAGINA_OPTIONS = ['A4', 'A5', 'TICKET', 'LEGAL', 'LETTER', 'CUSTOM'].map(v => ({ label: v, value: v }));
 
+const ALIGNMENT_OPTIONS = [
+  { label: '(por defecto: izquierda)', value: '' },
+  { label: 'Izquierda', value: 'LEFT' },
+  { label: 'Centro', value: 'CENTER' },
+  { label: 'Derecha', value: 'RIGHT' },
+  { label: 'Justificado', value: 'JUSTIFIED' },
+];
+const FONT_FAMILIA_OPTIONS = [
+  { label: '(por defecto: Helvetica)', value: '' },
+  { label: 'Courier', value: 'COURIER' },
+  { label: 'Times', value: 'TIMES' },
+];
+const FONT_PESO_OPTIONS = [{ label: 'Normal', value: '' }, { label: 'Negrita', value: 'BOLD' }];
+const CONDICION_SUGERENCIAS = ['TIENE_CATEGORIA', 'ORIGINAL', 'DUPLICADO'];
+
 const EMPTY_FORM = {
   nombre: '', descripcion: '', orientacion: 'VERTICAL', pagina: 'A4',
   margen_superior: '', margen_inferior: '', margen_izquierdo: '', margen_derecho: '',
   columnas: '', filas: '', copias: '', propiedad: '', etiquetas: false, orden: '',
 };
-const EMPTY_PARAM = { parametro: '', descripcion: '', texto: '', x: '', y: '', ancho: '', alto: '', orden: '' };
+const EMPTY_PARAM = {
+  parametro: '', descripcion: '', texto: '', x: '', y: '', ancho: '', alto: '', orden: '',
+  alignment: '', fontFamilia: '', fontPeso: '', fontTamano: '', fontColor: '',
+  borderColor: '', backgroundColor: '', auto_height: false, print: true, condicion: '',
+};
+
+// "r,g,b" (formato legacy, columnas border_color/background_color/color de fuente) <-> hex
+// (formato que espera ColorPicker de PrimeReact). Ver disenoComun.js#parseColor en el backend.
+function rgbToHex(rgb) {
+  const partes = (rgb || '').split(',').map(Number);
+  if (partes.length !== 3 || partes.some(Number.isNaN)) return '';
+  return partes.map(n => Math.max(0, Math.min(255, n)).toString(16).padStart(2, '0')).join('');
+}
+function hexToRgb(hex) {
+  if (!hex) return null;
+  const h = hex.replace('#', '');
+  if (h.length !== 6) return null;
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `${r},${g},${b}`;
+}
+// font: "FAMILIA|PESO|TAMANO|COLOR" — ver disenoComun.js#parseFont en el backend.
+function parseFontString(raw) {
+  const [familia, peso, tamano, color] = (raw || '').split('|');
+  return { fontFamilia: familia || '', fontPeso: peso || '', fontTamano: tamano || '', fontColor: rgbToHex(color) };
+}
+function composeFontString({ fontFamilia, fontPeso, fontTamano, fontColor }) {
+  if (!fontFamilia && !fontPeso && !fontTamano && !fontColor) return null;
+  const color = fontColor ? hexToRgb(fontColor) : '';
+  return [fontFamilia, fontPeso, fontTamano, color || ''].join('|');
+}
 
 // Pantalla compartida por "Diseño de Recibos de Sueldo" y "Diseño de Libro
 // de Sueldos" — mismo esquema de tablas (cabecera de formulario + grilla de
-// parámetros con posición X/Y/Ancho/Alto). Por ahora es gestión de
-// metadatos: el PDF real usa una plantilla fija en código (ver plan).
+// parámetros con posición X/Y/Ancho/Alto y estilo). El PDF real interpreta
+// estas filas (ver backend/src/pdf/reciboInterprete.js, libroInterprete.js,
+// disenoComun.js) — no es solo metadato.
 export default function DisenoFormularioPage({ api, titulo, icono }) {
   const { empresa } = useEmpresa();
   const [formularios, setFormularios] = useState([]);
@@ -42,6 +90,8 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
   const [showParamForm, setShowParamForm] = useState(false);
   const [paramForm, setParamForm] = useState(EMPTY_PARAM);
   const [savingParam, setSavingParam] = useState(false);
+  const [editParamMode, setEditParamMode] = useState(false);
+  const [editParamKey, setEditParamKey] = useState(null);
 
   const toast = useRef(null);
 
@@ -77,7 +127,7 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
     setEditMode(false);
     setEditId(null);
     setParametros([]);
-    setShowParamForm(false);
+    closeParamForm();
     setDialogVisible(true);
   }
 
@@ -91,7 +141,7 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
     });
     setEditMode(true);
     setEditId(row.id);
-    setShowParamForm(false);
+    closeParamForm();
     setDialogVisible(true);
     loadParametros(row.id);
   }
@@ -155,17 +205,55 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
     setParamForm(prev => ({ ...prev, [name]: value }));
   }
 
+  function closeParamForm() {
+    setShowParamForm(false);
+    setParamForm(EMPTY_PARAM);
+    setEditParamMode(false);
+    setEditParamKey(null);
+  }
+
+  function openNewParam() {
+    setParamForm(EMPTY_PARAM);
+    setEditParamMode(false);
+    setEditParamKey(null);
+    setShowParamForm(true);
+  }
+
+  function openEditParam(row) {
+    setParamForm({
+      parametro: row.parametro, descripcion: row.descripcion ?? '', texto: row.texto ?? '',
+      x: row.x ?? '', y: row.y ?? '', ancho: row.ancho ?? '', alto: row.alto ?? '', orden: row.orden ?? '',
+      alignment: row.alignment ?? '', ...parseFontString(row.font),
+      borderColor: rgbToHex(row.border_color), backgroundColor: rgbToHex(row.background_color),
+      auto_height: row.auto_height ?? false, print: row.print ?? true, condicion: row.condicion ?? '',
+    });
+    setEditParamMode(true);
+    setEditParamKey(row.parametro);
+    setShowParamForm(true);
+  }
+
   async function handleSaveParam() {
     if (!paramForm.parametro.trim()) {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'El parámetro es requerido' });
       return;
     }
+    const payload = {
+      parametro: paramForm.parametro, descripcion: paramForm.descripcion, texto: paramForm.texto,
+      x: paramForm.x, y: paramForm.y, ancho: paramForm.ancho, alto: paramForm.alto, orden: paramForm.orden,
+      alignment: paramForm.alignment, font: composeFontString(paramForm),
+      border_color: hexToRgb(paramForm.borderColor), background_color: hexToRgb(paramForm.backgroundColor),
+      auto_height: paramForm.auto_height, print: paramForm.print, condicion: paramForm.condicion,
+    };
     setSavingParam(true);
     try {
-      await api.addParametro(editId, paramForm);
-      toast.current.show({ severity: 'success', summary: 'OK', detail: 'Parámetro agregado' });
-      setShowParamForm(false);
-      setParamForm(EMPTY_PARAM);
+      if (editParamMode) {
+        await api.updateParametro(editId, editParamKey, payload);
+        toast.current.show({ severity: 'success', summary: 'OK', detail: 'Parámetro actualizado' });
+      } else {
+        await api.addParametro(editId, payload);
+        toast.current.show({ severity: 'success', summary: 'OK', detail: 'Parámetro agregado' });
+      }
+      closeParamForm();
       loadParametros(editId);
     } catch (err) {
       const msg = err.response?.data?.mensaje || 'Error al guardar';
@@ -204,6 +292,7 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
 
   const accionesParamTemplate = (row) => (
     <div className="acciones-col">
+      <Button icon="fa-solid fa-pen" className="p-button-text p-button-sm" tooltip="Modificar" tooltipOptions={{ position: 'top' }} onClick={() => openEditParam(row)} />
       <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleDeleteParam(row)} />
     </div>
   );
@@ -371,16 +460,62 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
                       <InputText name="alto" value={paramForm.alto} onChange={handleParamChange} type="number" />
                     </div>
                   </div>
+                  <div className="form-row-12">
+                    <div className="form-field" style={{ gridColumn: 'span 3' }}>
+                      <label>Alineación</label>
+                      <Dropdown value={paramForm.alignment} options={ALIGNMENT_OPTIONS} onChange={e => setParamForm(p => ({ ...p, alignment: e.value }))} />
+                    </div>
+                    <div className="form-field" style={{ gridColumn: 'span 3' }}>
+                      <label>Fuente</label>
+                      <Dropdown value={paramForm.fontFamilia} options={FONT_FAMILIA_OPTIONS} onChange={e => setParamForm(p => ({ ...p, fontFamilia: e.value }))} />
+                    </div>
+                    <div className="form-field" style={{ gridColumn: 'span 3' }}>
+                      <label>Peso</label>
+                      <Dropdown value={paramForm.fontPeso} options={FONT_PESO_OPTIONS} onChange={e => setParamForm(p => ({ ...p, fontPeso: e.value }))} />
+                    </div>
+                    <div className="form-field" style={{ gridColumn: 'span 3' }}>
+                      <label>Tamaño</label>
+                      <InputText name="fontTamano" value={paramForm.fontTamano} onChange={handleParamChange} type="number" />
+                    </div>
+                  </div>
+                  <div className="form-row-12">
+                    <div className="form-field" style={{ gridColumn: 'span 3' }}>
+                      <label>Color de texto</label>
+                      <ColorPicker value={paramForm.fontColor} onChange={e => setParamForm(p => ({ ...p, fontColor: e.value }))} />
+                    </div>
+                    <div className="form-field" style={{ gridColumn: 'span 3' }}>
+                      <label>Color de borde</label>
+                      <ColorPicker value={paramForm.borderColor} onChange={e => setParamForm(p => ({ ...p, borderColor: e.value }))} />
+                    </div>
+                    <div className="form-field" style={{ gridColumn: 'span 3' }}>
+                      <label>Color de fondo</label>
+                      <ColorPicker value={paramForm.backgroundColor} onChange={e => setParamForm(p => ({ ...p, backgroundColor: e.value }))} />
+                    </div>
+                    <div className="form-field" style={{ gridColumn: 'span 3' }}>
+                      <label>Condición</label>
+                      <Dropdown value={paramForm.condicion} options={CONDICION_SUGERENCIAS.map(v => ({ label: v, value: v }))} onChange={e => setParamForm(p => ({ ...p, condicion: e.value }))} editable showClear placeholder="(siempre)" />
+                    </div>
+                  </div>
+                  <div className="form-row-12">
+                    <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 3' }}>
+                      <Checkbox inputId="auto_height" checked={paramForm.auto_height} onChange={e => setParamForm(p => ({ ...p, auto_height: e.checked }))} />
+                      <label htmlFor="auto_height">Alto automático</label>
+                    </div>
+                    <div className="form-field form-field--checkbox" style={{ gridColumn: 'span 3' }}>
+                      <Checkbox inputId="print" checked={paramForm.print} onChange={e => setParamForm(p => ({ ...p, print: e.checked }))} />
+                      <label htmlFor="print">Imprimir</label>
+                    </div>
+                  </div>
                 </div>
                 <div className="sub-form-actions">
-                  <Button label="Cancelar" icon="fa-solid fa-xmark" className="p-button-text" onClick={() => { setShowParamForm(false); setParamForm(EMPTY_PARAM); }} disabled={savingParam} />
-                  <Button label="Agregar" icon="fa-solid fa-check" onClick={handleSaveParam} loading={savingParam} />
+                  <Button label="Cancelar" icon="fa-solid fa-xmark" className="p-button-text" onClick={closeParamForm} disabled={savingParam} />
+                  <Button label={editParamMode ? 'Guardar' : 'Agregar'} icon="fa-solid fa-check" onClick={handleSaveParam} loading={savingParam} />
                 </div>
               </div>
             )}
             <div className="sub-tab-header">
               {!showParamForm && (
-                <Button label="Nuevo parámetro" icon="fa-solid fa-plus" size="small" onClick={() => setShowParamForm(true)} />
+                <Button label="Nuevo parámetro" icon="fa-solid fa-plus" size="small" onClick={openNewParam} />
               )}
             </div>
             <div className="table-scroll-x">

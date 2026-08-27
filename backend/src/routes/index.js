@@ -119,6 +119,7 @@ function formularioRouter(tableName, parametroTable) {
   const parametroController = createParametroController(createParametroModel(parametroTable));
   router.get('/:id/parametros', parametroController.list);
   router.post('/:id/parametros', parametroController.create);
+  router.put('/:id/parametros/:parametro', parametroController.update);
   router.delete('/:id/parametros/:parametro', parametroController.remove);
   return router;
 }

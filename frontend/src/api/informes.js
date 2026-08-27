@@ -37,6 +37,7 @@ export const formulariosRecibo = {
   remove:  (id)           => client.delete(`/informes/formularios-recibo/${encodeURIComponent(id)}`),
   getParametros:   (id)       => client.get(`/informes/formularios-recibo/${encodeURIComponent(id)}/parametros`),
   addParametro:    (id, data) => client.post(`/informes/formularios-recibo/${encodeURIComponent(id)}/parametros`, data),
+  updateParametro: (id, p, data) => client.put(`/informes/formularios-recibo/${encodeURIComponent(id)}/parametros/${encodeURIComponent(p)}`, data),
   removeParametro: (id, p)    => client.delete(`/informes/formularios-recibo/${encodeURIComponent(id)}/parametros/${encodeURIComponent(p)}`),
 };
 
@@ -48,6 +49,7 @@ export const formulariosLibro = {
   remove:  (id)           => client.delete(`/informes/formularios-libro/${encodeURIComponent(id)}`),
   getParametros:   (id)       => client.get(`/informes/formularios-libro/${encodeURIComponent(id)}/parametros`),
   addParametro:    (id, data) => client.post(`/informes/formularios-libro/${encodeURIComponent(id)}/parametros`, data),
+  updateParametro: (id, p, data) => client.put(`/informes/formularios-libro/${encodeURIComponent(id)}/parametros/${encodeURIComponent(p)}`, data),
   removeParametro: (id, p)    => client.delete(`/informes/formularios-libro/${encodeURIComponent(id)}/parametros/${encodeURIComponent(p)}`),
 };
 
