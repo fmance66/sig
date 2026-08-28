@@ -3,12 +3,14 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
 import './informes.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function ConceptosAcumuladosPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(FILTRO_VACIO);
   const [conceptos, setConceptos] = useState([]);
   const [totales, setTotales] = useState(null);
@@ -18,7 +20,7 @@ export default function ConceptosAcumuladosPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getConceptosAcumulados(f);
+      const res = await api.getConceptosAcumulados({ ...f, empresa: empresa?.id });
       setConceptos(res.data.resultado.conceptos);
       setTotales(res.data.resultado.totales);
     } catch {
@@ -34,6 +36,8 @@ export default function ConceptosAcumuladosPage() {
   }
 
   const filaTotal = totales ? [{ ...totales, concepto: '', concepto_desc: 'Totales', _total: true }] : [];
+  const totalRegistros = <span className="total-registros">Total: {conceptos.length} registros</span>;
+  const tableFooter = conceptos.length > 0 ? <div className="table-footer-right">{totalRegistros}</div> : null;
 
   return (
     <div className="page-informes">
@@ -49,6 +53,7 @@ export default function ConceptosAcumuladosPage() {
         stripedRows
         emptyMessage="Sin resultados para los filtros seleccionados"
         rowClassName={row => row._total ? 'informe-fila-total' : ''}
+        footer={tableFooter}
       >
         <Column field="concepto" header="Concepto" style={{ width: '90px' }} />
         <Column field="concepto_desc" header="Descripción" />

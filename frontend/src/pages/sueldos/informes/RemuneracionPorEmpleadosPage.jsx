@@ -3,6 +3,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
 import './informes.css';
 
@@ -30,6 +31,7 @@ function agruparPorEmpleado(recibos) {
 }
 
 export default function RemuneracionPorEmpleadosPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(FILTRO_VACIO);
   const [empleados, setEmpleados] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -39,7 +41,7 @@ export default function RemuneracionPorEmpleadosPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getRemuneracionPorEmpleados(f);
+      const res = await api.getRemuneracionPorEmpleados({ ...f, empresa: empresa?.id });
       setEmpleados(agruparPorEmpleado(res.data.resultado.recibos));
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo generar el informe' });
@@ -52,6 +54,9 @@ export default function RemuneracionPorEmpleadosPage() {
     setFiltro(FILTRO_VACIO);
     buscar(FILTRO_VACIO);
   }
+
+  const totalRegistros = <span className="total-registros">Total: {empleados.length} registros</span>;
+  const tableFooter = empleados.length > 0 ? <div className="table-footer-right">{totalRegistros}</div> : null;
 
   function detalleTemplate(emp) {
     return (
@@ -86,6 +91,7 @@ export default function RemuneracionPorEmpleadosPage() {
         size="small"
         stripedRows
         emptyMessage="Sin resultados para los filtros seleccionados"
+        footer={tableFooter}
       >
         <Column expander style={{ width: '3rem' }} />
         <Column field="legajo" header="Legajo" style={{ width: '90px' }} />

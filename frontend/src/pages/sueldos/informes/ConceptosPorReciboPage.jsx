@@ -5,6 +5,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
 import './informes.css';
 
@@ -17,6 +18,7 @@ const ORDEN_OPTIONS = [
 ];
 
 export default function ConceptosPorReciboPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState({ ...FILTRO_VACIO, concepto: '', orden: 'empleado' });
   const [lineas, setLineas] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +27,7 @@ export default function ConceptosPorReciboPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getConceptosPorRecibo(f);
+      const res = await api.getConceptosPorRecibo({ ...f, empresa: empresa?.id });
       setLineas(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo generar el informe' });
@@ -41,6 +43,10 @@ export default function ConceptosPorReciboPage() {
   }
 
   const nombreTemplate = row => `${row.apellido ?? ''}${row.apellido && row.nombre ? ', ' : ''}${row.nombre ?? ''}`;
+
+  const hasPaginator = lineas.length > 20;
+  const totalRegistros = <span className="total-registros">Total: {lineas.length} registros</span>;
+  const tableFooter = !hasPaginator && lineas.length > 0 ? <div className="table-footer-right">{totalRegistros}</div> : null;
 
   return (
     <div className="page-informes">
@@ -61,9 +67,11 @@ export default function ConceptosPorReciboPage() {
       <DataTable
         value={lineas}
         loading={loading}
-        paginator={lineas.length > 20}
+        paginator={hasPaginator}
         rows={20}
         rowsPerPageOptions={[20, 50, 100]}
+        paginatorRight={totalRegistros}
+        footer={tableFooter}
         size="small"
         stripedRows
         emptyMessage="Sin resultados para los filtros seleccionados"

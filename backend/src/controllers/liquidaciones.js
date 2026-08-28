@@ -2,8 +2,8 @@ const Liquidacion = require('../models/liquidaciones');
 
 async function list(req, res) {
   try {
-    const { periodo, estado, fechaDesde, fechaHasta, descripcion } = req.query;
-    const data = await Liquidacion.list({ periodo, estado, fechaDesde, fechaHasta, descripcion });
+    const { periodo, estado, fechaDesde, fechaHasta, descripcion, empresa } = req.query;
+    const data = await Liquidacion.list({ periodo, estado, fechaDesde, fechaHasta, descripcion, empresa });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (err) {
     console.error(err);

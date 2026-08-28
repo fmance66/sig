@@ -12,16 +12,20 @@ const MUTABLE = [
 
 const toDbValue = v => (v === '' ? null : v);
 
-async function list({ periodo, estado, fechaDesde, fechaHasta, descripcion } = {}) {
+async function list({ periodo, estado, fechaDesde, fechaHasta, descripcion, empresa } = {}) {
   const { rows } = await pool.query(
-    `SELECT ${COLS} FROM sld_liquidacion
+    `SELECT ${COLS} FROM sld_liquidacion l
      WHERE ($1::text IS NULL OR periodo ILIKE '%'||$1||'%')
        AND ($2::text IS NULL OR estado = $2)
        AND ($3::date IS NULL OR fecha >= $3)
        AND ($4::date IS NULL OR fecha <= $4)
        AND ($5::text IS NULL OR descripcion ILIKE '%'||$5||'%')
+       AND ($6::integer IS NULL OR EXISTS (
+             SELECT 1 FROM sld_recibo r JOIN sld_empleado e ON e.id = r.empleado
+             WHERE r.periodo = l.periodo AND e.empresa = $6))
      ORDER BY orden NULLS LAST, periodo`,
-    [periodo || null, estado || null, fechaDesde || null, fechaHasta || null, descripcion || null]
+    [periodo || null, estado || null, fechaDesde || null, fechaHasta || null, descripcion || null,
+      empresa ? Number(empresa) : null]
   );
   return rows;
 }

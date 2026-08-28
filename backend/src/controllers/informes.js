@@ -6,7 +6,7 @@ const MAX_RECIBOS_PDF = 200;
 
 function filtroDesdeQuery(q) {
   return {
-    periodo: q.periodo, legajo: q.legajo, convenio: q.convenio, categoria: q.categoria,
+    periodo: q.periodo, legajo: q.legajo, empresa: q.empresa, convenio: q.convenio, categoria: q.categoria,
     grupo: q.grupo, estado: q.estado, agrupadoPor: q.agrupadoPor, concepto: q.concepto, orden: q.orden,
   };
 }

@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import RecibosConceptosTable from './RecibosConceptosTable';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/liquidaciones';
 import './informes.css';
 
@@ -27,6 +28,7 @@ function agruparPorEmpleado(recibos) {
 }
 
 export default function RecibosAgrupadosEmpleadoPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(FILTRO_VACIO);
   const [empleados, setEmpleados] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,7 @@ export default function RecibosAgrupadosEmpleadoPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getRecibos(f);
+      const res = await api.getRecibos({ ...f, empresa: empresa?.id });
       setEmpleados(agruparPorEmpleado(res.data.resultado));
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los recibos' });
@@ -49,6 +51,9 @@ export default function RecibosAgrupadosEmpleadoPage() {
     setFiltro(FILTRO_VACIO);
     buscar(FILTRO_VACIO);
   }
+
+  const totalRegistros = <span className="total-registros">Total: {empleados.length} registros</span>;
+  const tableFooter = empleados.length > 0 ? <div className="table-footer-right">{totalRegistros}</div> : null;
 
   return (
     <div className="page-informes">
@@ -67,6 +72,7 @@ export default function RecibosAgrupadosEmpleadoPage() {
         size="small"
         stripedRows
         emptyMessage="Sin resultados para los filtros seleccionados"
+        footer={tableFooter}
       >
         <Column expander style={{ width: '3rem' }} />
         <Column field="legajo" header="Legajo" style={{ width: '90px' }} />

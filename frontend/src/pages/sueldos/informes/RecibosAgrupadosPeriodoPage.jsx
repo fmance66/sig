@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import RecibosConceptosTable from './RecibosConceptosTable';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/liquidaciones';
 import './informes.css';
 
@@ -24,6 +25,7 @@ function agruparPorPeriodo(recibos) {
 }
 
 export default function RecibosAgrupadosPeriodoPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(FILTRO_VACIO);
   const [periodos, setPeriodos] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,7 @@ export default function RecibosAgrupadosPeriodoPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getRecibos(f);
+      const res = await api.getRecibos({ ...f, empresa: empresa?.id });
       setPeriodos(agruparPorPeriodo(res.data.resultado));
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los recibos' });
@@ -46,6 +48,9 @@ export default function RecibosAgrupadosPeriodoPage() {
     setFiltro(FILTRO_VACIO);
     buscar(FILTRO_VACIO);
   }
+
+  const totalRegistros = <span className="total-registros">Total: {periodos.length} registros</span>;
+  const tableFooter = periodos.length > 0 ? <div className="table-footer-right">{totalRegistros}</div> : null;
 
   return (
     <div className="page-informes">
@@ -64,6 +69,7 @@ export default function RecibosAgrupadosPeriodoPage() {
         size="small"
         stripedRows
         emptyMessage="Sin resultados para los filtros seleccionados"
+        footer={tableFooter}
       >
         <Column expander style={{ width: '3rem' }} />
         <Column field="id" header="Período" style={{ width: '120px' }} />

@@ -91,7 +91,7 @@ function renderParametro(param, contexto, recibo, logoSrc, key, paddingHorizonta
   const textoRaw = (param.texto || '').trim();
   if (textoRaw === 'LOGO') {
     return logoSrc
-      ? h(View, { key, style }, h(Image, { src: logoSrc }))
+      ? h(View, { key, style }, h(Image, { src: logoSrc, style: { objectFit: 'contain' } }))
       : h(View, { key, style });
   }
   if (textoRaw.startsWith('LOGO(')) {

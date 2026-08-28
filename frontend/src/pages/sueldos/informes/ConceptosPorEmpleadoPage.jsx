@@ -4,12 +4,14 @@ import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
 import './informes.css';
 
 const fecha = v => v ? new Date(v).toLocaleDateString('es-AR') : '—';
 
 export default function ConceptosPorEmpleadoPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState({ ...FILTRO_VACIO, concepto: '' });
   const [empleados, setEmpleados] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,7 @@ export default function ConceptosPorEmpleadoPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getConceptosPorEmpleado(f);
+      const res = await api.getConceptosPorEmpleado({ ...f, empresa: empresa?.id });
       setEmpleados(res.data.resultado.empleados);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo generar el informe' });
@@ -33,6 +35,9 @@ export default function ConceptosPorEmpleadoPage() {
     setFiltro(vacio);
     buscar(vacio);
   }
+
+  const totalRegistros = <span className="total-registros">Total: {empleados.length} registros</span>;
+  const tableFooter = empleados.length > 0 ? <div className="table-footer-right">{totalRegistros}</div> : null;
 
   function detalleTemplate(emp) {
     return (
@@ -71,6 +76,7 @@ export default function ConceptosPorEmpleadoPage() {
         size="small"
         stripedRows
         emptyMessage="Sin resultados para los filtros seleccionados"
+        footer={tableFooter}
       >
         <Column expander style={{ width: '3rem' }} />
         <Column field="legajo" header="Legajo" style={{ width: '90px' }} />

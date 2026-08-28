@@ -14,7 +14,7 @@ const rowId = r => `${r.periodo}|${r.empleado}|${r.numero}`;
 // selection/onSelectionChange son opcionales: si vienen, se agrega la columna de
 // checkboxes (con "seleccionar todos" en el header) — la usan Recibos/Libro de
 // Sueldo para elegir qué imprimir; los Agrupados no la necesitan y no la pasan.
-export default function RecibosConceptosTable({ recibos, selection, onSelectionChange }) {
+export default function RecibosConceptosTable({ recibos, selection, onSelectionChange, mostrarTotal = false }) {
   const rows = useMemo(() => recibos.map(r => ({ ...r, _id: rowId(r) })), [recibos]);
   // El padre puede setear la selección por defecto con los recibos "crudos" (sin _id,
   // que es un campo interno de esta tabla) — se normaliza acá para que el dataKey matchee.
@@ -54,6 +54,10 @@ export default function RecibosConceptosTable({ recibos, selection, onSelectionC
 
   const nombreTemplate = row => `${row.apellido ?? ''}${row.apellido && row.nombre ? ', ' : ''}${row.nombre ?? ''}`;
 
+  const tableFooter = mostrarTotal && rows.length > 0
+    ? <div className="table-footer-right"><span className="total-registros">Total: {rows.length} registros</span></div>
+    : null;
+
   return (
     <DataTable
       value={rows}
@@ -66,6 +70,7 @@ export default function RecibosConceptosTable({ recibos, selection, onSelectionC
       emptyMessage="Sin recibos"
       selection={normalizedSelection}
       onSelectionChange={onSelectionChange}
+      footer={tableFooter}
     >
       {onSelectionChange && <Column selectionMode="multiple" style={{ width: '3rem' }} />}
       <Column expander style={{ width: '3rem' }} />

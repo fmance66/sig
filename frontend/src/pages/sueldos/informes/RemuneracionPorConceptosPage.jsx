@@ -4,12 +4,14 @@ import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
 import './informes.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function RemuneracionPorConceptosPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState({ ...FILTRO_VACIO, concepto: '' });
   const [empleados, setEmpleados] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +20,7 @@ export default function RemuneracionPorConceptosPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getRemuneracionPorConceptos(f);
+      const res = await api.getRemuneracionPorConceptos({ ...f, empresa: empresa?.id });
       setEmpleados(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo generar el informe' });
@@ -35,6 +37,10 @@ export default function RemuneracionPorConceptosPage() {
 
   const nombreTemplate = row => `${row.apellido ?? ''}${row.apellido && row.nombre ? ', ' : ''}${row.nombre ?? ''}`;
 
+  const hasPaginator = empleados.length > 20;
+  const totalRegistros = <span className="total-registros">Total: {empleados.length} registros</span>;
+  const tableFooter = !hasPaginator && empleados.length > 0 ? <div className="table-footer-right">{totalRegistros}</div> : null;
+
   return (
     <div className="page-informes">
       <Toast ref={toast} />
@@ -50,9 +56,11 @@ export default function RemuneracionPorConceptosPage() {
       <DataTable
         value={empleados}
         loading={loading}
-        paginator={empleados.length > 20}
+        paginator={hasPaginator}
         rows={20}
         rowsPerPageOptions={[20, 50, 100]}
+        paginatorRight={totalRegistros}
+        footer={tableFooter}
         size="small"
         stripedRows
         removableSort

@@ -3,10 +3,12 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import RecibosConceptosTable from './RecibosConceptosTable';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
 import './informes.css';
 
 export default function LibroSueldoPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(FILTRO_VACIO);
   const [recibos, setRecibos] = useState([]);
   const [seleccion, setSeleccion] = useState([]);
@@ -16,7 +18,7 @@ export default function LibroSueldoPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getRecibosSueldo(f);
+      const res = await api.getRecibosSueldo({ ...f, empresa: empresa?.id });
       const data = res.data.resultado.recibos;
       setRecibos(data);
       setSeleccion(data);
@@ -38,7 +40,7 @@ export default function LibroSueldoPage() {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Primero buscá los recibos a exportar' });
       return;
     }
-    window.open(api.getLibroSueldoPdfUrl(filtro, seleccion), '_blank');
+    window.open(api.getLibroSueldoPdfUrl({ ...filtro, empresa: empresa?.id }, seleccion), '_blank');
   }
 
   return (
@@ -56,7 +58,7 @@ export default function LibroSueldoPage() {
         )}
       />
 
-      <RecibosConceptosTable recibos={recibos} selection={seleccion} onSelectionChange={e => setSeleccion(e.value)} />
+      <RecibosConceptosTable recibos={recibos} selection={seleccion} onSelectionChange={e => setSeleccion(e.value)} mostrarTotal />
     </div>
   );
 }

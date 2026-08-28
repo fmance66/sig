@@ -1,6 +1,7 @@
 import { Button } from 'primereact/button';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
+import { useEmpresa } from '../../../context/EmpresaContext';
 
 // Panel de filtro compartido por las pantallas de Informes: mismo set de
 // campos que ya filtra recibos.list() en el backend (período/legajo/
@@ -10,6 +11,8 @@ import PeriodoSelect from '../../../components/PeriodoSelect';
 export default function InformeFiltro({
   filtro, onChange, onBuscar, onLimpiar, loading, children, actions, ocultar = [], periodoDropdown = false,
 }) {
+  const { empresa } = useEmpresa();
+
   function handleChange(e) {
     const { name, value } = e.target;
     onChange(prev => ({ ...prev, [name]: value }));
@@ -27,6 +30,7 @@ export default function InformeFiltro({
               <PeriodoSelect
                 value={filtro.periodo}
                 onChange={e => onChange(prev => ({ ...prev, periodo: e.value || '' }))}
+                empresa={empresa?.id}
                 placeholder=""
                 style={{ width: '220px' }}
               />

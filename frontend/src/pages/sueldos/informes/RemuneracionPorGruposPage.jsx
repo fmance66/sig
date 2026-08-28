@@ -5,6 +5,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import { AGRUPADO_POR_OPTIONS } from './dimensiones';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
 import './informes.css';
 
@@ -12,6 +13,7 @@ const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleStr
 const fecha = v => v ? new Date(v).toLocaleDateString('es-AR') : '—';
 
 export default function RemuneracionPorGruposPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState({ ...FILTRO_VACIO, agrupadoPor: 'proyecto' });
   const [grupos, setGrupos] = useState([]);
   const [totales, setTotales] = useState(null);
@@ -22,7 +24,7 @@ export default function RemuneracionPorGruposPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getRemuneracionPorGrupos(f);
+      const res = await api.getRemuneracionPorGrupos({ ...f, empresa: empresa?.id });
       setGrupos(res.data.resultado.grupos);
       setTotales(res.data.resultado.totales);
     } catch {
@@ -81,11 +83,12 @@ export default function RemuneracionPorGruposPage() {
         stripedRows
         emptyMessage="Sin resultados para los filtros seleccionados"
         footer={totales && (
-          <div className="table-footer-right" style={{ gap: '1.5rem', fontWeight: 700, color: '#1d4ed8' }}>
-            <span>Total Remunerativo: {money(totales.remunerativo)}</span>
-            <span>Total No Remunerativo: {money(totales.no_remunerativo)}</span>
-            <span>Total Descuento: {money(totales.descuento)}</span>
-            <span>Total Sueldo Neto: {money(totales.sueldo_neto)}</span>
+          <div className="table-footer-right" style={{ gap: '1.5rem' }}>
+            <span className="total-registros">Total: {grupos.length} registros</span>
+            <span style={{ fontWeight: 700, color: '#1d4ed8' }}>Total Remunerativo: {money(totales.remunerativo)}</span>
+            <span style={{ fontWeight: 700, color: '#1d4ed8' }}>Total No Remunerativo: {money(totales.no_remunerativo)}</span>
+            <span style={{ fontWeight: 700, color: '#1d4ed8' }}>Total Descuento: {money(totales.descuento)}</span>
+            <span style={{ fontWeight: 700, color: '#1d4ed8' }}>Total Sueldo Neto: {money(totales.sueldo_neto)}</span>
           </div>
         )}
       >

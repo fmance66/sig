@@ -1,0 +1,50 @@
+<svg width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mainit-card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="55%" stop-color="#6d28d9"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+
+  <!-- eco / wireframe (reflejo flotante, estilo hero.png) -->
+  <g transform="translate(120,58) scale(1,0.55) rotate(45)">
+    <rect x="-62" y="-62" width="124" height="124" rx="20" fill="none" stroke="#c4b5fd" stroke-width="3" opacity="0.8"/>
+  </g>
+
+  <!-- conectores punteados -->
+  <g stroke="#a78bfa" stroke-width="2.5" stroke-dasharray="3,4" opacity="0.85">
+    <line x1="32.3" y1="58" x2="32.3" y2="146"/>
+    <line x1="207.7" y1="58" x2="207.7" y2="146"/>
+  </g>
+
+  <!-- plataforma solida (isometrica), degrade violeta -> azul -->
+  <g transform="translate(120,146) scale(1,0.55) rotate(45)">
+    <rect x="-62" y="-62" width="124" height="124" rx="20" fill="url(#mainit-card)" stroke="#4c1d95" stroke-width="2"/>
+  </g>
+
+  <!-- M en el cuadrante de arriba (wireframe) -->
+  <g transform="translate(120,58) scale(0.36)">
+    <polyline points="-58,57 -58,-57 0,11 58,-57 58,57"
+              fill="none" stroke="#c4b5fd" stroke-width="24"
+              stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#c4b5fd">
+      <circle cx="-58" cy="-57" r="12"/>
+      <circle cx="0" cy="11" r="12"/>
+      <circle cx="58" cy="-57" r="12"/>
+    </g>
+  </g>
+
+  <!-- I en el cuadrante de abajo (plataforma solida), estilo I-beam -->
+  <g transform="translate(120,146)" fill="none" stroke="#eff6ff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="-20" y1="-20" x2="20" y2="-20"/>
+    <line x1="0" y1="-20" x2="0" y2="20"/>
+    <line x1="-20" y1="20" x2="20" y2="20"/>
+  </g>
+  <g fill="#60a5fa" stroke="#2e1065" stroke-width="3">
+    <circle cx="100" cy="126" r="6"/>
+    <circle cx="140" cy="126" r="6"/>
+    <circle cx="100" cy="166" r="6"/>
+    <circle cx="140" cy="166" r="6"/>
+  </g>
+</svg>

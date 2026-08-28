@@ -64,10 +64,12 @@ const FILTRO_BASE_SQL = `
   AND ($4::text IS NULL OR e.categoria = $4)
   AND ($5::text IS NULL OR e.grupo = $5)
   AND ($6::text IS NULL OR l.estado = $6)
+  AND ($7::integer IS NULL OR e.empresa = $7)
 `;
 
 function filtroBaseParams(f) {
-  return [f.periodo || null, f.legajo || null, f.convenio || null, f.categoria || null, f.grupo || null, f.estado || null];
+  return [f.periodo || null, f.legajo || null, f.convenio || null, f.categoria || null, f.grupo || null, f.estado || null,
+    f.empresa ? Number(f.empresa) : null];
 }
 
 // ── Conceptos Agrupados ──────────────────────────────────────────────────
@@ -137,9 +139,10 @@ async function conceptosPorEmpleado(filtro = {}) {
        AND ($4::text IS NULL OR e.grupo = $4)
        AND ($5::text IS NULL OR lower(trim(e.estado)) = lower($5))
        AND ($6::text IS NULL OR ec.concepto ILIKE '%'||$6||'%')
+       AND ($7::integer IS NULL OR e.empresa = $7)
      ORDER BY e.apellido NULLS LAST, e.nombre NULLS LAST, ec.orden NULLS LAST, ec.concepto`,
     [filtro.legajo || null, filtro.convenio || null, filtro.categoria || null, filtro.grupo || null,
-      filtro.estado || null, filtro.concepto || null]
+      filtro.estado || null, filtro.concepto || null, filtro.empresa ? Number(filtro.empresa) : null]
   );
 
   const empleados = new Map();
@@ -165,7 +168,7 @@ async function conceptosPorRecibo(filtro = {}) {
      JOIN sld_concepto c ON c.id = rc.concepto
      LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
      WHERE ${FILTRO_BASE_SQL}
-       AND ($7::text IS NULL OR rc.concepto ILIKE '%'||$7||'%')
+       AND ($8::text IS NULL OR rc.concepto ILIKE '%'||$8||'%')
      ORDER BY ${orden}`,
     [...filtroBaseParams(filtro), filtro.concepto || null]
   );
@@ -191,10 +194,11 @@ async function remuneracionPorConceptos(filtro = {}) {
              SELECT 1 FROM sld_recibo_concepto rc
              WHERE rc.empleado = e.id AND rc.concepto = $7
                AND ($1::text IS NULL OR rc.periodo ILIKE '%'||$1||'%')))
+       AND ($8::integer IS NULL OR e.empresa = $8)
      GROUP BY e.id, e.legajo, e.apellido, e.nombre, e.grupo, e.tarea, e.fecha_ingreso, e.fecha_nacimiento, e.orden
      ORDER BY e.orden NULLS LAST, e.apellido NULLS LAST, e.nombre NULLS LAST`,
     [filtro.periodo || null, filtro.legajo || null, filtro.convenio || null, filtro.categoria || null,
-      filtro.grupo || null, filtro.estado || null, filtro.concepto || null]
+      filtro.grupo || null, filtro.estado || null, filtro.concepto || null, filtro.empresa ? Number(filtro.empresa) : null]
   );
   const anios = fecha => fecha ? Math.floor((Date.now() - new Date(fecha).getTime()) / (365.25 * 24 * 3600 * 1000)) : null;
   return rows.map(r => ({ ...r, antiguedad: anios(r.fecha_ingreso), edad: anios(r.fecha_nacimiento) }));

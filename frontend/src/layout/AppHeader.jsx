@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { useEmpresa } from '../context/EmpresaContext';
-import { getEmpresas } from '../api/empresas';
+import { getEmpresas, getLogoUrl } from '../api/empresas';
+import mainItLogo from '../assets/mainit-logo.svg';
 import './AppHeader.css';
 
 export default function AppHeader() {
@@ -38,7 +39,7 @@ export default function AppHeader() {
       <header className="app-header">
         {/* Izquierda: logo + nombre sistema */}
         <div className="header-brand">
-          <i className="fa-solid fa-building-columns header-logo" />
+          <img src={mainItLogo} alt="MAIN IT" className="header-logo" />
           <div className="header-brand-text">
             <span className="header-brand-name">MAIN IT</span>
             <span className="header-brand-sub">Sistemas</span>
@@ -54,6 +55,13 @@ export default function AppHeader() {
         <div className="header-empresa">
           {empresa ? (
             <>
+              <img
+                key={empresa.id}
+                className="header-empresa-logo"
+                src={getLogoUrl(empresa.id)}
+                alt=""
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
               <div className="header-empresa-info">
                 <span className="header-empresa-nombre">{empresa.razon_social}</span>
                 {empresa.cuit && <span className="header-empresa-cuit">{empresa.cuit}</span>}
