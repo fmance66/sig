@@ -82,6 +82,37 @@
                 "method": "DELETE",
                 "url": "{{base_url}}/empresas/7"
               }
+            },
+            {
+              "name": "GET Logo de Empresa",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/empresas/1/logo"
+              }
+            },
+            {
+              "name": "PUT Logo de Empresa",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/empresas/1/logo",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "image/png"
+                  }
+                ],
+                "body": {
+                  "mode": "file",
+                  "file": { "src": "" }
+                }
+              }
+            },
+            {
+              "name": "DELETE Logo de Empresa",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/empresas/1/logo"
+              }
             }
           ]
         },

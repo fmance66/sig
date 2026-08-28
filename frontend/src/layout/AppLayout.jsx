@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Menubar } from 'primereact/menubar';
 import { MODULES, ADMIN_MODULES } from './modules';
@@ -14,6 +14,17 @@ export default function AppLayout() {
   const { empresa } = useEmpresa();
 
   const activeModule = ALL_MODULES.find(m => m.id === activeModuleId);
+
+  // Cambiar (o cerrar) la empresa deja atrás el módulo que estuviera activo —
+  // si no, al elegir otra empresa se sigue viendo Sueldos en vez del panel
+  // general de esa empresa.
+  const empresaAnterior = useRef(empresa?.id);
+  useEffect(() => {
+    if (empresaAnterior.current === empresa?.id) return;
+    empresaAnterior.current = empresa?.id;
+    setActiveModuleId(null);
+    navigate('/', { state: { moduleId: null } });
+  }, [empresa?.id]);
 
   function handleHomeClick() {
     setActiveModuleId(null);

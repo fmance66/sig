@@ -12,6 +12,7 @@ function catalogo(tableName, columns, numericColumns, nombreEntidad, options) {
 }
 
 router.use('/estado',    require('./estado'));
+router.use('/dashboard', require('./dashboard'));
 router.use('/empresas',  require('./empresas'));
 router.use('/empleados', require('./empleados'));
 router.use('/sucursales', require('./sucursales'));

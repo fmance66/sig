@@ -1,3 +1,7 @@
+-- OBSOLETO: plegado en db/postgresql/01_schema.sql (sección 14, junto con 002), ver
+-- MIGRACION_BITACORA.md. Se conserva solo como referencia histórica; no ejecutar
+-- contra una base nueva ni contra la base actual.
+--
 -- Columnas de estilo del diseño legacy que quedaron afuera de 002 (solo se habían migrado
 -- x/y/ancho/alto/texto/orden). Hacen falta para que el intérprete de layout del PDF pueda
 -- distinguir cajas de texto (alignment/font) de rectángulos (border_color/background_color)

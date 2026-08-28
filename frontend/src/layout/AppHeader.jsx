@@ -29,6 +29,10 @@ export default function AppHeader() {
     setDialogVisible(false);
   }
 
+  function cerrarEmpresa() {
+    setEmpresa(null);
+  }
+
   return (
     <>
       <header className="app-header">
@@ -56,6 +60,9 @@ export default function AppHeader() {
               </div>
               <button className="header-empresa-btn" onClick={openDialog} title="Cambiar empresa">
                 <i className="fa-solid fa-right-left" />
+              </button>
+              <button className="header-empresa-btn" onClick={cerrarEmpresa} title="Cerrar empresa">
+                <i className="fa-solid fa-power-off" />
               </button>
             </>
           ) : (

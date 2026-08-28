@@ -1,3 +1,7 @@
+-- OBSOLETO: plegado en db/postgresql/01_schema.sql (sección 14, junto con 003), ver
+-- MIGRACION_BITACORA.md. Se conserva solo como referencia histórica; no ejecutar
+-- contra una base nueva ni contra la base actual.
+--
 -- Metadatos de diseño de Recibo de Sueldo y Libro de Sueldos (menú Informes).
 -- Guardan la configuración de formato (orientación, márgenes, parámetros con
 -- posición X/Y/Ancho/Alto) tal como la exponía el sistema legacy. Por ahora

@@ -56,7 +56,7 @@ const ID_RESOLVERS = {
 // ---------------------------------------------------------------------------
 // Mapa de tipos por columna (posición 1-indexed) para tablas con BOOLEAN o BYTEA.
 // Solo las tablas donde importa (las demás son todo TEXT/NUMBER → se dejan igual).
-// 'B' = BOOLEAN (0→FALSE, 1→TRUE), 'X' = BYTEA (→ NULL)
+// 'B' = BOOLEAN (0→FALSE, 1→TRUE), 'X' = BYTEA (bytes reales del dump, ver bytesToBytea)
 // ---------------------------------------------------------------------------
 const COL_TYPES = {
   sys_empresa:        { 11:'X', 20:'X', 29:'B', 30:'B', 33:'B' },
@@ -134,13 +134,54 @@ function extractMysqlColumns(createTableBlock) {
 }
 
 // ---------------------------------------------------------------------------
+// Escapes reconocidos por MySQL dentro de un string literal (mysql_real_escape_string).
+// Se usan para reconstruir el BYTE real detrás de cada secuencia \X, necesario
+// para las columnas BYTEA (ver bytesToBytea más abajo) — el resto del pipeline
+// (texto normal) no necesita esto, sigue viajando en su forma "escapada para
+// Postgres" tal como antes.
+// ---------------------------------------------------------------------------
+const MYSQL_ESCAPES = { "'": 0x27, '"': 0x22, '\\': 0x5C, '0': 0x00, 'n': 0x0A, 'r': 0x0D, 't': 0x09, 'b': 0x08, 'Z': 0x1A, 'z': 0x1A };
+
+// Bytes reales (Buffer) → literal bytea en formato hex de Postgres, usando E''
+// para que el backslash se interprete siempre igual sin importar el valor de
+// standard_conforming_strings. Doble backslash a propósito: el string literal
+// E'...' debe decodificar a los 2 caracteres "\x" seguidos del hex, que es lo
+// que el parser de bytea de Postgres reconoce como formato hexadecimal.
+function bytesToBytea(buf) {
+  const bs = String.fromCharCode(92); // '\'
+  return `E'${bs}${bs}x${buf.toString('hex')}'`;
+}
+
+// Campos "Graphic" del ERP legacy (Delphi/VCL) no guardan el archivo de imagen
+// crudo: anteponen un wrapper propietario (ruta de archivo original, "ROOT",
+// padding) antes de la firma real de PNG/JPEG — confirmado con el logo de
+// Thompson y French (wrapper de 89 bytes antes de la firma PNG). El consumidor
+// (API de logo, PDF de recibos) espera la imagen "pelada" desde el byte 0, así
+// que se recorta acá, en el único lugar que conoce el formato legacy.
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const JPEG_SIGNATURE = Buffer.from([0xff, 0xd8, 0xff]);
+
+function extractEmbeddedImage(buf) {
+  const pngAt  = buf.indexOf(PNG_SIGNATURE);
+  const jpegAt = buf.indexOf(JPEG_SIGNATURE);
+  const at = [pngAt, jpegAt].filter(i => i !== -1).sort((a, b) => a - b)[0];
+  if (at === undefined) return buf;   // no es un blob de imagen reconocible, se deja tal cual
+  return at === 0 ? buf : buf.slice(at);
+}
+
+// ---------------------------------------------------------------------------
 // Parser de VALUES para MySQL.
-// Devuelve array de tokens: cada token es una string cruda del valor SQL.
+// Devuelve { tokens, rawBytes }: `tokens` son strings ya en formato listo para
+// Postgres (comillas dobladas, backslashes de escape sin resolver — igual que
+// antes); `rawBytes` es un array paralelo con el Buffer de bytes reales de
+// cada string literal (undefined para NULL/números), usado solo por las
+// columnas marcadas 'X' en COL_TYPES para reconstruir binarios (fotos, logos)
+// en vez de descartarlos.
 // Maneja: strings con \' y '', NULL, números.
-// Binario (bytes < 0x20 no-blancos): marca el valor como BINARY.
 // ---------------------------------------------------------------------------
 function parseValueTokens(str) {
   const tokens = [];
+  const rawBytes = [];
   let i = 0;
 
   while (i < str.length) {
@@ -151,28 +192,38 @@ function parseValueTokens(str) {
     if (str[i] === "'") {
       // string literal — escanear hasta cierre de quote
       let out = "'";
-      let hasBinary = false;
+      const bytes = [];
       i++;
       while (i < str.length) {
         const ch = str[i];
-        const code = str.charCodeAt(i);
         if (ch === '\\') {
-          if (str[i+1] === "'") { out += "''"; i += 2; }  // \' → ''
-          else if (str[i+1] === '0') { i += 2; }           // \0 → strip (MySQL null byte escape)
-          else                  { out += ch; i++; }
-        } else if (ch === "'" && str[i+1] === "'") {
-          out += "''"; i += 2;
-        } else if (ch === "'") {
-          out += "'"; i++; break;
-        } else {
-          if (code === 0x00) { i++; continue; }  // strip literal null bytes
-          if (code < 0x20 && ch !== '\t' && ch !== '\n' && ch !== '\r') hasBinary = true;
-          out += ch; i++;
+          const next = str[i + 1];
+          if (next === "'") {                 // \' → ''
+            out += "''"; bytes.push(0x27);
+          } else if (next === '0') {           // \0 → strip (MySQL null byte escape)
+            bytes.push(0x00);
+          } else {                             // \X: se preserva tal cual para Postgres,
+                                                // pero el byte real se resuelve por tabla
+            out += ch + (next !== undefined ? next : '');
+            const escByte = MYSQL_ESCAPES[next];
+            bytes.push(escByte !== undefined ? escByte : (next !== undefined ? next.charCodeAt(0) : 0x5C));
+          }
+          i += 2;
+          continue;
         }
+        if (ch === "'" && str[i + 1] === "'") {
+          out += "''"; bytes.push(0x27); i += 2; continue;
+        }
+        if (ch === "'") { out += "'"; i++; break; }
+
+        const code = str.charCodeAt(i);
+        if (code === 0x00) { i++; continue; }  // strip literal null bytes
+        out += ch; bytes.push(code); i++;
       }
-      tokens.push(hasBinary ? '__BINARY__' : out);
+      tokens.push(out);
+      rawBytes.push(Buffer.from(bytes));
     } else if (str.slice(i, i+4).toUpperCase() === 'NULL') {
-      tokens.push('NULL'); i += 4;
+      tokens.push('NULL'); rawBytes.push(undefined); i += 4;
     } else {
       // número u otro literal (sin comillas)
       let num = '';
@@ -180,9 +231,10 @@ function parseValueTokens(str) {
         num += str[i]; i++;
       }
       tokens.push(num.trim());
+      rawBytes.push(undefined);
     }
   }
-  return tokens;
+  return { tokens, rawBytes };
 }
 
 // ---------------------------------------------------------------------------
@@ -247,7 +299,7 @@ function resolveIdToken(tableName, colName, tok, resolverMaps) {
     const cols = resolver.columns[tableName];
     if (!cols || !cols.includes(colName)) continue;
 
-    if (tok === 'NULL' || tok === '__BINARY__') return { value: 'NULL', failed: false };
+    if (tok === 'NULL') return { value: 'NULL', failed: false };
 
     const raw   = tok.startsWith("'") ? tok.slice(1, -1).replace(/''/g, "'") : tok;
     const numId = (resolverMaps[name] || {})[raw];
@@ -267,7 +319,18 @@ function resolveIdToken(tableName, colName, tok, resolverMaps) {
 // Devuelve { tokens, drop } — drop=true si algún id crítico no resolvió y la
 // fila entera debe descartarse (ver ID_RESOLVERS.critical).
 // ---------------------------------------------------------------------------
-function convertTokens(tableName, tokens, colNames, resolverMaps) {
+// Recorta un string ya en formato "escapado para Postgres" (bytes latin1 1:1)
+// a maxLen bytes, sin cortar un carácter UTF-8 multibyte a la mitad — si el
+// corte cae en medio de una secuencia, se descarta el carácter incompleto
+// completo en vez de dejar bytes inválidos sueltos.
+function trimIncompleteUtf8(str, maxLen) {
+  let end = Math.min(str.length, maxLen);
+  while (end > 0 && (str.charCodeAt(end - 1) & 0xC0) === 0x80) end--;   // bytes de continuación (10xxxxxx)
+  if (end > 0 && str.charCodeAt(end - 1) >= 0xC0) end--;                // byte líder sin continuación
+  return str.slice(0, end);
+}
+
+function convertTokens(tableName, tokens, colNames, resolverMaps, rawBytesArr) {
   const types    = COL_TYPES[tableName] || {};
   const defaults = NOT_NULL_DEFAULTS[tableName] || {};
   const limits   = VARCHAR_LIMITS[tableName] || {};
@@ -291,16 +354,26 @@ function convertTokens(tableName, tokens, colNames, resolverMaps) {
     }
 
     const type = types[col];
-    if (type === 'X') return 'NULL';   // BYTEA → NULL
-
-    if (type === 'B') {                // BOOLEAN
-      if (tok === '0' || tok === "''") return 'FALSE';
-      if (tok === '1')                 return 'TRUE';
-      if (tok === 'NULL' || tok === '__BINARY__') return 'NULL';
-      return tok;
+    if (type === 'X') {                // BYTEA → bytes reales (foto, logo), NULL si no hay dato
+      const buf = rawBytesArr && rawBytesArr[idx];
+      return (buf && buf.length) ? bytesToBytea(extractEmbeddedImage(buf)) : 'NULL';
     }
 
-    if (tok === '__BINARY__') return 'NULL';
+    if (type === 'B') {                // BOOLEAN
+      // MySQL BIT(1) llega como un string literal de 1 byte crudo (0x00/0x01),
+      // no como el carácter ASCII '0'/'1' — hay que mirar el byte real, no el
+      // texto (que para 0x00, por el strip de \0, queda indistinguible de un
+      // string vacío genuino).
+      const buf = rawBytesArr && rawBytesArr[idx];
+      if (buf) {
+        if (buf.length === 0) return 'FALSE';
+        if (buf.length === 1) return buf[0] === 0 ? 'FALSE' : 'TRUE';
+      }
+      if (tok === '0' || tok === "''") return 'FALSE';
+      if (tok === '1')                 return 'TRUE';
+      if (tok === 'NULL') return 'NULL';
+      return tok;
+    }
 
     // NOT NULL defaults (cuando el dump tiene NULL pero el schema no lo permite)
     if (tok === 'NULL' && colName && defaults[colName] !== undefined) {
@@ -312,7 +385,7 @@ function convertTokens(tableName, tokens, colNames, resolverMaps) {
       const maxLen = limits[colName];
       const inner  = tok.slice(1, -1);  // quitar quotes externas
       if (inner.length > maxLen) {
-        return "'" + inner.substring(0, maxLen) + "'";
+        return "'" + trimIncompleteUtf8(inner, maxLen) + "'";
       }
     }
 
@@ -347,7 +420,7 @@ function sqlLiteral(str) {
 
 // Token ya parseado por parseValueTokens (con comillas PG y '' escapado) → valor real.
 function unquoteToken(tok) {
-  if (tok === undefined || tok === 'NULL' || tok === '__BINARY__') return null;
+  if (tok === undefined || tok === 'NULL') return null;
   if (tok.startsWith("'")) return tok.slice(1, -1).replace(/''/g, "'");
   return tok;
 }
@@ -371,7 +444,7 @@ function transformBasFormulario(line, colNames, empresaNum) {
   const hermanos = { sld_formulario_recibo: [], sld_formulario_libro: [] };
 
   for (const tContent of splitTuples(rest)) {
-    const tokens = parseValueTokens(tContent);
+    const { tokens } = parseValueTokens(tContent);
     const row = {};
     colNames.forEach((c, i) => { row[c] = tokens[i]; });
 
@@ -433,7 +506,7 @@ function transformBasFormularioParametro(line, colNames, empresaNum) {
 
   const statements = [];
   for (const tContent of splitTuples(rest)) {
-    const tokens = parseValueTokens(tContent);
+    const { tokens } = parseValueTokens(tContent);
     const row = {};
     colNames.forEach((c, i) => { row[c] = tokens[i]; });
 
@@ -471,7 +544,15 @@ function transformBasFormularioParametro(line, colNames, empresaNum) {
 // resolverMaps: ver convertTokens.
 // ---------------------------------------------------------------------------
 function transformInsert(line, tableName, resolverMaps, colNames) {
-  line = line.replace(/`/g, '');
+  // Los backticks de MySQL (identificadores) solo pueden vivir en la parte
+  // "INSERT INTO `tabla` (`col1`,...)" — quitarlos de la línea completa
+  // corrompería cualquier byte 0x60 crudo dentro de datos binarios (BYTEA)
+  // en la sección VALUES (bug real, encontrado al preservar logos/fotos:
+  // un PNG de 70KB tiene ese byte cientos de veces).
+  const preValuesIdx = line.indexOf(' VALUES ');
+  line = preValuesIdx === -1
+    ? line.replace(/`/g, '')
+    : line.slice(0, preValuesIdx).replace(/`/g, '') + line.slice(preValuesIdx);
   line = line.replace(/'0000-00-00 00:00:00'/g, 'NULL');
   line = line.replace(/'0000-00-00'/g, 'NULL');
 
@@ -498,10 +579,54 @@ function transformInsert(line, tableName, resolverMaps, colNames) {
       const prefix  = `INSERT INTO ${tableName} ${colList}VALUES `;
       const rest    = line.slice(valuesIdx + 8);
 
+      // sys_empresa puede traer una fila "fantasma" duplicada (mismo caso que la
+      // sección 8 de MIGRACION_BITACORA.md) que no resuelve contra el mapa de
+      // empresa y se descarta — pero a veces esa fila fantasma es la única que
+      // tiene el logo/baja (BYTEA) cargado, mientras la fila real que sí resuelve
+      // lo tiene en NULL. La fila real referencia a la fantasma vía su propia
+      // columna `empresa` (auto-referencia de "grupo económico"), así que se usa
+      // ese link para "donar" el binario a la fila real antes de descartar la
+      // fantasma.
+      const empresaLogoDonors = tableName === 'sys_empresa' ? {} : null;
+      if (empresaLogoDonors) {
+        const idIdx   = colNames.indexOf('id');
+        const logoIdx = colNames.indexOf('logo');
+        const bajaIdx = colNames.indexOf('baja');
+        for (const tContent of splitTuples(rest)) {
+          const { tokens: t, rawBytes: rb } = parseValueTokens(tContent);
+          if (idIdx === -1) continue;
+          const idRaw = unquoteToken(t[idIdx]);
+          if (idRaw === null || (resolverMaps.empresa && resolverMaps.empresa[idRaw] !== undefined)) continue;
+          const logoBuf = logoIdx !== -1 ? rb[logoIdx] : undefined;
+          const bajaBuf = bajaIdx !== -1 ? rb[bajaIdx] : undefined;
+          if ((logoBuf && logoBuf.length) || (bajaBuf && bajaBuf.length)) {
+            empresaLogoDonors[idRaw] = { logoBuf, bajaBuf };
+          }
+        }
+      }
+
       const tuples = [];
       for (const tContent of splitTuples(rest)) {
-        const tokens = parseValueTokens(tContent);
-        const { tokens: converted, drop } = convertTokens(tableName, tokens, colNames, resolverMaps);
+        const { tokens, rawBytes } = parseValueTokens(tContent);
+
+        if (empresaLogoDonors) {
+          const empresaRefIdx = colNames.indexOf('empresa');
+          const refRaw = empresaRefIdx !== -1 ? unquoteToken(tokens[empresaRefIdx]) : null;
+          const donor  = refRaw !== null ? empresaLogoDonors[refRaw] : undefined;
+          if (donor) {
+            const logoIdx = colNames.indexOf('logo');
+            const bajaIdx = colNames.indexOf('baja');
+            if (logoIdx !== -1 && (!rawBytes[logoIdx] || !rawBytes[logoIdx].length) && donor.logoBuf && donor.logoBuf.length) {
+              rawBytes[logoIdx] = donor.logoBuf;
+              console.error(`  Logo trasplantado desde fila duplicada '${refRaw}' de sys_empresa a la fila real`);
+            }
+            if (bajaIdx !== -1 && (!rawBytes[bajaIdx] || !rawBytes[bajaIdx].length) && donor.bajaBuf && donor.bajaBuf.length) {
+              rawBytes[bajaIdx] = donor.bajaBuf;
+            }
+          }
+        }
+
+        const { tokens: converted, drop } = convertTokens(tableName, tokens, colNames, resolverMaps, rawBytes);
         if (drop) {
           console.error(`  Fila de ${tableName} descartada (id sin resolver): (${tokens.join(',')})`);
           continue;
@@ -587,7 +712,7 @@ function collectEmpleadoLegajos(content) {
     if (valuesIdx !== -1) {
       const rest = pending.slice(valuesIdx + 8);
       for (const tContent of splitTuples(rest)) {
-        const tok = parseValueTokens(tContent)[idPos];
+        const tok = parseValueTokens(tContent).tokens[idPos];
         if (tok && tok.startsWith("'")) legajos.push(tok.slice(1, -1).replace(/''/g, "'"));
       }
     }
@@ -619,7 +744,7 @@ function buildEmpleadoIdMaps(baseDir, dumpBasenames) {
   const mapsByFile = new Map();
   let next = 1;
   for (const basename of dumpBasenames) {
-    const content = fs.readFileSync(path.join(baseDir, basename), 'utf8');
+    const content = fs.readFileSync(path.join(baseDir, basename), 'latin1');
     const localMap = {};
     for (const legajo of collectEmpleadoLegajos(content)) {
       if (localMap[legajo] === undefined) localMap[legajo] = next++;
@@ -635,7 +760,7 @@ function buildEmpleadoIdMaps(baseDir, dumpBasenames) {
 // empleadoIdMap: mapa { legajo -> id numérico } de este archivo (ver buildEmpleadoIdMaps).
 // ---------------------------------------------------------------------------
 function processDump(inputFile, empresaNum, empleadoIdMap) {
-  const content    = fs.readFileSync(inputFile, 'utf8');
+  const content    = fs.readFileSync(inputFile, 'latin1');
   const srcId      = detectEmpresaId(content);
   const empresaStr = canonicalId(inputFile);   // solo para nombre de archivo / logs
   const resolverMaps = {
@@ -757,7 +882,7 @@ if (process.argv[2] === '--all') {
 
     console.error(`[${dump}]`);
     const sql = processDump(inputFile, empresaNumByFile.get(dump), empleadoIdMapsByFile.get(dump));
-    fs.writeFileSync(outputFile, sql, 'utf8');
+    fs.writeFileSync(outputFile, sql, 'latin1');
     console.error(`  → ${outName}\n`);
   }
 
@@ -799,9 +924,9 @@ if (process.argv[2] === '--all') {
   const sql = processDump(inputFile, empresaNum, empleadoIdMap);
 
   if (outputFile) {
-    fs.writeFileSync(outputFile, sql, 'utf8');
+    fs.writeFileSync(outputFile, sql, 'latin1');
     console.error(`Escrito: ${outputFile}`);
   } else {
-    process.stdout.write(sql);
+    process.stdout.write(Buffer.from(sql, 'latin1'));
   }
 }

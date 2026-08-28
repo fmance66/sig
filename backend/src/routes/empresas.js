@@ -2,10 +2,15 @@ const express    = require('express');
 const router     = express.Router();
 const controller = require('../controllers/empresas');
 
-router.get   ('/',    controller.list);
-router.get   ('/:id', controller.getOne);
-router.post  ('/',    controller.create);
-router.put   ('/:id', controller.update);
-router.delete('/:id', controller.remove);
+const rawImage = express.raw({ type: ['image/png', 'image/jpeg'], limit: '5mb' });
+
+router.get   ('/',        controller.list);
+router.get   ('/:id/logo', controller.getLogo);
+router.put   ('/:id/logo', rawImage, controller.uploadLogo);
+router.delete('/:id/logo', controller.deleteLogo);
+router.get   ('/:id',     controller.getOne);
+router.post  ('/',        controller.create);
+router.put   ('/:id',     controller.update);
+router.delete('/:id',     controller.remove);
 
 module.exports = router;

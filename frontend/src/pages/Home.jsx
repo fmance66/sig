@@ -1,6 +1,9 @@
 import { useLocation } from 'react-router-dom';
 import { useEmpresa } from '../context/EmpresaContext';
 import { MODULES, ADMIN_MODULES } from '../layout/modules';
+import GlobalDashboard from './GlobalDashboard';
+import EmpresaDashboard from './EmpresaDashboard';
+import SueldosDashboard from './SueldosDashboard';
 import './Home.css';
 
 const ALL_MODULES = [...MODULES, ...ADMIN_MODULES];
@@ -24,31 +27,24 @@ export default function Home() {
   const location = useLocation();
   const moduleId = location.state?.moduleId;
 
+  // Estado 1: sin empresa elegida → panorama de todo el sistema.
   if (!empresa) {
-    return (
-      <div className="app-welcome">
-        <i className="fa-solid fa-building-circle-exclamation" />
-        <p>Seleccioná una empresa y luego un módulo del panel izquierdo para comenzar.</p>
-      </div>
-    );
+    return <GlobalDashboard />;
   }
 
-  if (!moduleId) {
-    return (
-      <div className="app-welcome">
-        <i className="fa-solid fa-hand-pointer" />
-        <p>Seleccioná un módulo del panel izquierdo para comenzar.</p>
-      </div>
-    );
+  const mod = moduleId ? ALL_MODULES.find(m => m.id === moduleId) : null;
+
+  // Módulo elegido pero sin contenido construido aún → pantalla de construcción.
+  if (mod && mod.menu.length === 0) {
+    return <UnderConstruction mod={mod} />;
   }
 
-  const mod = ALL_MODULES.find(m => m.id === moduleId);
-
-  // Módulos sin contenido aún → pantalla de construcción
-  if (!mod || mod.menu.length === 0) {
-    return <UnderConstruction mod={mod || { icon: 'fa-solid fa-cube', label: moduleId }} />;
+  // Estado 3: módulo Sueldos elegido → estadísticas acotadas a ese módulo.
+  if (moduleId === 'sueldos') {
+    return <SueldosDashboard empresa={empresa} />;
   }
 
-  // Módulos con menú (sueldos, configuracion) → area en blanco esperando navegación
-  return null;
+  // Estado 2: empresa elegida, sin módulo (o un módulo con menú propio pero
+  // sin pantalla puntual todavía, ej. configuración) → panorama de la empresa.
+  return <EmpresaDashboard empresa={empresa} />;
 }

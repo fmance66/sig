@@ -253,16 +253,31 @@ body {
   background: #ffffff;
 }
 
-/* Flyouts de 2do nivel (Conceptos Agrupados, Remuneración, etc.): PrimeReact
-   los ancla por arriba (top:0) del ítem que los dispara, sin detectar el
-   borde inferior de la ventana. Con listas de Informes tan largas, los
-   ítems del final (ej. "Asistencia") quedan cerca del piso y el flyout se
-   corta contra el borde de la pantalla. Se ancla por abajo en vez de por
-   arriba: como estos flyouts son cortos (2 a 4 ítems), crecen hacia arriba
-   y entran cómodos incluso cuando el disparador está al final de la lista. */
-.app-menubar .p-menubar .p-submenu-list .p-menuitem .p-submenu-list {
+/* Flyouts de 2do nivel: PrimeReact los ancla por arriba (top:0) del ítem que
+   los dispara, sin detectar el borde inferior de la ventana. Para un ítem
+   cerca del final de una lista larga (ej. "Asistencia" en Informes) eso corta
+   el flyout contra el piso. Pero anclar por abajo (bottom) es igual de malo
+   para un ítem cerca del PRINCIPIO de una lista corta (ej. "Importación" en
+   Exportación): el flyout crece hacia arriba y se choca contra el header.
+   No hay una regla CSS única que sirva para ambos casos sin detección de
+   colisión real, así que el anclaje-hacia-arriba es opt-in vía la clase
+   .submenu-flip-up en modules.js, puesta solo en los ítems que de verdad
+   están al final de una lista larga. */
+.app-menubar .p-menubar .p-submenu-list .p-menuitem.submenu-flip-up > .p-submenu-list {
   top: auto;
   bottom: -0.5rem;
+}
+
+/* Mismo problema en el eje horizontal: PrimeReact abre los flyouts de 2do
+   nivel hacia la derecha (left:100%) del panel que los contiene. Para un
+   root-item pegado al borde derecho del Menubar (ej. "Exportación", el
+   último), su propio panel de 1er nivel ya queda contra ese borde, así que
+   cualquier flyout de 2do nivel que intente abrir más a la derecha se sale
+   de la pantalla. Opt-in vía .submenu-flip-left, igual criterio que
+   .submenu-flip-up. */
+.app-menubar .p-menubar .p-submenu-list .p-menuitem.submenu-flip-left > .p-submenu-list {
+  left: auto;
+  right: 100%;
 }
 
 .app-menubar .p-menubar .p-submenu-list .p-menuitem-link {

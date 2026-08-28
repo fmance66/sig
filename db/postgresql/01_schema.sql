@@ -867,4 +867,96 @@ CREATE TABLE IF NOT EXISTS sld_informe_campo (
     PRIMARY KEY (informe, campo)
 );
 
+-- -----------------------------------------------------------------------------
+-- 14. DISEÑO DE RECIBOS Y LIBRO DE SUELDOS
+-- (antes migrations/002_informes_formularios.sql + 003_formulario_parametro_estilo.sql,
+-- plegado acá para que un `docker compose down -v` + `up -d` no quede corto — mismo
+-- criterio que sys_sucursal en la sección de sistema. Los archivos de migración quedan
+-- solo como referencia histórica, no hace falta ejecutarlos.)
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS sld_formulario_recibo (
+    id                SERIAL PRIMARY KEY,
+    empresa           INTEGER NOT NULL REFERENCES sys_empresa(id),
+    nombre            VARCHAR(20) NOT NULL,
+    descripcion       VARCHAR(50),
+    orientacion       VARCHAR(12) CHECK (orientacion IN ('VERTICAL','HORIZONTAL')) DEFAULT 'VERTICAL',
+    pagina            VARCHAR(8)  CHECK (pagina IN ('A4','A5','TICKET','LEGAL','LETTER','CUSTOM')) DEFAULT 'A4',
+    margen_superior   NUMERIC(5,2),
+    margen_inferior   NUMERIC(5,2),
+    margen_izquierdo  NUMERIC(5,2),
+    margen_derecho    NUMERIC(5,2),
+    formulario_hermano INTEGER REFERENCES sld_formulario_recibo(id) ON DELETE SET NULL,
+    formula_archivo   VARCHAR(256),
+    columnas          INTEGER,
+    filas             INTEGER,
+    copias            INTEGER,
+    propiedad         VARCHAR(30),
+    etiquetas         BOOLEAN DEFAULT FALSE,
+    orden             INTEGER,
+    UNIQUE (empresa, nombre)
+);
+
+CREATE TABLE IF NOT EXISTS sld_formulario_recibo_parametro (
+    formulario  INTEGER NOT NULL REFERENCES sld_formulario_recibo(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    parametro   VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(100),
+    texto       VARCHAR(255),
+    x           NUMERIC(6,2),
+    y           NUMERIC(6,2),
+    ancho       NUMERIC(6,2),
+    alto        NUMERIC(6,2),
+    orden       INTEGER,
+    alignment        VARCHAR(12),
+    font             VARCHAR(60),
+    border_color     VARCHAR(11),
+    background_color VARCHAR(11),
+    auto_height      BOOLEAN DEFAULT FALSE,
+    print            BOOLEAN DEFAULT TRUE,
+    condicion        VARCHAR(256),
+    PRIMARY KEY (formulario, parametro)
+);
+
+CREATE TABLE IF NOT EXISTS sld_formulario_libro (
+    id                SERIAL PRIMARY KEY,
+    empresa           INTEGER NOT NULL REFERENCES sys_empresa(id),
+    nombre            VARCHAR(20) NOT NULL,
+    descripcion       VARCHAR(50),
+    orientacion       VARCHAR(12) CHECK (orientacion IN ('VERTICAL','HORIZONTAL')) DEFAULT 'HORIZONTAL',
+    pagina            VARCHAR(8)  CHECK (pagina IN ('A4','A5','TICKET','LEGAL','LETTER','CUSTOM')) DEFAULT 'A4',
+    margen_superior   NUMERIC(5,2),
+    margen_inferior   NUMERIC(5,2),
+    margen_izquierdo  NUMERIC(5,2),
+    margen_derecho    NUMERIC(5,2),
+    formulario_hermano INTEGER REFERENCES sld_formulario_libro(id) ON DELETE SET NULL,
+    formula_archivo   VARCHAR(256),
+    columnas          INTEGER,
+    filas             INTEGER,
+    copias            INTEGER,
+    propiedad         VARCHAR(30),
+    etiquetas         BOOLEAN DEFAULT FALSE,
+    orden             INTEGER,
+    UNIQUE (empresa, nombre)
+);
+
+CREATE TABLE IF NOT EXISTS sld_formulario_libro_parametro (
+    formulario  INTEGER NOT NULL REFERENCES sld_formulario_libro(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    parametro   VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(100),
+    texto       VARCHAR(255),
+    x           NUMERIC(6,2),
+    y           NUMERIC(6,2),
+    ancho       NUMERIC(6,2),
+    alto        NUMERIC(6,2),
+    orden       INTEGER,
+    alignment        VARCHAR(12),
+    font             VARCHAR(60),
+    border_color     VARCHAR(11),
+    background_color VARCHAR(11),
+    auto_height      BOOLEAN DEFAULT FALSE,
+    print            BOOLEAN DEFAULT TRUE,
+    condicion        VARCHAR(256),
+    PRIMARY KEY (formulario, parametro)
+);
+
 COMMIT;

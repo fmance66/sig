@@ -25,7 +25,7 @@ Registro de todos los cambios realizados durante la migración de los dumps MySQ
 | Escaping MySQL `\'` rechazado por psql | `SET standard_conforming_strings = off` |
 | Conflictos en datos de referencia compartidos | `ON CONFLICT DO NOTHING` en todos los INSERTs |
 | Columnas BOOLEAN: MySQL guarda 0/1 o raw bits | `COL_TYPES` map + conversión 0→FALSE, 1→TRUE |
-| Columnas BYTEA: datos binarios | `COL_TYPES` marca 'X' → se insertan como NULL |
+| Columnas BYTEA: datos binarios | `COL_TYPES` marca 'X' → bytes reales, ver sección 11 |
 | Valor `__BINARY__` en columnas BOOLEAN | Bug corregido: `tok === '__BINARY__'` retorna NULL en branch 'B' |
 | Byte nulo `\0` (escape MySQL) | En `parseValueTokens`: `str[i+1] === '0'` → skip; también `.replace(/\\0/g, '')` global al final |
 | Columnas NOT NULL que llegan en NULL | `NOT_NULL_DEFAULTS` map con defaults por tabla/columna |
@@ -446,3 +446,115 @@ allá de que su columna `empleado`/`grupo_de_conceptos` ya era la correcta en ca
 
 Igual que la sección 9: se regeneró la base desde cero (sección 6) en vez de un `ALTER`
 en caliente.
+
+---
+
+## 11. Columnas BYTEA (logo de empresa, foto de empleado) — de NULL a bytes reales (2026-08-28)
+
+**Motivo**: hasta ahora `migrate-from-mysql.js` descartaba `sys_empresa.logo`,
+`sys_empresa.baja` y `sld_empleado.foto` como `NULL` a propósito (`COL_TYPES` las
+marcaba `'X'`). Al actualizar los dumps se detectó que el logo de Thompson y French
+sí tiene datos reales y que el PDF de recibos (`backend/src/pdf/disenoComun.js` →
+`logoDataUri`) ya está preparado para usarlo — descartarlo dejaba ese hueco vacío en
+el diseño sin necesidad.
+
+### 11.1 Lectura/escritura del dump: de 'utf8' a 'latin1' (passthrough de bytes)
+
+Preservar bytes binarios reales (una imagen) es incompatible con decodificar el
+archivo completo como UTF-8 (el fix de la sección 7): cualquier byte inválido como
+UTF-8 se reemplaza por el carácter de reemplazo `U+FFFD`, perdiendo la información
+original sin posibilidad de recuperarla.
+
+Se cambió la lectura de los dumps (`processDump`, `buildEmpleadoIdMaps`) de `'utf8'` a
+`'latin1'` — mapea cada byte 1:1 a un char JS (0-255), sin interpretar nada. Como los
+delimitadores relevantes (`,`, `(`, `)`, `'`, `\`) son siempre ASCII y nunca aparecen
+como parte de una secuencia UTF-8 multibyte, el parseo de estructura (tuplas, tokens)
+sigue funcionando igual que antes. La escritura de los `*_pg.sql` también pasó de
+`'utf8'` a `'latin1'`, para que el mismo passthrough se mantenga hasta el archivo de
+salida — el resultado son los mismos bytes UTF-8 originales, sin re-codificar.
+
+**Efecto colateral corregido**: `VARCHAR_LIMITS` truncaba por `.length` de la string;
+con lectura `latin1` eso pasa a truncar por *byte* en vez de por carácter Unicode, con
+riesgo de cortar un carácter acentuado a la mitad. Se agregó `trimIncompleteUtf8()` que
+recorta bytes de continuación UTF-8 sueltos al final para no dejar una secuencia
+inválida.
+
+### 11.2 `parseValueTokens`: bytes reales en paralelo al string ya escapado
+
+Ahora devuelve `{ tokens, rawBytes }` en vez de solo `tokens`. `tokens` sigue siendo el
+string ya listo para Postgres (igual que antes). `rawBytes[i]` es un `Buffer` con los
+bytes reales de cada string literal — reconstruidos desunescapando los códigos de
+MySQL (`\0`→0x00, `\n`→0x0A, `\r`→0x0D, `\Z`→0x1A, `\'`→0x27, `\\`→0x5C, etc., ver
+`MYSQL_ESCAPES`). Ya no existe el sentinel `'__BINARY__'` que antes colapsaba
+cualquier contenido con bytes de control a un valor descartable — se limpiaron sus
+usos en `resolveIdToken`/`convertTokens`/`unquoteToken`.
+
+`convertTokens` recibe `rawBytesArr` y, para columnas `COL_TYPES` `'X'`, arma el
+literal real con `bytesToBytea()` (formato hex de Postgres vía `E'\\x...'`) en vez de
+devolver `'NULL'`.
+
+### 11.3 Bug encontrado: backticks borrados dentro de binarios
+
+`transformInsert` hacía `line.replace(/\`/g, '')` sobre la línea completa (pensado
+para sacar los backticks de `` `tabla` ``/`` `columna` `` de MySQL) — pero eso también
+borraba cualquier byte crudo `0x60` (backtick) dentro de un blob binario en la sección
+`VALUES`. Invisible mientras el BYTEA se descartaba siempre; al preservarlo, un PNG de
+~70KB tiene ese byte cientos de veces (confirmado con validación CRC32 chunk por chunk
+del PNG: fallaba antes del fix, año pasó a validar 100% después). Se acotó el
+`replace` a la porción de la línea antes de `' VALUES '` únicamente.
+
+### 11.4 Bug encontrado: BIT(1) llega como byte crudo, no como carácter ASCII
+
+Columnas `BOOLEAN` en MySQL `BIT(1)` (ej. `sld_recibo.mail`/`.visible`) vuelcan su
+valor como **un byte crudo** (`0x00`/`0x01`), no como el carácter `'0'`/`'1'`. El
+código viejo las mandaba por la rama `hasBinary`→`'__BINARY__'`→`NULL` (resultado
+incorrecto — debería ser `TRUE`/`FALSE`, pero al menos no rompía el INSERT). Al sacar
+esa rama, el byte crudo (ej. `0x01`) quedaba tal cual dentro del string de salida →
+`ERROR: invalid input syntax for type boolean`. Fix en `convertTokens`: para columnas
+`'B'`, si hay `rawBytes` de 1 byte, usar su valor numérico (`0`→`FALSE`, cualquier otro
+→ `TRUE`); si es de 0 bytes (string vacío genuino), `FALSE`; si no hay `rawBytes`
+(token numérico sin comillas), sigue la lógica vieja de comparar contra `'0'`/`'1'`.
+
+### 11.5 Empresa duplicada como "donante" del logo (caso Thompson y French)
+
+El dump de Thompson y French trae, como ya documentaba la sección 8, dos filas de
+`sys_empresa` para la misma empresa: la real (`id='HELADERIA'`, la que tiene los
+empleados y sobrevive con `sys_empresa.id=5`) y una fantasma duplicada
+(`id='thompson y french sa'`) que se descarta a propósito para no resucitar el bug de
+borrado en cascada. Resultó que **el logo está cargado en la fila fantasma**, no en la
+real — el resto de sus columnas están vacías o duplican la fila real.
+
+`transformInsert` ahora, solo para `sys_empresa`, pre-escanea todas las tuplas del
+INSERT antes de convertirlas: identifica filas cuyo `id` no resuelve contra el mapa de
+empresa (candidatas a "fantasma") y que traen `logo`/`baja` con contenido real
+(`empresaLogoDonors`). Al procesar la fila que sí sobrevive, si su propia
+`empresa`(auto-referencia de "grupo económico") apunta al `id` de una fantasma
+donante, y su propio `logo`/`baja` está vacío, se trasplanta el binario de la
+donante antes de descartarla. Generalizado (no hardcodeado a Thompson), para que
+aplique solo si el mismo patrón aparece en otra empresa a futuro.
+
+Verificado con validación CRC32 de cada chunk PNG (`IHDR`, `sRGB`, `gAMA`, `pHYs`,
+ambos `IDAT`, `IEND`) contra el valor esperado: los 73.707 bytes trasplantados
+(comenzando en offset 89, con un header propietario tipo Delphi/VCL antes — ruta de
+archivo + `\0ROOT\0...` — que no forma parte del PNG en sí) coinciden byte a byte con
+el original.
+
+### 11.6 Migraciones 002 y 003 plegadas en `01_schema.sql`
+
+Al recrear la base con `docker compose down -v` + `up -d` (necesario para este cambio
+de dump), se detectó que `sld_formulario_recibo`/`sld_formulario_libro` (y sus
+`_parametro`) no existían — `docker-entrypoint-initdb.d` no recorre subcarpetas, así
+que `postgresql/migrations/002_informes_formularios.sql` y
+`003_formulario_parametro_estilo.sql` nunca se ejecutaban solos en una base nueva
+(se habían aplicado a mano alguna vez sobre la base ya corriendo). Mismo criterio que
+la sección 9.1 (migración 001/`sys_sucursal`): se plegaron ambas migraciones
+directamente en `01_schema.sql` (sección 14, con las columnas de estilo de 003 ya
+incluidas desde el CREATE), y los archivos de migración quedan marcados como
+obsoletos/históricos.
+
+### 11.7 Aplicación
+
+Se regeneró la base desde cero (sección 6), con dos vueltas de
+`docker compose down -v` + `up -d`: la primera para detectar el gap de las
+migraciones 002/003, la segunda ya con `01_schema.sql` actualizado para que las
+tablas de diseño de formularios se crearan solas.

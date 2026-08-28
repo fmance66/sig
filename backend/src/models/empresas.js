@@ -69,4 +69,19 @@ async function remove(id) {
   return rowCount > 0;
 }
 
-module.exports = { list, getById, create, update, remove };
+async function getLogo(id) {
+  const { rows } = await pool.query('SELECT logo FROM sys_empresa WHERE id = $1', [id]);
+  return rows[0]?.logo ?? null;
+}
+
+async function setLogo(id, buffer) {
+  const { rowCount } = await pool.query('UPDATE sys_empresa SET logo = $1 WHERE id = $2', [buffer, id]);
+  return rowCount > 0;
+}
+
+async function removeLogo(id) {
+  const { rowCount } = await pool.query('UPDATE sys_empresa SET logo = NULL WHERE id = $1', [id]);
+  return rowCount > 0;
+}
+
+module.exports = { list, getById, create, update, remove, getLogo, setLogo, removeLogo };

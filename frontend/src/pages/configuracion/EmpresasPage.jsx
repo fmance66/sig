@@ -9,6 +9,7 @@ import { Toast } from 'primereact/toast';
 import { TabView, TabPanel } from 'primereact/tabview';
 import SucursalesTab from './SucursalesTab';
 import MailTab from './MailTab';
+import LogoEmpresaField from './LogoEmpresaField';
 import BuscadorTabla from '../../components/BuscadorTabla';
 import * as api from '../../api/empresas';
 import './EmpresasPage.css';
@@ -226,6 +227,7 @@ export default function EmpresasPage() {
         <TabView activeIndex={activeTab} onTabChange={e => setActiveTab(e.index)} className="empresa-tabs">
 
           <TabPanel header="Empresa">
+            <LogoEmpresaField key={form.id ?? 'new'} empresaId={editMode ? form.id : null} toast={toast} />
             <div className="form-grid">
               <div className="form-field form-field--full">
                 <label>Razón Social <span className="required">*</span></label>
