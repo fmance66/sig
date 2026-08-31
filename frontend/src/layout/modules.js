@@ -243,6 +243,29 @@ export const ADMIN_MODULES = [
         icon: 'fa-solid fa-building',
         items: [
           { label: 'Administrar empresas', icon: 'fa-solid fa-list', path: '/configuracion/empresas' },
+          { separator: true },
+          {
+            label: 'Copia de Seguridad',
+            icon: 'fa-solid fa-database',
+            items: [
+              { label: 'Generar copia de seguridad', icon: 'fa-solid fa-download', path: '/configuracion/empresas/backup' },
+              { label: 'Restaurar copia de seguridad', icon: 'fa-solid fa-upload', path: '/configuracion/empresas/backup' },
+              { separator: true },
+              { label: 'Copia de seguridad en la nube', icon: 'fa-solid fa-cloud-arrow-up' },
+              { label: 'Programar copia de seguridad', icon: 'fa-solid fa-clock' },
+            ],
+          },
+        ],
+      },
+      {
+        label: 'Seguridad',
+        icon: 'fa-solid fa-shield-halved',
+        items: [
+          { label: 'Usuarios', icon: 'fa-solid fa-user' },
+          { label: 'Grupos', icon: 'fa-solid fa-user-group' },
+          { label: 'Permisos', icon: 'fa-solid fa-key' },
+          { separator: true },
+          { label: 'Sesiones', icon: 'fa-solid fa-clock-rotate-left' },
         ],
       },
       {

@@ -117,6 +117,35 @@
           ]
         },
         {
+          "name": "Backup",
+          "item": [
+            {
+              "name": "GET Generar copia de seguridad",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/backup/generar"
+              }
+            },
+            {
+              "name": "POST Restaurar copia de seguridad",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/backup/restaurar",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "text/plain"
+                  }
+                ],
+                "body": {
+                  "mode": "file",
+                  "file": { "src": "" }
+                }
+              }
+            }
+          ]
+        },
+        {
           "name": "Empleados",
           "item": [
             {

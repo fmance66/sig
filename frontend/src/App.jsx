@@ -50,6 +50,7 @@ import DisenoLibroSueldosPage from './pages/sueldos/informes/DisenoLibroSueldosP
 import InformesPersonalizadosPage from './pages/sueldos/informes/InformesPersonalizadosPage';
 import DisenoInformesPersonalizadosPage from './pages/sueldos/informes/DisenoInformesPersonalizadosPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
+import CopiaSeguridadPage from './pages/configuracion/CopiaSeguridadPage';
 import ConveniosPage from './pages/configuracion/ConveniosPage';
 import ObrasSocialesPage from './pages/configuracion/ObrasSocialesPage';
 import SindicatosPage from './pages/configuracion/SindicatosPage';
@@ -128,6 +129,7 @@ export default function App() {
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}
           <Route path="configuracion/empresas" element={<EmpresasPage />} />
+          <Route path="configuracion/empresas/backup" element={<CopiaSeguridadPage />} />
           <Route path="configuracion/convenios" element={<ConveniosPage />} />
           <Route path="configuracion/obras-sociales" element={<ObrasSocialesPage />} />
           <Route path="configuracion/sindicatos" element={<SindicatosPage />} />
