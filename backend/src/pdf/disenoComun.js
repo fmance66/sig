@@ -57,16 +57,15 @@ function sustituirTexto(texto, contexto) {
 }
 
 // Solo 3 condiciones distintas aparecen en los diseños migrados (no hace falta un evaluador de
-// expresiones genérico). ORIGINAL/DUPLICADO controlaban qué leyenda imprimir en cada copia física
-// (bas_formulario.copias); acá se genera una sola copia digital, así que se trata como si siempre
-// fuera la copia "ORIGINAL". Una condición no reconocida no se imprime (mejor omitir el campo que
-// arriesgar a imprimirlo donde no corresponde).
-function condicionCumple(condicion, recibo) {
+// expresiones genérico). ORIGINAL/DUPLICADO controlan qué leyenda/campo va en cada copia física
+// del recibo cuando el formulario tiene `copias` >= 2 (ver reciboInterprete.js::construirPaginas,
+// que arma una pasada por cada copia y pasa cuál es acá).
+function condicionCumple(condicion, recibo, copia = 'ORIGINAL') {
   if (!condicion || !condicion.trim()) return true;
   switch (condicion.trim()) {
     case 'TIENE_CATEGORIA': return Boolean(recibo.categoria);
-    case 'ORIGINAL': return true;
-    case 'DUPLICADO': return false;
+    case 'ORIGINAL': return copia === 'ORIGINAL';
+    case 'DUPLICADO': return copia === 'DUPLICADO';
     default: return false;
   }
 }
@@ -75,8 +74,8 @@ function condicionCumple(condicion, recibo) {
 // (ej. "Legajo:", ya vienen con el ancho justo para su texto en Courier Bold 8). El recibo tiene
 // mucho más margen en sus cajas (códigos de 2-3 dígitos en Arial) y usa un valor mayor — ver
 // reciboInterprete.js.
-function renderParametro(param, contexto, recibo, logoSrc, key, paddingHorizontal = 1) {
-  if (param.print === false || !condicionCumple(param.condicion, recibo)) return null;
+function renderParametro(param, contexto, recibo, logoSrc, key, paddingHorizontal = 1, copia = 'ORIGINAL') {
+  if (param.print === false || !condicionCumple(param.condicion, recibo, copia)) return null;
 
   const style = {
     position: 'absolute',

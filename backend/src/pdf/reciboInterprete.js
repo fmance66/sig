@@ -18,9 +18,20 @@ const GRID_BOX_PARAMS = new Set([
 // ~1.3cm) así que usa un valor más generoso en vez del mínimo por defecto.
 const PADDING_HORIZONTAL = 3;
 
+// "SIPA $140.382,13; INSSJPami $20.724,94; ..." — detalle de las contribuciones patronales
+// (sld_concepto.columna = 'CONTRIBUCION') que arma el token CONTRIBUCIONES_TEXTO. El total en
+// número (TOTAL_CONTRIBUCION) sale del header del recibo, no de sumar esta lista — mismo criterio
+// que TOTAL_REMUNERATIVO/TOTAL_DESCUENTO/etc., que tampoco recalculan a partir de los conceptos.
+function contribucionesTexto(conceptos) {
+  return conceptos
+    .filter(c => c.columna === 'CONTRIBUCION')
+    .map(c => `${c.concepto_desc} $${money(c.importe)}`)
+    .join('; ');
+}
+
 // Datos del recibo (ya "aplanados" por recibosModel.getHeader, incluyendo empresa/convenio/
 // categoría/obra social/liquidación) traducidos a los tokens que usa el diseño legacy.
-function resolverContexto(recibo) {
+function resolverContexto(recibo, conceptos = []) {
   return {
     EMPRESA_RAZON_SOCIAL: recibo.empresa_razon_social || '',
     EMPRESA_DIRECCION: recibo.empresa_direccion || '',
@@ -51,7 +62,15 @@ function resolverContexto(recibo) {
     TOTAL_DESCUENTO: money(recibo.descuento),
     SUELDO_NETO: money(recibo.sueldo_neto),
     SUELDO_LETRA: pesosEnLetras(recibo.sueldo_neto),
+    TOTAL_CONTRIBUCION: money(recibo.contribucion),
+    CONTRIBUCIONES_TEXTO: contribucionesTexto(conceptos),
   };
+}
+
+// Ancho ocupado por los elementos del diseño (borde derecho más lejano) — usado para calcular
+// dónde arranca la segunda copia cuando entran ambas en la misma hoja (ver más abajo).
+function anchoDiseno(parametros) {
+  return parametros.reduce((max, p) => Math.max(max, Number(p.x || 0) + Number(p.ancho || 0)), 0);
 }
 
 function construirPaginas({ recibo, conceptos, diseno }) {
@@ -62,11 +81,23 @@ function construirPaginas({ recibo, conceptos, diseno }) {
   const filas = conceptos.filter(c => ['REMUNERATIVO', 'NO_REMUNERATIVO', 'DESCUENTO'].includes(c.columna));
   const totalPaginas = Math.max(1, Math.ceil(filas.length / (Number.isFinite(rowsPerPage) ? rowsPerPage : filas.length || 1)));
 
-  const contextoBase = resolverContexto(recibo);
+  const contextoBase = resolverContexto(recibo, conceptos);
   const logoSrc = logoDataUri(recibo.empresa_logo);
 
-  const paginas = [];
-  for (let pag = 0; pag < totalPaginas; pag++) {
+  // sld_formulario_recibo.copias >= 2 → además del original se imprime un duplicado (leyenda
+  // ORIGINAL/DUPLICADO al pie, firma empleado/empleador — condicion en cada parámetro, ver
+  // disenoComun.js::condicionCumple). Con menos de 2 copias configuradas, una sola pasada ORIGINAL
+  // (comportamiento de siempre).
+  const copias = Number(formulario.copias) >= 2 ? ['ORIGINAL', 'DUPLICADO'] : ['ORIGINAL'];
+
+  // Los diseños HORIZONTAL vienen de papel continuo donde el original y el duplicado entran uno al
+  // lado del otro en la misma hoja física (por eso el diseño ocupa bastante menos de la mitad del
+  // ancho de una A4 apaisada) — se dibujan los elementos de la segunda copia corridos en X en vez
+  // de armar una página aparte. En VERTICAL cada copia va en su propia página, como cualquier PDF.
+  const mismaHoja = formulario.orientacion === 'HORIZONTAL' && copias.length > 1;
+  const offsetCopia = mismaHoja ? anchoDiseno(parametros) + Number(formulario.margen_izquierdo || 0) : 0;
+
+  function elementosDePagina(pag, copia, offsetX) {
     const desde = Number.isFinite(rowsPerPage) ? pag * rowsPerPage : 0;
     const hasta = Number.isFinite(rowsPerPage) ? desde + rowsPerPage : filas.length;
     const filasPagina = filas.slice(desde, hasta);
@@ -77,7 +108,8 @@ function construirPaginas({ recibo, conceptos, diseno }) {
       const y = gridStartY + i * lineHeight;
       const contextoFila = { ...contextoBase, ...contextoConceptoFila(c) };
       templateRows.forEach(p => {
-        elementos.push(renderParametro({ ...p, y }, contextoFila, recibo, logoSrc, `f${k++}`, PADDING_HORIZONTAL));
+        const pDesplazado = { ...p, y, x: Number(p.x) + offsetX };
+        elementos.push(renderParametro(pDesplazado, contextoFila, recibo, logoSrc, `f${copia}_${pag}_${k++}`, PADDING_HORIZONTAL, copia));
       });
     });
 
@@ -87,10 +119,29 @@ function construirPaginas({ recibo, conceptos, diseno }) {
       const enCadaPagina = GRID_BOX_PARAMS.has(p.parametro);
       const esCabecera = Number(p.y) < gridStartY;
       const corresponde = enCadaPagina || (esCabecera ? esPrimera : esUltima);
-      if (corresponde) elementos.push(renderParametro(p, contextoBase, recibo, logoSrc, `x${k++}`, PADDING_HORIZONTAL));
+      if (corresponde) {
+        const pDesplazado = { ...p, x: Number(p.x) + offsetX };
+        elementos.push(renderParametro(pDesplazado, contextoBase, recibo, logoSrc, `x${copia}_${pag}_${k++}`, PADDING_HORIZONTAL, copia));
+      }
     });
 
-    paginas.push({ elementos: elementos.filter(Boolean), formulario });
+    return elementos.filter(Boolean);
+  }
+
+  const paginas = [];
+  if (mismaHoja) {
+    for (let pag = 0; pag < totalPaginas; pag++) {
+      const elementos = copias.flatMap((copia, i) => elementosDePagina(pag, copia, i * offsetCopia));
+      paginas.push({ elementos, formulario });
+    }
+  } else {
+    // Todas las páginas del original primero, después todas las del duplicado — el orden en que
+    // se imprimirían si se saca por separado.
+    copias.forEach(copia => {
+      for (let pag = 0; pag < totalPaginas; pag++) {
+        paginas.push({ elementos: elementosDePagina(pag, copia, 0), formulario });
+      }
+    });
   }
   return paginas;
 }
