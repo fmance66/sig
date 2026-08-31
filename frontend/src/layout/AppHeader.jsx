@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { useEmpresa } from '../context/EmpresaContext';
+import { useAuth } from '../context/AuthContext';
 import { getEmpresas, getLogoUrl } from '../api/empresas';
 import mainItLogo from '../assets/mainit-logo.svg';
 import './AppHeader.css';
 
 export default function AppHeader() {
   const { empresa, setEmpresa } = useEmpresa();
+  const { usuario, logout } = useAuth();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [empresas, setEmpresas] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,12 +46,10 @@ export default function AppHeader() {
             <span className="header-brand-name">MAIN IT</span>
             <span className="header-brand-sub">Sistemas</span>
           </div>
-        </div>
-
-        {/* Centro: nombre del sistema */}
-        <div className="header-center">
           <span className="header-system-name">Sistema Integrado de Gestión</span>
         </div>
+
+        <div className="header-center" />
 
         {/* Derecha: empresa activa */}
         <div className="header-empresa">
@@ -82,6 +82,17 @@ export default function AppHeader() {
             />
           )}
         </div>
+
+        {/* Usuario logueado */}
+        {usuario && (
+          <div className="header-usuario">
+            <i className="fa-solid fa-circle-user header-usuario-icon" />
+            <span className="header-usuario-nombre">{usuario.nombre}</span>
+            <button className="header-empresa-btn" onClick={logout} title="Cerrar sesión">
+              <i className="fa-solid fa-right-from-bracket" />
+            </button>
+          </div>
+        )}
       </header>
 
       <Dialog

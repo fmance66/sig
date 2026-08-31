@@ -1,0 +1,43 @@
+.page-grupos {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.page-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.page-title i {
+  color: #3b82f6;
+}
+
+.grupo-usuarios-list {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grupo-usuarios-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.grupo-usuarios-login {
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+/* Toolbar, tamaño de tabla, paginador, form-grid/form-field, dialog-footer-btns,
+   sub-tab, sub-form-actions, tab-empty-msg: ver styles/global-tables.css */

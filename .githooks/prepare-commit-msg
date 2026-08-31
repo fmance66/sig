@@ -16,41 +16,53 @@ if [ -z "$changed_files" ]; then
   changed_files=$(git diff --name-only --diff-filter=ACMR 2>/dev/null || true)
 fi
 
+if [ -z "$changed_files" ]; then
+  printf '%s\n' 'chore: actualizar proyecto' > "$msg_file"
+  exit 0
+fi
+
+files_lower=$(printf '%s\n' "$changed_files" | tr '[:upper:]' '[:lower:]')
 kind="chore"
 summary="actualizar proyecto"
 
-if printf '%s\n' "$changed_files" | grep -Eiq '(^|/)(backend|src/.*|routes|controllers|models|services|lib)'; then
+# Reglas de prioridad: mensajes más específicos primero.
+if printf '%s\n' "$files_lower" | grep -Eiq '(^|/)(backup|copia|seguridad|restore|respaldo)'; then
   kind="feat"
-  summary="actualizar backend"
-fi
-
-if printf '%s\n' "$changed_files" | grep -Eiq '(^|/)(frontend|src/.*|components|pages|layout|api)'; then
+  summary="implementar copia de seguridad"
+elif printf '%s\n' "$files_lower" | grep -Eiq '(^|/)(postgres|mysql|sql|migrations|schema|ddl|migration)'; then
   kind="feat"
-  if printf '%s\n' "$changed_files" | grep -Eiq '(^|/)(app|dashboard|config|login|copia|backup)'; then
-    summary="actualizar frontend"
-  else
-    summary="actualizar interfaz"
-  fi
-fi
-
-if printf '%s\n' "$changed_files" | grep -Eiq '(^|/)(db|migrations|postgres|mysql|sql)'; then
+  summary="actualizar esquema de base de datos"
+elif printf '%s\n' "$files_lower" | grep -Eiq '(^|/)(routes|controllers|models|services|lib|app\.js|server\.js|backend/)'; then
   kind="feat"
-  summary="actualizar esquema de datos"
-fi
-
-if printf '%s\n' "$changed_files" | grep -Eiq '(backup|copia|seguridad|restore)'; then
+  summary="actualizar API del backend"
+elif printf '%s\n' "$files_lower" | grep -Eiq '(^|/)(pages|layout|components|app\.jsx|main\.jsx|frontend/|dashboard|login|configuracion|api/)'; then
   kind="feat"
-  summary="agregar respaldo y seguridad"
-fi
-
-if printf '%s\n' "$changed_files" | grep -Eiq '(fix|bug|error|correg|route|api|auth|login)'; then
-  kind="fix"
-  summary="corregir errores"
-fi
-
-if printf '%s\n' "$changed_files" | grep -Eiq '(docs|readme|md|documentation)'; then
+  summary="mejorar interfaz y flujo frontend"
+elif printf '%s\n' "$files_lower" | grep -Eiq '(readme|\.md|docs/|documentation)'; then
   kind="docs"
-  summary="documentar cambios"
+  summary="documentar cambios del proyecto"
+elif printf '%s\n' "$files_lower" | grep -Eiq '(package\.json|vite\.config|docker|compose|json|yaml|yml|env|config)'; then
+  kind="chore"
+  summary="actualizar configuración del proyecto"
+fi
+
+# Correcciones sobre archivos problemáticos.
+if printf '%s\n' "$files_lower" | grep -Eiq '(fix|bug|error|correg|route|auth|login|session|backup|crash|timeout)'; then
+  kind="fix"
+  case "$files_lower" in
+    *backup*|*copia*|*seguridad*|*respaldo*)
+      summary="corregir respaldo y seguridad"
+      ;;
+    *route*|*api*|*controller*|*server*)
+      summary="corregir rutas y API"
+      ;;
+    *login*|*auth*|*session*)
+      summary="corregir autenticación y sesión"
+      ;;
+    *)
+      summary="corregir errores y regressiones"
+      ;;
+  esac
 fi
 
 printf '%s: %s\n' "$kind" "$summary" > "$msg_file"

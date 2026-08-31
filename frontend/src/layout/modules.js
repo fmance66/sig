@@ -260,12 +260,13 @@ export const ADMIN_MODULES = [
       {
         label: 'Seguridad',
         icon: 'fa-solid fa-shield-halved',
+        permisoModulo: 'seguridad',
         items: [
-          { label: 'Usuarios', icon: 'fa-solid fa-user' },
-          { label: 'Grupos', icon: 'fa-solid fa-user-group' },
-          { label: 'Permisos', icon: 'fa-solid fa-key' },
+          { label: 'Usuarios', icon: 'fa-solid fa-user', path: '/configuracion/seguridad/usuarios' },
+          { label: 'Grupos', icon: 'fa-solid fa-user-group', path: '/configuracion/seguridad/grupos' },
+          { label: 'Permisos', icon: 'fa-solid fa-key', path: '/configuracion/seguridad/permisos' },
           { separator: true },
-          { label: 'Sesiones', icon: 'fa-solid fa-clock-rotate-left' },
+          { label: 'Sesiones', icon: 'fa-solid fa-clock-rotate-left', path: '/configuracion/seguridad/sesiones' },
         ],
       },
       {

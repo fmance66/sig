@@ -26,6 +26,39 @@
           ]
         },
         {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "POST Login",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/auth/login",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuario\": \"admin\",\n  \"password\": \"admin123\"\n}"
+                }
+              }
+            },
+            {
+              "name": "GET Sesión actual (me)",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/auth/me"
+              }
+            },
+            {
+              "name": "POST Logout",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/auth/logout"
+              }
+            }
+          ]
+        },
+        {
           "name": "Empresas",
           "item": [
             {
@@ -142,6 +175,99 @@
                   "file": { "src": "" }
                 }
               }
+            }
+          ]
+        },
+        {
+          "name": "Seguridad",
+          "item": [
+            {
+              "name": "GET Usuarios",
+              "request": { "method": "GET", "url": "{{base_url}}/usuarios" }
+            },
+            {
+              "name": "POST Usuario",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/usuarios",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuario\": \"nuevo\",\n  \"nombre\": \"Usuario Nuevo\",\n  \"password\": \"clave123\"\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Usuario",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/usuarios/2",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Nombre actualizado\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Usuario",
+              "request": { "method": "DELETE", "url": "{{base_url}}/usuarios/2" }
+            },
+            {
+              "name": "GET Grupos",
+              "request": { "method": "GET", "url": "{{base_url}}/grupos" }
+            },
+            {
+              "name": "POST Grupo",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/grupos",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Nuevo grupo\",\n  \"descripcion\": \"\",\n  \"orden\": 2\n}"
+                }
+              }
+            },
+            {
+              "name": "GET Usuarios de un Grupo",
+              "request": { "method": "GET", "url": "{{base_url}}/grupos/1/usuarios" }
+            },
+            {
+              "name": "PUT Usuarios de un Grupo",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/grupos/1/usuarios",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuarioIds\": [1, 2]\n}"
+                }
+              }
+            },
+            {
+              "name": "GET Permisos de un Grupo",
+              "request": { "method": "GET", "url": "{{base_url}}/grupos/1/permisos" }
+            },
+            {
+              "name": "PUT Permisos de un Grupo",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/grupos/1/permisos",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"permisos\": [\n    { \"modulo\": \"sueldos\", \"ver\": true, \"crear\": true, \"editar\": true, \"eliminar\": true }\n  ]\n}"
+                }
+              }
+            },
+            {
+              "name": "GET Sesiones",
+              "request": { "method": "GET", "url": "{{base_url}}/sesiones" }
+            },
+            {
+              "name": "DELETE Sesión",
+              "request": { "method": "DELETE", "url": "{{base_url}}/sesiones/{{sid}}" }
             }
           ]
         },

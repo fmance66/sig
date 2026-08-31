@@ -4,16 +4,26 @@ import { Menubar } from 'primereact/menubar';
 import { MODULES, ADMIN_MODULES } from './modules';
 import AppHeader from './AppHeader';
 import { useEmpresa } from '../context/EmpresaContext';
+import { useAuth } from '../context/AuthContext';
 import './AppLayout.css';
 
 const ALL_MODULES = [...MODULES, ...ADMIN_MODULES];
+
+// Módulos de nivel superior que tienen un permiso asociado (ver constants/modulos.js
+// en el backend). 'ayuda'/'contabilidad'/'iva' no gatean nada — sin datos sensibles.
+const PERMISO_MODULOS = ['sueldos', 'configuracion'];
 
 export default function AppLayout() {
   const [activeModuleId, setActiveModuleId] = useState(null);
   const navigate = useNavigate();
   const { empresa } = useEmpresa();
+  const { hasPermiso } = useAuth();
 
   const activeModule = ALL_MODULES.find(m => m.id === activeModuleId);
+
+  function puedeVer(mod) {
+    return !PERMISO_MODULOS.includes(mod.id) || hasPermiso(mod.id, 'ver');
+  }
 
   // Cambiar (o cerrar) la empresa deja atrás el módulo que estuviera activo —
   // si no, al elegir otra empresa se sigue viendo Sueldos en vez del panel
@@ -39,11 +49,13 @@ export default function AppLayout() {
   }
 
   function buildMenuItems(items) {
-    return items.map(item => ({
-      ...item,
-      items: item.items?.length ? buildMenuItems(item.items) : undefined,
-      command: item.items?.length ? undefined : () => item.path && navigate(item.path),
-    }));
+    return items
+      .filter(item => !item.permisoModulo || hasPermiso(item.permisoModulo, 'ver'))
+      .map(item => ({
+        ...item,
+        items: item.items?.length ? buildMenuItems(item.items) : undefined,
+        command: item.items?.length ? undefined : () => item.path && navigate(item.path),
+      }));
   }
 
   function ModuleButton({ mod }) {
@@ -75,12 +87,12 @@ export default function AppLayout() {
 
             {empresa && (
               <div className="nav-group">
-                {MODULES.map(mod => <ModuleButton key={mod.id} mod={mod} />)}
+                {MODULES.filter(puedeVer).map(mod => <ModuleButton key={mod.id} mod={mod} />)}
               </div>
             )}
             <div className="nav-spacer" />
             <div className="nav-group nav-group-admin">
-              {ADMIN_MODULES.map(mod => <ModuleButton key={mod.id} mod={mod} />)}
+              {ADMIN_MODULES.filter(puedeVer).map(mod => <ModuleButton key={mod.id} mod={mod} />)}
             </div>
           </nav>
         </aside>

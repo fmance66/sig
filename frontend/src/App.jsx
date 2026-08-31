@@ -64,13 +64,23 @@ import MonedaPage from './pages/configuracion/MonedaPage';
 import LocalidadPage from './pages/configuracion/LocalidadPage';
 import PaisPage from './pages/configuracion/PaisPage';
 import ProyectoPage from './pages/configuracion/ProyectoPage';
+import UsuariosPage from './pages/configuracion/UsuariosPage';
+import GruposPage from './pages/configuracion/GruposPage';
+import PermisosPage from './pages/configuracion/PermisosPage';
+import SesionesPage from './pages/configuracion/SesionesPage';
+import LoginPage from './pages/auth/LoginPage';
+import RequireAuth from './routes/RequireAuth';
 import { EmpresaProvider } from './context/EmpresaContext';
+import { AuthProvider } from './context/AuthContext';
 
 export default function App() {
   return (
+    <AuthProvider>
     <EmpresaProvider>
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route element={<RequireAuth />}>
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />
           {/* sueldos */}
@@ -143,9 +153,16 @@ export default function App() {
           <Route path="configuracion/comunes/localidades" element={<LocalidadPage />} />
           <Route path="configuracion/comunes/paises" element={<PaisPage />} />
           <Route path="configuracion/comunes/proyectos" element={<ProyectoPage />} />
+          {/* seguridad */}
+          <Route path="configuracion/seguridad/usuarios" element={<UsuariosPage />} />
+          <Route path="configuracion/seguridad/grupos" element={<GruposPage />} />
+          <Route path="configuracion/seguridad/permisos" element={<PermisosPage />} />
+          <Route path="configuracion/seguridad/sesiones" element={<SesionesPage />} />
+        </Route>
         </Route>
       </Routes>
     </BrowserRouter>
     </EmpresaProvider>
+    </AuthProvider>
   );
 }

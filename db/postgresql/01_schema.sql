@@ -965,4 +965,77 @@ CREATE TABLE IF NOT EXISTS sld_formulario_libro_parametro (
     PRIMARY KEY (formulario, parametro)
 );
 
+-- -----------------------------------------------------------------------------
+-- 15. LOGIN Y PERMISOS (app-native, sin fuente en MySQL — ver sección "Login y
+--     permisos" de MIGRACION_BITACORA.md: una re-migración vacía estas tablas
+--     salvo el usuario admin sembrado más abajo)
+-- -----------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS sys_grupo (
+    id          SERIAL PRIMARY KEY,
+    nombre      VARCHAR(50) NOT NULL UNIQUE,
+    descripcion VARCHAR(200),
+    orden       INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS sys_usuario (
+    id            SERIAL PRIMARY KEY,
+    usuario       VARCHAR(50) NOT NULL UNIQUE,
+    nombre        VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(60) NOT NULL,
+    activo        BOOLEAN NOT NULL DEFAULT TRUE,
+    ultimo_login  TIMESTAMP,
+    creado        TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS sys_usuario_grupo (
+    usuario INTEGER NOT NULL REFERENCES sys_usuario(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    grupo   INTEGER NOT NULL REFERENCES sys_grupo(id)   ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (usuario, grupo)
+);
+
+-- modulo: 'sueldos' | 'configuracion' | 'seguridad' — validado en código
+-- (constante MODULOS en el backend), sin CHECK constraint, para no exigir
+-- un ALTER el día que se sumen módulos (contabilidad/iva).
+CREATE TABLE IF NOT EXISTS sys_permiso (
+    grupo    INTEGER     NOT NULL REFERENCES sys_grupo(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    modulo   VARCHAR(30) NOT NULL,
+    ver      BOOLEAN NOT NULL DEFAULT FALSE,
+    crear    BOOLEAN NOT NULL DEFAULT FALSE,
+    editar   BOOLEAN NOT NULL DEFAULT FALSE,
+    eliminar BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (grupo, modulo)
+);
+
+-- Tabla de sesiones para connect-pg-simple — nombres/tipos de columna fijos
+-- por la librería, no son convención propia del proyecto.
+CREATE TABLE IF NOT EXISTS sys_sesion (
+    sid    VARCHAR NOT NULL COLLATE "default" PRIMARY KEY,
+    sess   JSON NOT NULL,
+    expire TIMESTAMP(6) NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_sys_sesion_expire ON sys_sesion (expire);
+
+-- Seed idempotente: grupo Administradores con permiso total + usuario admin.
+-- Password por defecto 'admin123' — cambiar después del primer login (mismo
+-- patrón que el "root"/"Usuario Administrador" sembrado en el sistema legacy).
+INSERT INTO sys_grupo (id, nombre, descripcion, orden)
+VALUES (1, 'Administradores', 'Acceso total al sistema', 1)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO sys_permiso (grupo, modulo, ver, crear, editar, eliminar)
+SELECT 1, m, TRUE, TRUE, TRUE, TRUE
+FROM unnest(ARRAY['sueldos','configuracion','seguridad']) AS m
+ON CONFLICT (grupo, modulo) DO NOTHING;
+
+INSERT INTO sys_usuario (id, usuario, nombre, password_hash, activo)
+VALUES (1, 'admin', 'Usuario Administrador', '$2b$10$Qz1SulMlykNmMnY1PO4QA.vVf6KeqTO/W58w609qKGpAJN772Is7q', TRUE)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO sys_usuario_grupo (usuario, grupo) VALUES (1, 1)
+ON CONFLICT DO NOTHING;
+
+SELECT setval('sys_grupo_id_seq',   (SELECT COALESCE(MAX(id), 1) FROM sys_grupo));
+SELECT setval('sys_usuario_id_seq', (SELECT COALESCE(MAX(id), 1) FROM sys_usuario));
+
 COMMIT;

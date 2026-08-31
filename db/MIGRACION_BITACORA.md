@@ -558,3 +558,33 @@ Se regeneró la base desde cero (sección 6), con dos vueltas de
 `docker compose down -v` + `up -d`: la primera para detectar el gap de las
 migraciones 002/003, la segunda ya con `01_schema.sql` actualizado para que las
 tablas de diseño de formularios se crearan solas.
+
+---
+
+## 12. Login y permisos — tablas app-native (sin fuente en MySQL)
+
+Se agregó la sección 15 de `01_schema.sql` (`sys_grupo`, `sys_usuario`,
+`sys_usuario_grupo`, `sys_permiso`, `sys_sesion`) para el sistema de login real +
+permisos por módulo. A diferencia de todo lo demás en `01_schema.sql`, **estas
+tablas no tienen ningún dump MySQL de origen** — son 100% nativas de la app nueva.
+
+**Por qué no se reutilizó `sys_user`/`sys_group`/`sys_user_group`** (sección 1 del
+schema, sí migradas desde MySQL): `sys_user.password` es `VARCHAR(20)` en texto
+plano (credenciales del ERP legacy, nunca usadas por el backend actual — cero
+referencias en `backend/src/`) y `sys_user.uid`/`sys_group.gid` son PK string,
+rompiendo con el patrón `SERIAL` ya adoptado para entidades nuevas (secciones 9-10).
+Mezclar login moderno con bcrypt sobre esas columnas hubiera sido más frágil que
+partir de tablas nuevas en el mismo namespace `sys_`.
+
+**Implicancia importante para la próxima vez que se repita la migración (sección
+6)**: el `docker compose down -v` + `up -d` recrea `sys_usuario`/`sys_grupo`/etc.
+solas (están en `01_schema.sql`, sobreviven a la recreación del *schema*), pero
+**vacía sus datos** igual que cualquier otra tabla del volumen — no hay ningún dump
+`*_pg.sql` que las repueble, porque no vienen de MySQL. La mitigación es el seed
+idempotente al final de la sección 15: siempre queda un usuario `admin` (grupo
+"Administradores", permiso total) recién levantada la base, mismo criterio que el
+"root"/"Usuario Administrador" que traía sembrado el sistema legacy. Contraseña por
+defecto `admin123` — cambiarla después del primer login. Cualquier otro
+usuario/grupo/permiso creado desde la UI se pierde en una re-migración completa,
+igual que hoy se pierde cualquier empresa/recibo cargado a mano — no se buildeó
+un mecanismo de export/import para esto (fuera de alcance de lo pedido).
