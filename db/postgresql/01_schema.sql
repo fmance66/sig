@@ -894,8 +894,14 @@ CREATE TABLE IF NOT EXISTS sld_formulario_recibo (
     propiedad         VARCHAR(30),
     etiquetas         BOOLEAN DEFAULT FALSE,
     orden             INTEGER,
+    activo            BOOLEAN NOT NULL DEFAULT FALSE,
     UNIQUE (empresa, nombre)
 );
+
+-- A lo sumo un formulario "activo" (el que usa pdfInformes.js para armar el PDF) por
+-- empresa — ver backend/src/services/pdfInformes.js.
+CREATE UNIQUE INDEX IF NOT EXISTS sld_formulario_recibo_activo_uk
+    ON sld_formulario_recibo (empresa) WHERE activo;
 
 CREATE TABLE IF NOT EXISTS sld_formulario_recibo_parametro (
     formulario  INTEGER NOT NULL REFERENCES sld_formulario_recibo(id) ON DELETE CASCADE ON UPDATE CASCADE,

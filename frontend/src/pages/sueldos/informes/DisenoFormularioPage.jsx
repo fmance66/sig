@@ -74,10 +74,11 @@ function composeFontString({ fontFamilia, fontPeso, fontTamano, fontColor }) {
 // parámetros con posición X/Y/Ancho/Alto y estilo). El PDF real interpreta
 // estas filas (ver backend/src/pdf/reciboInterprete.js, libroInterprete.js,
 // disenoComun.js) — no es solo metadato.
-export default function DisenoFormularioPage({ api, titulo, icono }) {
+export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo = false }) {
   const { empresa } = useEmpresa();
   const [formularios, setFormularios] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activando, setActivando] = useState(null);
   const [globalFilter, setGlobalFilter] = useState('');
   const [dialogVisible, setDialogVisible] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -263,6 +264,19 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
     }
   }
 
+  async function handleActivar(row) {
+    setActivando(row.id);
+    try {
+      await api.activar(row.id);
+      toast.current.show({ severity: 'success', summary: 'OK', detail: `"${row.descripcion || row.nombre}" ahora es el diseño en uso` });
+      load();
+    } catch {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo activar el diseño' });
+    } finally {
+      setActivando(null);
+    }
+  }
+
   function handleDeleteParam(row) {
     confirmDialog({
       message: `¿Quitar el parámetro "${row.parametro}"?`,
@@ -288,6 +302,14 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
       <Button icon="fa-solid fa-pen" className="p-button-text p-button-sm" tooltip="Modificar" tooltipOptions={{ position: 'top' }} onClick={() => openEdit(row)} />
       <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleDelete(row)} />
     </div>
+  );
+
+  const enUsoTemplate = (row) => (
+    <Checkbox
+      checked={row.activo}
+      disabled={row.activo || activando === row.id}
+      onChange={() => handleActivar(row)}
+    />
   );
 
   const accionesParamTemplate = (row) => (
@@ -338,6 +360,7 @@ export default function DisenoFormularioPage({ api, titulo, icono }) {
       >
         <Column field="nombre" header="Formulario" sortable style={{ width: '160px' }} />
         <Column field="descripcion" header="Descripción" sortable />
+        {soportaActivo && <Column body={enUsoTemplate} header="Activo" alignHeader="center" style={{ width: '80px', textAlign: 'center' }} />}
         <Column field="orientacion" header="Orientación" style={{ width: '120px' }} />
         <Column field="pagina" header="Página" style={{ width: '100px' }} />
         <Column field="orden" header="Orden" sortable style={{ width: '90px' }} />

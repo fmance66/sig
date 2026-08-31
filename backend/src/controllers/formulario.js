@@ -57,7 +57,18 @@ function createFormularioController(model, nombreEntidad) {
     }
   }
 
-  return { list, getOne, create, update, remove };
+  async function activar(req, res) {
+    try {
+      const data = await model.activar(req.params.id);
+      if (!data) return res.status(404).json({ estado: 'error', mensaje: `${nombreEntidad} no encontrado/a` });
+      res.json({ estado: 'ok', resultado: data });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ estado: 'error', mensaje: `Error al activar ${nombreEntidad}` });
+    }
+  }
+
+  return { list, getOne, create, update, remove, activar };
 }
 
 module.exports = { createFormularioController };

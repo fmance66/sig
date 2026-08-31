@@ -35,6 +35,7 @@ export const formulariosRecibo = {
   create:  (data)         => client.post('/informes/formularios-recibo', data),
   update:  (id, data)     => client.put(`/informes/formularios-recibo/${encodeURIComponent(id)}`, data),
   remove:  (id)           => client.delete(`/informes/formularios-recibo/${encodeURIComponent(id)}`),
+  activar: (id)           => client.put(`/informes/formularios-recibo/${encodeURIComponent(id)}/activar`),
   getParametros:   (id)       => client.get(`/informes/formularios-recibo/${encodeURIComponent(id)}/parametros`),
   addParametro:    (id, data) => client.post(`/informes/formularios-recibo/${encodeURIComponent(id)}/parametros`, data),
   updateParametro: (id, p, data) => client.put(`/informes/formularios-recibo/${encodeURIComponent(id)}/parametros/${encodeURIComponent(p)}`, data),

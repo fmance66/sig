@@ -115,8 +115,10 @@ const { createFormularioController } = require('../controllers/formulario');
 const { createParametroModel } = require('../models/formularioParametro');
 const { createParametroController } = require('../controllers/formularioParametro');
 
-function formularioRouter(tableName, parametroTable) {
-  const router = createCatalogoRouter(createFormularioController(createFormularioModel(tableName), 'formulario'));
+function formularioRouter(tableName, parametroTable, extraColumns = []) {
+  const controller = createFormularioController(createFormularioModel(tableName, extraColumns), 'formulario');
+  const router = createCatalogoRouter(controller);
+  if (extraColumns.includes('activo')) router.put('/:id/activar', controller.activar);
   const parametroController = createParametroController(createParametroModel(parametroTable));
   router.get('/:id/parametros', parametroController.list);
   router.post('/:id/parametros', parametroController.create);
@@ -125,7 +127,7 @@ function formularioRouter(tableName, parametroTable) {
   return router;
 }
 
-router.use('/informes/formularios-recibo', formularioRouter('sld_formulario_recibo', 'sld_formulario_recibo_parametro'));
+router.use('/informes/formularios-recibo', formularioRouter('sld_formulario_recibo', 'sld_formulario_recibo_parametro', ['activo']));
 router.use('/informes/formularios-libro', formularioRouter('sld_formulario_libro', 'sld_formulario_libro_parametro'));
 
 module.exports = router;

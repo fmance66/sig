@@ -3422,6 +3422,13 @@
                   }
                 },
                 {
+                  "name": "PUT Activar Formulario de Recibo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/informes/formularios-recibo/1/activar"
+                  }
+                },
+                {
                   "name": "GET informes/formularios-recibo/:id/parametros",
                   "request": {
                     "method": "GET",

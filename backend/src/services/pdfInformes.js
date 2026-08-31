@@ -5,16 +5,13 @@ const familiaresModel = require('../models/familiares');
 const { ReciboInterpretadoDocument } = require('../pdf/reciboInterprete');
 const { LibroInterpretadoDocument, SECCION_IDS: LIBRO_SECCION_IDS } = require('../pdf/libroInterprete');
 
-// Diseño usado para el PDF de recibo — cualquiera de los otros ya migrados (RECIBO,
-// RECIBO_FIX, HUSARES_4122) sirve con solo cambiar esta constante. Cada empresa tiene su
-// propio diseño (sld_formulario_recibo.empresa) — se resuelve por empresa del recibo, con
-// fallback a la primera empresa que tenga cargado ese nombre si la empresa del recibo no
-// tiene su propio diseño todavía.
-const FORMULARIO_RECIBO = 'RECIBO_A4';
-
-async function cargarDisenoRecibo(empresa, nombre) {
+// Diseño usado para el PDF de recibo — cada empresa tiene varios diseños guardados
+// (RECIBO, RECIBO_A4, RECIBO_FIX, HUSARES_4122) y se usa el que esté marcado
+// `activo` (ver sld_formulario_recibo_activo_uk — a lo sumo uno por empresa, se
+// cambia desde "Diseño de Recibos de Sueldo" en el frontend).
+async function cargarDisenoRecibo(empresa) {
   const { rows: formularioRows } = await pool.query(
-    'SELECT * FROM sld_formulario_recibo WHERE empresa = $1 AND nombre = $2', [empresa, nombre]
+    'SELECT * FROM sld_formulario_recibo WHERE empresa = $1 AND activo', [empresa]
   );
   const formulario = formularioRows[0];
   if (!formulario) return { formulario: undefined, parametros: [] };
@@ -32,7 +29,7 @@ async function streamRecibosPdf(recibos) {
     const conceptos = await recibosModel.listConceptos(r.periodo, r.empleado, r.numero);
     const empresa = recibo.empresa_id;
     if (!disenoPorEmpresa.has(empresa)) {
-      disenoPorEmpresa.set(empresa, await cargarDisenoRecibo(empresa, FORMULARIO_RECIBO));
+      disenoPorEmpresa.set(empresa, await cargarDisenoRecibo(empresa));
     }
     bundles.push({ recibo, conceptos, diseno: disenoPorEmpresa.get(empresa) });
   }
