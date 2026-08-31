@@ -95,8 +95,16 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
   const [editParamKey, setEditParamKey] = useState(null);
 
   const toast = useRef(null);
+  const paramFormRef = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+
+  // Al abrir el formulario de un parámetro (nuevo o editar), el modal puede estar
+  // scrolleado más abajo (la sub-tabla de parámetros) — sin esto, el form aparece
+  // arriba de la tabla y no se nota que se abrió.
+  useEffect(() => {
+    if (showParamForm) paramFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [showParamForm, editParamKey]);
 
   async function load() {
     setLoading(true);
@@ -451,7 +459,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
         ) : (
           <div className="sub-tab">
             {showParamForm && (
-              <div className="sub-form">
+              <div className="sub-form" ref={paramFormRef}>
                 <div className="form-grid">
                   <div className="form-field">
                     <label>Parámetro <span className="required">*</span></label>
