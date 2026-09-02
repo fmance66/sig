@@ -12,15 +12,18 @@ const MUTABLE = [
 
 const toDbValue = v => (v === '' ? null : v);
 
+// sld_liquidacion es global (mismo periodo puede tener recibos de varias empresas a la vez),
+// así que el filtro `empresa` no puede ser una columna directa: se resuelve por EXISTS de
+// recibos de esa empresa, salvo ABIERTA (recién creada, aún sin recibos) que siempre se ve.
 async function list({ periodo, estado, fechaDesde, fechaHasta, descripcion, empresa } = {}) {
   const { rows } = await pool.query(
     `SELECT ${COLS} FROM sld_liquidacion l
-     WHERE ($1::text IS NULL OR periodo ILIKE '%'||$1||'%')
+     WHERE ($1::text IS NULL OR periodo = $1)
        AND ($2::text IS NULL OR estado = $2)
        AND ($3::date IS NULL OR fecha >= $3)
        AND ($4::date IS NULL OR fecha <= $4)
        AND ($5::text IS NULL OR descripcion ILIKE '%'||$5||'%')
-       AND ($6::integer IS NULL OR EXISTS (
+       AND ($6::integer IS NULL OR estado = 'ABIERTA' OR EXISTS (
              SELECT 1 FROM sld_recibo r JOIN sld_empleado e ON e.id = r.empleado
              WHERE r.periodo = l.periodo AND e.empresa = $6))
      ORDER BY orden NULLS LAST, periodo`,

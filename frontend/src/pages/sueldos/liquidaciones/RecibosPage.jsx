@@ -7,6 +7,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
+import PeriodoSelect from '../../../components/PeriodoSelect';
 import './liquidaciones.css';
 
 const EMPTY_FILTRO = { periodo: '', legajo: '', convenio: '', categoria: '', grupo: '', estado: '' };
@@ -114,7 +115,7 @@ export default function RecibosPage() {
     <div className="filtros-toolbar">
       <div className="form-field">
         <label>Período</label>
-        <FiltroTexto name="periodo" value={filtro.periodo} onChange={handleFiltroChange} />
+        <PeriodoSelect value={filtro.periodo} onChange={e => setFiltro(prev => ({ ...prev, periodo: e.value || '' }))} placeholder="" style={{ width: '220px' }} />
       </div>
       <div className="form-field">
         <label>Legajo</label>

@@ -20,7 +20,7 @@ async function list({ periodo, legajo, empresa, convenio, categoria, grupo, esta
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
      LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
-     WHERE ($1::text IS NULL OR r.periodo ILIKE '%'||$1||'%')
+     WHERE ($1::text IS NULL OR r.periodo = $1)
        AND ($2::text IS NULL OR e.legajo ILIKE '%'||$2||'%')
        AND ($3::integer IS NULL OR e.empresa = $3)
        AND ($4::text IS NULL OR e.convenio = $4)

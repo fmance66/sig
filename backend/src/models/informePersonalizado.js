@@ -185,8 +185,8 @@ async function ejecutar(informe, filtro = {}) {
     condiciones.push(`e.legajo ILIKE $${params.length}`);
   }
   if (filtro.periodo && /\br\.periodo\b|\brc\.periodo\b/.test(tablaDef.from + select)) {
-    params.push(`%${filtro.periodo}%`);
-    condiciones.push(`r.periodo ILIKE $${params.length}`);
+    params.push(filtro.periodo);
+    condiciones.push(`r.periodo = $${params.length}`);
   }
   const where = condiciones.length ? `WHERE ${condiciones.join(' AND ')}` : '';
 

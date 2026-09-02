@@ -58,7 +58,7 @@ function agruparPorDimension(rows, camposSuma) {
 }
 
 const FILTRO_BASE_SQL = `
-  ($1::text IS NULL OR r.periodo ILIKE '%'||$1||'%')
+  ($1::text IS NULL OR r.periodo = $1)
   AND ($2::text IS NULL OR e.legajo ILIKE '%'||$2||'%')
   AND ($3::text IS NULL OR e.convenio = $3)
   AND ($4::text IS NULL OR e.categoria = $4)
@@ -183,7 +183,7 @@ async function remuneracionPorConceptos(filtro = {}) {
             COALESCE(SUM(r.sueldo_neto), 0) AS sueldo_neto
      FROM sld_empleado e
      LEFT JOIN sld_recibo r ON r.empleado = e.id
-       AND ($1::text IS NULL OR r.periodo ILIKE '%'||$1||'%')
+       AND ($1::text IS NULL OR r.periodo = $1)
      LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
      WHERE ($2::text IS NULL OR e.legajo ILIKE '%'||$2||'%')
        AND ($3::text IS NULL OR e.convenio = $3)
@@ -193,7 +193,7 @@ async function remuneracionPorConceptos(filtro = {}) {
        AND ($7::text IS NULL OR EXISTS (
              SELECT 1 FROM sld_recibo_concepto rc
              WHERE rc.empleado = e.id AND rc.concepto = $7
-               AND ($1::text IS NULL OR rc.periodo ILIKE '%'||$1||'%')))
+               AND ($1::text IS NULL OR rc.periodo = $1)))
        AND ($8::integer IS NULL OR e.empresa = $8)
      GROUP BY e.id, e.legajo, e.apellido, e.nombre, e.grupo, e.tarea, e.fecha_ingreso, e.fecha_nacimiento, e.orden
      ORDER BY e.orden NULLS LAST, e.apellido NULLS LAST, e.nombre NULLS LAST`,

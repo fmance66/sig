@@ -350,7 +350,8 @@ CREATE TABLE IF NOT EXISTS sld_tipo_novedad (
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS sld_concepto (
-    id                  VARCHAR(10) PRIMARY KEY,
+    id                  VARCHAR(10) NOT NULL,
+    empresa             INTEGER     NOT NULL REFERENCES sys_empresa(id),
     id_afip             VARCHAR(10),
     descripcion         VARCHAR(50),
     columna             VARCHAR(20) CHECK (columna IN ('REMUNERATIVO','NO_REMUNERATIVO','DESCUENTO','CONTRIBUCION','AUXILIAR')) DEFAULT 'REMUNERATIVO',
@@ -370,11 +371,13 @@ CREATE TABLE IF NOT EXISTS sld_concepto (
     formula_unitario    VARCHAR(512),
     formula_condicion   VARCHAR(512),
     activo              BOOLEAN DEFAULT TRUE,
-    orden               INTEGER
+    orden               INTEGER,
+    PRIMARY KEY (id, empresa)
 );
 
 CREATE TABLE IF NOT EXISTS sld_concepto_lsd (
-    concepto                VARCHAR(10) PRIMARY KEY REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    concepto                VARCHAR(10) NOT NULL,
+    empresa                 INTEGER     NOT NULL REFERENCES sys_empresa(id),
     aporte_sipa             BOOLEAN DEFAULT FALSE,
     aporte_inssjyp          BOOLEAN DEFAULT FALSE,
     aporte_obrasocial       BOOLEAN DEFAULT FALSE,
@@ -394,11 +397,14 @@ CREATE TABLE IF NOT EXISTS sld_concepto_lsd (
     contribucion_lrt        BOOLEAN DEFAULT FALSE,
     contribucion_libre1     BOOLEAN DEFAULT FALSE,
     contribucion_libre2     BOOLEAN DEFAULT FALSE,
-    repetible               BOOLEAN DEFAULT FALSE
+    repetible               BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (concepto, empresa),
+    FOREIGN KEY (concepto, empresa) REFERENCES sld_concepto(id, empresa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sld_concepto_general (
-    concepto        VARCHAR(10) NOT NULL REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    concepto        VARCHAR(10) NOT NULL,
+    empresa         INTEGER     NOT NULL REFERENCES sys_empresa(id),
     liquidacion     VARCHAR(15) NOT NULL CHECK (liquidacion IN ('MENSUAL','QUINCENA_1','QUINCENA_2','AGUINALDO','VACACIONES','RENUNCIA','DESPIDO','OTROS')),
     recibo          INTEGER     NOT NULL DEFAULT 0,
     descripcion     VARCHAR(50),
@@ -407,13 +413,16 @@ CREATE TABLE IF NOT EXISTS sld_concepto_general (
     vigencia_desde  DATE,
     vigencia_hasta  DATE,
     orden           INTEGER,
-    UNIQUE (concepto, liquidacion, recibo)
+    UNIQUE (concepto, liquidacion, recibo, empresa),
+    FOREIGN KEY (concepto, empresa) REFERENCES sld_concepto(id, empresa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sld_concepto_grupo (
     grupo    VARCHAR(30) NOT NULL REFERENCES sld_grupo(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    concepto VARCHAR(10) NOT NULL REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (grupo, concepto)
+    concepto VARCHAR(10) NOT NULL,
+    empresa  INTEGER     NOT NULL REFERENCES sys_empresa(id),
+    PRIMARY KEY (grupo, concepto, empresa),
+    FOREIGN KEY (concepto, empresa) REFERENCES sld_concepto(id, empresa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 ALTER TABLE sld_concepto
@@ -564,7 +573,8 @@ CREATE TABLE IF NOT EXISTS sld_empleado_afip (
 
 CREATE TABLE IF NOT EXISTS sld_empleado_concepto (
     empleado        INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    concepto        VARCHAR(10) NOT NULL REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    concepto        VARCHAR(10) NOT NULL,
+    empresa         INTEGER     NOT NULL REFERENCES sys_empresa(id),
     liquidacion     VARCHAR(15) NOT NULL CHECK (liquidacion IN ('MENSUAL','QUINCENA_1','QUINCENA_2','AGUINALDO','VACACIONES','RENUNCIA','DESPIDO','OTROS')),
     recibo          INTEGER     NOT NULL DEFAULT 0,
     descripcion     VARCHAR(50),
@@ -573,7 +583,8 @@ CREATE TABLE IF NOT EXISTS sld_empleado_concepto (
     vigencia_desde  DATE,
     vigencia_hasta  DATE,
     orden           INTEGER,
-    UNIQUE (empleado, concepto, liquidacion, recibo)
+    UNIQUE (empleado, concepto, liquidacion, recibo),
+    FOREIGN KEY (concepto, empresa) REFERENCES sld_concepto(id, empresa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sld_empleado_field (
@@ -663,7 +674,8 @@ CREATE TABLE IF NOT EXISTS sld_historial_empleado (
 
 CREATE TABLE IF NOT EXISTS sld_concepto_de_grupo (
     grupo_de_conceptos  VARCHAR(20) NOT NULL REFERENCES sld_grupo_de_conceptos(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    concepto            VARCHAR(10) NOT NULL REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    concepto            VARCHAR(10) NOT NULL,
+    empresa             INTEGER     NOT NULL REFERENCES sys_empresa(id),
     liquidacion         VARCHAR(15) NOT NULL CHECK (liquidacion IN ('MENSUAL','QUINCENA_1','QUINCENA_2','AGUINALDO','VACACIONES','RENUNCIA','DESPIDO','OTROS')),
     recibo              INTEGER     NOT NULL DEFAULT 0,
     descripcion         VARCHAR(50),
@@ -672,7 +684,8 @@ CREATE TABLE IF NOT EXISTS sld_concepto_de_grupo (
     vigencia_desde      DATE,
     vigencia_hasta      DATE,
     orden               INTEGER,
-    UNIQUE (grupo_de_conceptos, concepto, liquidacion, recibo)
+    UNIQUE (grupo_de_conceptos, concepto, liquidacion, recibo, empresa),
+    FOREIGN KEY (concepto, empresa) REFERENCES sld_concepto(id, empresa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- -----------------------------------------------------------------------------
@@ -707,7 +720,8 @@ CREATE TABLE IF NOT EXISTS sld_recibo_concepto (
     periodo         VARCHAR(30) NOT NULL,
     empleado        INTEGER     NOT NULL,
     numero          INTEGER     NOT NULL,
-    concepto        VARCHAR(10) NOT NULL REFERENCES sld_concepto(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    concepto        VARCHAR(10) NOT NULL,
+    empresa         INTEGER     NOT NULL REFERENCES sys_empresa(id),
     descripcion     VARCHAR(50),
     unidad_manual   NUMERIC(11,4),
     importe_manual  NUMERIC(17,8),
@@ -722,7 +736,8 @@ CREATE TABLE IF NOT EXISTS sld_recibo_concepto (
     vigencia_hasta  DATE,
     orden           INTEGER,
     PRIMARY KEY (periodo, empleado, numero, concepto),
-    FOREIGN KEY (periodo, empleado, numero) REFERENCES sld_recibo(periodo, empleado, numero) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (periodo, empleado, numero) REFERENCES sld_recibo(periodo, empleado, numero) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (concepto, empresa) REFERENCES sld_concepto(id, empresa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sld_recibo_empleado (

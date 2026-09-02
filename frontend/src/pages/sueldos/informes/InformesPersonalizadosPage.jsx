@@ -5,6 +5,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
+import PeriodoSelect from '../../../components/PeriodoSelect';
 import { informesPersonalizados, ejecutarInformePersonalizado } from '../../../api/informes';
 import './informes.css';
 
@@ -56,7 +57,7 @@ export default function InformesPersonalizadosPage() {
         </div>
         <div className="form-field">
           <label>Período</label>
-          <FiltroTexto value={periodo} onChange={e => setPeriodo(e.target.value)} />
+          <PeriodoSelect value={periodo} onChange={e => setPeriodo(e.value || '')} placeholder="" style={{ width: '220px' }} />
         </div>
         <Button label="Ejecutar" icon="fa-solid fa-play" size="small" onClick={ejecutar} loading={loading} />
       </div>

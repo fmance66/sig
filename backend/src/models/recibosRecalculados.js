@@ -7,7 +7,7 @@ async function matchingKeys({ periodo, fecha, legajo, empresa, convenio, categor
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
      LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
-     WHERE ($1::text IS NULL OR r.periodo ILIKE '%'||$1||'%')
+     WHERE ($1::text IS NULL OR r.periodo = $1)
        AND ($2::date IS NULL OR r.fecha_recibo = $2)
        AND ($3::text IS NULL OR e.legajo ILIKE '%'||$3||'%')
        AND ($4::integer IS NULL OR e.empresa = $4)

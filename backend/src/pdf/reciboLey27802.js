@@ -222,15 +222,12 @@ function paginaRecibo(datos, copia) {
 // bundles: [{ recibo, conceptos }]. Devuelve los <Page> ya armados (sin envolver en
 // <Document>) — pdfInformes.js los combina con los de reciboInterprete.js cuando un lote
 // mezcla empresas con distinto diseño activo. Cada recibo sale por duplicado (ORIGINAL +
-// DUPLICADO, cada uno con su propia leyenda de firma) — mismo criterio que
-// reciboInterprete.js: primero todos los originales, después todos los duplicados (el
-// orden en que se imprimirían/separarían si se sacan por separado).
+// DUPLICADO, cada uno con su propia leyenda de firma), intercalados por empleado —
+// mismo criterio que reciboInterprete.js: original y duplicado de un empleado quedan
+// uno al lado del otro antes de pasar al siguiente empleado.
 async function paginasRecibo(bundles) {
   const datosList = await Promise.all(bundles.map(b => datosRecibo(b.recibo, b.conceptos)));
-  return [
-    ...datosList.map(d => paginaRecibo(d, 'ORIGINAL')),
-    ...datosList.map(d => paginaRecibo(d, 'DUPLICADO')),
-  ];
+  return datosList.flatMap(d => [paginaRecibo(d, 'ORIGINAL'), paginaRecibo(d, 'DUPLICADO')]);
 }
 
 async function ReciboLey27802Document(bundles) {

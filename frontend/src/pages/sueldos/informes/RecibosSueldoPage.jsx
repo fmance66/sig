@@ -49,7 +49,7 @@ export default function RecibosSueldoPage() {
       <h2 className="page-title"><i className="fa-solid fa-file-invoice-dollar" /> Recibos de Sueldo</h2>
 
       <InformeFiltro
-        filtro={filtro} onChange={setFiltro} onBuscar={() => buscar()} onLimpiar={limpiar} loading={loading} periodoDropdown
+        filtro={filtro} onChange={setFiltro} onBuscar={() => buscar()} onLimpiar={limpiar} loading={loading}
         actions={(
           <Button
             label={seleccion.length ? `Descargar PDF (${seleccion.length})` : 'Descargar PDF'}

@@ -12,6 +12,7 @@ import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/liquidaciones';
 import { toDate, toIsoDate } from '../../../utils/dates';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './liquidaciones.css';
 
 const TIPO_OPTIONS = [
@@ -53,6 +54,7 @@ const EMPTY_FORM = {
 
 export default function LiquidacionesPage() {
   const navigate = useNavigate();
+  const { empresa } = useEmpresa();
   const [liquidaciones, setLiquidaciones] = useState([]);
   const [loading, setLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -62,12 +64,12 @@ export default function LiquidacionesPage() {
   const [saving, setSaving] = useState(false);
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getLiquidaciones();
+      const res = await api.getLiquidaciones({ empresa: empresa?.id });
       setLiquidaciones(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las liquidaciones' });
@@ -211,6 +213,8 @@ export default function LiquidacionesPage() {
         size="small"
         stripedRows
         removableSort
+        sortField="fecha"
+        sortOrder={-1}
       >
         <Column field="periodo" header="Período" sortable style={{ width: '150px' }} />
         <Column field="descripcion" header="Descripción" sortable />

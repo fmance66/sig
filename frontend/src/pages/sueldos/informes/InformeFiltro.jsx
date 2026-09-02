@@ -9,7 +9,7 @@ import { useEmpresa } from '../../../context/EmpresaContext';
 // (Agrupado por, Concepto, etc.) se pasa como children y se renderiza
 // antes de los botones.
 export default function InformeFiltro({
-  filtro, onChange, onBuscar, onLimpiar, loading, children, actions, ocultar = [], periodoDropdown = false,
+  filtro, onChange, onBuscar, onLimpiar, loading, children, actions, ocultar = [],
 }) {
   const { empresa } = useEmpresa();
 
@@ -26,17 +26,13 @@ export default function InformeFiltro({
       {!oculto('periodo') && (
         <div className="form-field">
           <label>Período</label>
-          {periodoDropdown
-            ? (
-              <PeriodoSelect
-                value={filtro.periodo}
-                onChange={e => onChange(prev => ({ ...prev, periodo: e.value || '' }))}
-                empresa={empresa?.id}
-                placeholder=""
-                style={{ width: '220px' }}
-              />
-            )
-            : <FiltroTexto name="periodo" value={filtro.periodo} onChange={handleChange} />}
+          <PeriodoSelect
+            value={filtro.periodo}
+            onChange={e => onChange(prev => ({ ...prev, periodo: e.value || '' }))}
+            empresa={empresa?.id}
+            placeholder=""
+            style={{ width: '220px' }}
+          />
         </div>
       )}
       <div className="form-field">

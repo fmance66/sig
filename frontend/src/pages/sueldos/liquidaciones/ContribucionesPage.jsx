@@ -5,6 +5,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
+import PeriodoSelect from '../../../components/PeriodoSelect';
 import './liquidaciones.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -88,7 +89,7 @@ export default function ContribucionesPage({ columna = 'CONTRIBUCION' }) {
       <div className="filtros-toolbar">
         <div className="form-field">
           <label>Período</label>
-          <FiltroTexto name="periodo" value={filtro.periodo} onChange={handleFiltroChange} />
+          <PeriodoSelect value={filtro.periodo} onChange={e => setFiltro(prev => ({ ...prev, periodo: e.value || '' }))} placeholder="" style={{ width: '220px' }} />
         </div>
         <div className="form-field">
           <label>Legajo</label>
