@@ -5,6 +5,7 @@ import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
+import BotonVolver from '../../../components/BotonVolver';
 import './informes.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -42,7 +43,10 @@ export default function ConceptosAcumuladosPage() {
   return (
     <div className="page-informes">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-sitemap" /> Conceptos Acumulados</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-sitemap" /> Conceptos Acumulados</h2>
+      </div>
 
       <InformeFiltro filtro={filtro} onChange={setFiltro} onBuscar={() => buscar()} onLimpiar={limpiar} loading={loading} />
 

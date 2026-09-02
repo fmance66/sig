@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
+import BotonVolver from '../../../components/BotonVolver';
 import './liquidaciones.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -90,7 +91,10 @@ export default function EliminacionMasivaPage() {
     <div className="page-liquidaciones">
       <Toast ref={toast} />
       <ConfirmDialog />
-      <h2 className="page-title"><i className="fa-solid fa-triangle-exclamation" /> Eliminación Masiva</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-triangle-exclamation" /> Eliminación Masiva</h2>
+      </div>
 
       <div className="filtros-toolbar">
         <div className="form-field">

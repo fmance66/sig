@@ -12,6 +12,7 @@ import * as api from '../../../api/gruposDeConceptos';
 import { getConceptosGrupo } from '../../../api/conceptos';
 import { useEmpresa } from '../../../context/EmpresaContext';
 import ConceptosDeGrupoTab from './ConceptosDeGrupoTab';
+import BotonVolver from '../../../components/BotonVolver';
 import './conceptos.css';
 
 const EMPTY_FORM = { id: '', descripcion: '', orden: '' };
@@ -169,7 +170,10 @@ export default function GruposDeConceptosPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-layer-group" /> Grupos de Conceptos</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-layer-group" /> Grupos de Conceptos</h2>
+      </div>
 
       <DataTable
         value={grupos}

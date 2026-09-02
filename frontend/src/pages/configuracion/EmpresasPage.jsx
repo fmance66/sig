@@ -12,6 +12,7 @@ import MailTab from './MailTab';
 import LogoEmpresaField from './LogoEmpresaField';
 import BuscadorTabla from '../../components/BuscadorTabla';
 import * as api from '../../api/empresas';
+import BotonVolver from '../../components/BotonVolver';
 import './EmpresasPage.css';
 
 const EMPTY_FORM = {
@@ -189,7 +190,10 @@ export default function EmpresasPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-building" /> Empresas</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-building" /> Empresas</h2>
+      </div>
 
       <DataTable
         value={empresas}

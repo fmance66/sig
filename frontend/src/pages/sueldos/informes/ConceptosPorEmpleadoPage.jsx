@@ -6,6 +6,7 @@ import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
+import BotonVolver from '../../../components/BotonVolver';
 import './informes.css';
 
 const fecha = v => v ? new Date(v).toLocaleDateString('es-AR') : '—';
@@ -57,7 +58,10 @@ export default function ConceptosPorEmpleadoPage() {
   return (
     <div className="page-informes">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-user-tag" /> Conceptos por Empleado</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-user-tag" /> Conceptos por Empleado</h2>
+      </div>
 
       <InformeFiltro filtro={filtro} onChange={setFiltro} onBuscar={() => buscar()} onLimpiar={limpiar} loading={loading} ocultar={['periodo', 'estado']}>
         <div className="form-field informe-toolbar-extra">

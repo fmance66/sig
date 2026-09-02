@@ -6,6 +6,7 @@ import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import * as api from '../../api/grupos';
+import BotonVolver from '../../components/BotonVolver';
 import './PermisosPage.css';
 
 const MODULO_LABELS = { sueldos: 'Sueldos', configuracion: 'Configuración', seguridad: 'Seguridad' };
@@ -56,7 +57,10 @@ export default function PermisosPage() {
   return (
     <div className="page-permisos">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-key" /> Permisos</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-key" /> Permisos</h2>
+      </div>
 
       <div className="permisos-toolbar">
         <div className="form-field">

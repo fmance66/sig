@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import * as api from '../../../api/novedades';
 import { toIsoDate } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 export default function NovedadesPorTablaPage() {
   const [fecha, setFecha] = useState(null);
@@ -72,7 +73,10 @@ export default function NovedadesPorTablaPage() {
   return (
     <div className="page-novedades">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-table" /> Novedades por Tabla</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-table" /> Novedades por Tabla</h2>
+      </div>
 
       <div className="filtros-toolbar">
         <div className="form-field">

@@ -13,6 +13,7 @@ import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as empleadosApi from '../../../api/empleados';
 import * as api from '../../../api/jornadaLaboral';
 import { toTimeDate, toIsoTime } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 const DIAS = [
   { value: 'LUNES', label: 'Lunes' },
@@ -192,7 +193,10 @@ export default function JornadaLaboralPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-calendar-week" /> Jornada Laboral</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-calendar-week" /> Jornada Laboral</h2>
+      </div>
 
       <DataTable
         value={jornadas}

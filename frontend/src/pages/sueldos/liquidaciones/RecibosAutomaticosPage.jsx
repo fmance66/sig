@@ -8,6 +8,7 @@ import { InputSwitch } from 'primereact/inputswitch';
 import { Toast } from 'primereact/toast';
 import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
+import BotonVolver from '../../../components/BotonVolver';
 import './liquidaciones.css';
 
 const EMPTY_FILTRO = { legajo: '', convenio: '', grupo: '', categoria: '', estado: '', provincia: '' };
@@ -89,7 +90,10 @@ export default function RecibosAutomaticosPage() {
   return (
     <div className="page-liquidaciones">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-bolt" /> Crear Recibos de Forma Automática</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-bolt" /> Crear Recibos de Forma Automática</h2>
+      </div>
 
       <div className="filtros-toolbar">
         <div className="form-field">

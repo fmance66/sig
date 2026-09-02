@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 import * as api from '../../../api/historialEmpleado';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import { toIsoDate } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 const EMPTY_FILTRO = { empleado: '', campo: '' };
 
@@ -77,7 +78,10 @@ export default function EliminarHistorialesEmpleadoPage() {
     <div className="page-novedades">
       <Toast ref={toast} />
       <ConfirmDialog />
-      <h2 className="page-title"><i className="fa-solid fa-trash" /> Eliminar Historiales de Empleados</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-trash" /> Eliminar Historiales de Empleados</h2>
+      </div>
 
       <div className="filtros-toolbar">
         <div className="form-field">

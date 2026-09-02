@@ -4,6 +4,7 @@ import { Checkbox } from 'primereact/checkbox';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import * as api from '../../api/backup';
+import BotonVolver from '../../components/BotonVolver';
 import './CopiaSeguridadPage.css';
 
 function timestamp() {
@@ -83,7 +84,10 @@ export default function CopiaSeguridadPage() {
     <div className="page-backup">
       <Toast ref={toast} />
       <ConfirmDialog />
-      <h2 className="page-title"><i className="fa-solid fa-database" /> Copia de Seguridad</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-database" /> Copia de Seguridad</h2>
+      </div>
 
       <div className="backup-card">
         <h3 className="backup-card-title"><i className="fa-solid fa-download" /> Generar copia de seguridad</h3>

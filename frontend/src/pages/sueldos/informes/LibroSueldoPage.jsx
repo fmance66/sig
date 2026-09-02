@@ -5,6 +5,7 @@ import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import RecibosConceptosTable from './RecibosConceptosTable';
 import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
+import BotonVolver from '../../../components/BotonVolver';
 import './informes.css';
 
 export default function LibroSueldoPage() {
@@ -46,7 +47,10 @@ export default function LibroSueldoPage() {
   return (
     <div className="page-informes">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-book" /> Libro de Sueldos</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-book" /> Libro de Sueldos</h2>
+      </div>
 
       <InformeFiltro
         filtro={filtro} onChange={setFiltro} onBuscar={() => buscar()} onLimpiar={limpiar} loading={loading}

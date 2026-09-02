@@ -8,6 +8,41 @@
    imports de React son estáticos y todo el CSS termina en el mismo bundle,
    pero es una dependencia implícita frágil que conviene no repetir). */
 
+/* Fila del título de página + botón "Volver" (components/BotonVolver.jsx).
+   Envuelve el <h2 className="page-title"> existente de cada pantalla; el
+   margin-bottom que cada página le da al título se mueve acá para no
+   tocar el CSS propio de cada una. El botón va antes que el título en el
+   JSX (por accesibilidad/orden de tabulado) pero se reordena a la derecha
+   solo visualmente con "order". */
+.page-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+}
+
+.page-header-row .page-title,
+.page-header-row .catalogo-page-title {
+  margin: 0;
+  order: 1;
+}
+
+.page-header-row .boton-volver {
+  order: 2;
+}
+
+.boton-volver.p-button {
+  color: #6b7280;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.boton-volver.p-button:hover {
+  color: #374151;
+  background: #f3f4f6;
+}
+
 /* Toolbar de la tabla (buscador + botón "Agregar") */
 .table-toolbar {
   display: flex;

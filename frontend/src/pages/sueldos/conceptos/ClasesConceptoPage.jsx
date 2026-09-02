@@ -8,6 +8,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/clasesConcepto';
+import BotonVolver from '../../../components/BotonVolver';
 import './conceptos.css';
 
 const EMPTY_FORM = { id: '', descripcion: '', orden: '' };
@@ -207,7 +208,10 @@ export default function ClasesConceptoPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-lock" /> Clases de Concepto</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-lock" /> Clases de Concepto</h2>
+      </div>
 
       <DataTable
         value={clases}

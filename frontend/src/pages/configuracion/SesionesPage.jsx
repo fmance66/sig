@@ -6,6 +6,7 @@ import { Tag } from 'primereact/tag';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import * as api from '../../api/sesiones';
+import BotonVolver from '../../components/BotonVolver';
 import './SesionesPage.css';
 
 const fechaTemplate = v => v ? new Date(v).toLocaleString('es-AR') : '—';
@@ -74,7 +75,10 @@ export default function SesionesPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-clock-rotate-left" /> Sesiones activas</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-clock-rotate-left" /> Sesiones activas</h2>
+      </div>
 
       <DataTable
         value={sesiones}

@@ -20,6 +20,7 @@ import FamiliaresTab from './FamiliaresTab';
 import NovedadesTab from './NovedadesTab';
 import HistorialTab from './HistorialTab';
 import ConceptosTab from './ConceptosTab';
+import BotonVolver from '../../components/BotonVolver';
 import './EmpleadosPage.css';
 
 const ESTADO_OPTIONS = [
@@ -291,10 +292,13 @@ export default function EmpleadosPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title">
-        <i className={mostrarInactivos ? 'fa-solid fa-user-slash' : 'fa-solid fa-user'} />
-        {mostrarInactivos ? 'Empleados inactivos' : 'Empleados activos'}
-      </h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title">
+          <i className={mostrarInactivos ? 'fa-solid fa-user-slash' : 'fa-solid fa-user'} />
+          {mostrarInactivos ? 'Empleados inactivos' : 'Empleados activos'}
+        </h2>
+      </div>
 
       <DataTable
         value={empleados}

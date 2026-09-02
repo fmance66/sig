@@ -12,6 +12,7 @@ import BuscadorTabla from '../../../components/BuscadorTabla';
 import { createCatalogoApi } from '../../../api/catalogo';
 import * as api from '../../../api/historial';
 import { toDate, toIsoDate } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 const camposApi = createCatalogoApi('/campos-historial');
 
@@ -150,7 +151,10 @@ export default function HistorialesPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-clock-rotate-left" /> Historiales</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-clock-rotate-left" /> Historiales</h2>
+      </div>
 
       <DataTable
         value={historiales}

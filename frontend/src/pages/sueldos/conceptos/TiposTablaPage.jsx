@@ -9,6 +9,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/tiposTabla';
+import BotonVolver from '../../../components/BotonVolver';
 import './conceptos.css';
 
 const TIPO_OPTIONS = [
@@ -177,7 +178,10 @@ export default function TiposTablaPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-table-cells" /> Tipos de Tabla</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-table-cells" /> Tipos de Tabla</h2>
+      </div>
 
       <DataTable
         value={tipos}

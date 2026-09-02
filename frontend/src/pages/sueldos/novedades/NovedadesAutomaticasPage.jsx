@@ -10,6 +10,7 @@ import { createCatalogoApi } from '../../../api/catalogo';
 import * as api from '../../../api/novedadesAutomaticas';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import { toIsoDate } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 const tiposApi = createCatalogoApi('/tipos-novedad');
 const EMPTY_FILTRO = { legajo: '', convenio: '', grupo: '', categoria: '', estado: '', provincia: '' };
@@ -92,7 +93,10 @@ export default function NovedadesAutomaticasPage() {
   return (
     <div className="page-novedades">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-bolt" /> Crear Novedades de Forma Automática</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-bolt" /> Crear Novedades de Forma Automática</h2>
+      </div>
 
       <div className="filtros-toolbar">
         <div className="form-field">

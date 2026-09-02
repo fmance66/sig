@@ -14,6 +14,7 @@ import { createCatalogoApi } from '../../../api/catalogo';
 import * as empleadosApi from '../../../api/empleados';
 import * as api from '../../../api/ausentismo';
 import { toDate, toIsoDate } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 const motivosApi = createCatalogoApi('/motivos-ausentismo');
 
@@ -162,7 +163,10 @@ export default function AusentismoPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-user-slash" /> Ausentismo</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-user-slash" /> Ausentismo</h2>
+      </div>
 
       <DataTable
         value={ausentismos}

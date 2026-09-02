@@ -10,6 +10,7 @@ import { Calendar } from 'primereact/calendar';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../../components/BuscadorTabla';
+import BotonVolver from '../../../components/BotonVolver';
 import * as api from '../../../api/liquidaciones';
 import { toDate, toIsoDate } from '../../../utils/dates';
 import { useEmpresa } from '../../../context/EmpresaContext';
@@ -196,7 +197,10 @@ export default function LiquidacionesPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-calculator" /> Liquidaciones</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-calculator" /> Liquidaciones</h2>
+      </div>
 
       <DataTable
         value={liquidaciones}

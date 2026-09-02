@@ -11,6 +11,7 @@ import { Checkbox } from 'primereact/checkbox';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../components/BuscadorTabla';
+import BotonVolver from '../../components/BotonVolver';
 import { createCatalogoApi } from '../../api/catalogo';
 import './CatalogoPage.css';
 
@@ -242,7 +243,10 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="catalogo-page-title"><i className={icon} /> {title}</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="catalogo-page-title"><i className={icon} /> {title}</h2>
+      </div>
 
       <DataTable
         value={registros}

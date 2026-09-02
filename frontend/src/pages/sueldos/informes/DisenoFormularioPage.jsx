@@ -11,6 +11,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { useEmpresa } from '../../../context/EmpresaContext';
 import BuscadorTabla from '../../../components/BuscadorTabla';
+import BotonVolver from '../../../components/BotonVolver';
 import './informes.css';
 
 const ORIENTACION_OPTIONS = [{ label: 'Vertical', value: 'VERTICAL' }, { label: 'Horizontal', value: 'HORIZONTAL' }];
@@ -350,7 +351,10 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className={icono} /> {titulo}</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className={icono} /> {titulo}</h2>
+      </div>
 
       <DataTable
         value={formularios}

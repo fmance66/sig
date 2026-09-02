@@ -10,6 +10,7 @@ import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import { createCatalogoApi } from '../../../api/catalogo';
 import { toDate, toIsoDate } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 const api = createCatalogoApi('/feriados');
 
@@ -135,7 +136,10 @@ export default function FeriadosPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-umbrella-beach" /> Feriados</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-umbrella-beach" /> Feriados</h2>
+      </div>
 
       <DataTable
         value={feriados}

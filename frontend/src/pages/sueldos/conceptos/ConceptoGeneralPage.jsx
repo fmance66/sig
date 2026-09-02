@@ -11,6 +11,7 @@ import BuscadorTabla from '../../../components/BuscadorTabla';
 import { toIsoDate } from '../../../utils/dates';
 import { getConceptosGeneral, createConceptoGeneral, deleteConceptoGeneral } from '../../../api/conceptos';
 import { useEmpresa } from '../../../context/EmpresaContext';
+import BotonVolver from '../../../components/BotonVolver';
 import './conceptos.css';
 
 const LIQUIDACION_OPTIONS = [
@@ -135,7 +136,10 @@ export default function ConceptoGeneralPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-earth-americas" /> Grupo General de Conceptos</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-earth-americas" /> Grupo General de Conceptos</h2>
+      </div>
       <p className="conceptos-subtitle">Conceptos que se aplican a todos los empleados.</p>
 
       {showForm && (

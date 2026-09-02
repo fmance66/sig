@@ -8,6 +8,7 @@ import { Toast } from 'primereact/toast';
 import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
+import BotonVolver from '../../../components/BotonVolver';
 import './liquidaciones.css';
 
 const EMPTY_FILTRO = { periodo: '', legajo: '', convenio: '', categoria: '', grupo: '', estado: '' };
@@ -149,7 +150,10 @@ export default function RecibosPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-file-invoice-dollar" /> Listado de Recibos</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-file-invoice-dollar" /> Listado de Recibos</h2>
+      </div>
 
       {tableHeader}
 

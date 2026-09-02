@@ -16,6 +16,7 @@ import { getConceptos } from '../../../api/conceptos';
 import { getEmpleados } from '../../../api/empleados';
 import { toDate, toIsoDate } from '../../../utils/dates';
 import NovedadesTab from '../NovedadesTab';
+import BotonVolver from '../../../components/BotonVolver';
 import './liquidaciones.css';
 
 const money = v => v === null || v === undefined ? '0,00' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -207,7 +208,10 @@ export default function ReciboEmpleadoPage() {
     return (
       <div className="page-liquidaciones">
         <Toast ref={toast} />
-        <h2 className="page-title"><i className="fa-solid fa-file-invoice-dollar" /> Nuevo Recibo</h2>
+        <div className="page-header-row">
+          <BotonVolver />
+          <h2 className="page-title"><i className="fa-solid fa-file-invoice-dollar" /> Nuevo Recibo</h2>
+        </div>
         <div className="form-grid recibo-header-form">
           <div className="form-field">
             <label>Período <span className="required">*</span></label>
@@ -238,10 +242,13 @@ export default function ReciboEmpleadoPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title">
-        <i className="fa-solid fa-file-invoice-dollar" />
-        {bundle.recibo.apellido}, {bundle.recibo.nombre} — CCT {bundle.recibo.convenio || 's/convenio'} — {bundle.recibo.tarea}
-      </h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title">
+          <i className="fa-solid fa-file-invoice-dollar" />
+          {bundle.recibo.apellido}, {bundle.recibo.nombre} — CCT {bundle.recibo.convenio || 's/convenio'} — {bundle.recibo.tarea}
+        </h2>
+      </div>
 
       <div className="recibo-layout">
         <div>

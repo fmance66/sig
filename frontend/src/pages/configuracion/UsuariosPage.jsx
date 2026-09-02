@@ -11,6 +11,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../components/BuscadorTabla';
 import * as api from '../../api/usuarios';
+import BotonVolver from '../../components/BotonVolver';
 import './UsuariosPage.css';
 
 const EMPTY_FORM = { id: null, usuario: '', nombre: '', password: '', activo: true };
@@ -144,7 +145,10 @@ export default function UsuariosPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-user" /> Usuarios</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-user" /> Usuarios</h2>
+      </div>
 
       <DataTable
         value={usuarios}

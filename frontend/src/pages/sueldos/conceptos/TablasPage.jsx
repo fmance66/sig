@@ -9,6 +9,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { toIsoDate } from '../../../utils/dates';
 import * as api from '../../../api/tiposTabla';
+import BotonVolver from '../../../components/BotonVolver';
 import './conceptos.css';
 
 const N_COLUMNAS = 9;
@@ -129,7 +130,10 @@ export default function TablasPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-table" /> Tablas</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-table" /> Tablas</h2>
+      </div>
 
       <div className="form-grid" style={{ marginBottom: '1rem' }}>
         <div className="form-field">

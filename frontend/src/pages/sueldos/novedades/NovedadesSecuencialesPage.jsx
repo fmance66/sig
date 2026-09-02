@@ -13,6 +13,7 @@ import { createCatalogoApi } from '../../../api/catalogo';
 import * as empleadosApi from '../../../api/empleados';
 import * as api from '../../../api/novedades';
 import { toIsoDate } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 const tiposApi = createCatalogoApi('/tipos-novedad');
 const EMPTY_FORM = { tipo_novedad: null, fecha: null, empleado: null, value: '' };
@@ -159,7 +160,10 @@ export default function NovedadesSecuencialesPage() {
     <div className="page-novedades">
       <Toast ref={toast} />
       <ConfirmDialog />
-      <h2 className="page-title"><i className="fa-solid fa-list-check" /> Novedades Secuenciales</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-list-check" /> Novedades Secuenciales</h2>
+      </div>
 
       <TabView activeIndex={activeTab} onTabChange={handleTabChange}>
         <TabPanel header="Novedades por Empleado">

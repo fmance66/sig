@@ -12,6 +12,7 @@ import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as empleadosApi from '../../../api/empleados';
 import * as api from '../../../api/presentismo';
 import { toDate, toIsoDate, toTimeDate, toIsoTime } from '../../../utils/dates';
+import BotonVolver from '../../../components/BotonVolver';
 
 const TIPO_OPTIONS = [
   { label: 'Entrada', value: 'ENTRADA' },
@@ -160,7 +161,10 @@ export default function PresentismoPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-clock" /> Presentismo</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-clock" /> Presentismo</h2>
+      </div>
 
       <DataTable
         value={presentismos}

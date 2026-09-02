@@ -11,6 +11,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../components/BuscadorTabla';
 import * as api from '../../api/grupos';
+import BotonVolver from '../../components/BotonVolver';
 import './GruposPage.css';
 
 const EMPTY_FORM = { id: null, nombre: '', descripcion: '', orden: null };
@@ -171,7 +172,10 @@ export default function GruposPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-user-group" /> Grupos</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-user-group" /> Grupos</h2>
+      </div>
 
       <DataTable
         value={grupos}

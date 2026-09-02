@@ -9,6 +9,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import { informesPersonalizados, getCamposDisponibles } from '../../../api/informes';
+import BotonVolver from '../../../components/BotonVolver';
 import './informes.css';
 
 const TABLA_OPTIONS = ['RECIBO', 'RECIBO_CONCEPTO', 'EMPLEADO', 'FAMILIAR'].map(v => ({ label: v, value: v }));
@@ -223,7 +224,10 @@ export default function DisenoInformesPersonalizadosPage() {
       <Toast ref={toast} />
       <ConfirmDialog />
 
-      <h2 className="page-title"><i className="fa-solid fa-drafting-compass" /> Diseño de Informes Personalizados</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-drafting-compass" /> Diseño de Informes Personalizados</h2>
+      </div>
 
       <DataTable
         value={informes}

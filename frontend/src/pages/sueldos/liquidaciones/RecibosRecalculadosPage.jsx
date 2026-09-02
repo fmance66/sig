@@ -11,6 +11,7 @@ import * as api from '../../../api/liquidaciones';
 import { getConceptos } from '../../../api/conceptos';
 import FiltroTexto from './FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
+import BotonVolver from '../../../components/BotonVolver';
 import './liquidaciones.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -128,7 +129,10 @@ export default function RecibosRecalculadosPage() {
   return (
     <div className="page-liquidaciones page-recibos-recalculados">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-rotate" /> Recibos Recalculados</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-rotate" /> Recibos Recalculados</h2>
+      </div>
       <TabView className="conceptos-tabs" activeIndex={activeTab} onTabChange={onTabChange}>
         <TabPanel header="Filtros de Recibo">
           {filtrosForm}

@@ -7,6 +7,7 @@ import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
 import { AGRUPADO_POR_OPTIONS } from './dimensiones';
 import { useEmpresa } from '../../../context/EmpresaContext';
 import * as api from '../../../api/informes';
+import BotonVolver from '../../../components/BotonVolver';
 import './informes.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -62,7 +63,10 @@ export default function RemuneracionPorGruposPage() {
   return (
     <div className="page-informes">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-people-group" /> Remuneración por Grupos</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-people-group" /> Remuneración por Grupos</h2>
+      </div>
 
       <InformeFiltro filtro={filtro} onChange={setFiltro} onBuscar={() => buscar()} onLimpiar={limpiar} loading={loading}>
         <div className="form-field informe-toolbar-extra">

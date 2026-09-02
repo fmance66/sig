@@ -7,6 +7,7 @@ import { Toast } from 'primereact/toast';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
 import { informesPersonalizados, ejecutarInformePersonalizado } from '../../../api/informes';
+import BotonVolver from '../../../components/BotonVolver';
 import './informes.css';
 
 export default function InformesPersonalizadosPage() {
@@ -44,7 +45,10 @@ export default function InformesPersonalizadosPage() {
   return (
     <div className="page-informes">
       <Toast ref={toast} />
-      <h2 className="page-title"><i className="fa-solid fa-table-list" /> Informes Personalizados</h2>
+      <div className="page-header-row">
+        <BotonVolver />
+        <h2 className="page-title"><i className="fa-solid fa-table-list" /> Informes Personalizados</h2>
+      </div>
 
       <div className="informe-filtro">
         <div className="form-field informe-toolbar-extra">
