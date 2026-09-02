@@ -16,23 +16,23 @@ const MUTABLE = [
   'contribucion_libre1', 'contribucion_libre2', 'repetible',
 ];
 
-async function getByConcepto(concepto) {
+async function getByConcepto(concepto, empresa) {
   const { rows } = await pool.query(
-    `SELECT ${COLS} FROM sld_concepto_lsd WHERE concepto = $1`, [concepto]
+    `SELECT ${COLS} FROM sld_concepto_lsd WHERE concepto = $1 AND empresa = $2`, [concepto, empresa]
   );
   return rows[0] ?? null;
 }
 
-async function upsert(concepto, data) {
+async function upsert(concepto, empresa, data) {
   const cols = MUTABLE.filter(c => data[c] !== undefined);
   const vals = cols.map(c => (data[c] === '' ? null : data[c]));
-  const insertCols = ['concepto', ...cols];
-  const insertVals = [concepto, ...vals];
+  const insertCols = ['concepto', 'empresa', ...cols];
+  const insertVals = [concepto, empresa, ...vals];
   const ph = insertCols.map((_, i) => `$${i + 1}`);
   const updateSet = cols.map(c => `${c} = EXCLUDED.${c}`).join(',');
   const { rows } = await pool.query(
     `INSERT INTO sld_concepto_lsd (${insertCols.join(',')}) VALUES (${ph.join(',')})
-     ON CONFLICT (concepto) DO UPDATE SET ${updateSet || 'concepto = EXCLUDED.concepto'}
+     ON CONFLICT (concepto, empresa) DO UPDATE SET ${updateSet || 'concepto = EXCLUDED.concepto'}
      RETURNING ${COLS}`,
     insertVals
   );

@@ -39,10 +39,12 @@ async function list({ periodo, legajo, empresa, convenio, categoria, grupo, esta
 // grilla JSON de RecibosSueldoPage, solo al armar el recibo para el PDF.
 const HEADER_DISENO_COLS = `
   e.empresa AS empresa_id,
-  e.fecha_ingreso, e.fecha_egreso, e.fecha_nacimiento, e.provincia, e.estado_civil, e.jornada,
+  e.fecha_ingreso, e.fecha_egreso, e.fecha_antiguedad, e.fecha_nacimiento, e.provincia, e.estado_civil, e.jornada,
   e.direccion AS empleado_direccion, e.localidad AS empleado_localidad,
+  e.numero_documento AS empleado_numero_documento, e.lugar_trabajo AS empleado_lugar_trabajo,
   e.sueldo, e.banco, e.cuenta, e.cbu,
   cv.descripcion AS convenio_desc, cat.descripcion AS categoria_desc, os.descripcion AS obra_social_desc,
+  proy.descripcion AS empleado_centro_costo,
   l.fecha_pago AS liq_fecha_pago, l.lugar_pago AS liq_lugar_pago,
   l.fecha_deposito AS liq_fecha_deposito, l.periodo_deposito AS liq_periodo_deposito,
   l.banco_deposito AS liq_banco_deposito,
@@ -60,6 +62,7 @@ async function getHeader(periodo, empleado, numero) {
      LEFT JOIN sld_convenio cv ON cv.id = e.convenio
      LEFT JOIN sld_categoria cat ON cat.convenio = e.convenio AND cat.id = e.categoria
      LEFT JOIN sld_obra_social os ON os.id = e.obra_social
+     LEFT JOIN bas_proyecto proy ON proy.id = e.proyecto
      LEFT JOIN sys_empresa emp ON emp.id = e.empresa
      WHERE r.periodo = $1 AND r.empleado = $2 AND r.numero = $3`,
     [periodo, empleado, numero]
@@ -74,7 +77,7 @@ async function listConceptos(periodo, empleado, numero) {
             rc.condicion, rc.warning, rc.error, rc.message, rc.orden,
             c.descripcion AS concepto_desc, c.columna, c.simbolo_unidad, c.decimales_unidad, c.orden AS concepto_orden
      FROM sld_recibo_concepto rc
-     JOIN sld_concepto c ON c.id = rc.concepto
+     JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
      WHERE rc.periodo = $1 AND rc.empleado = $2 AND rc.numero = $3
      ORDER BY rc.orden NULLS LAST, c.orden NULLS LAST, c.id`,
     [periodo, empleado, numero]
@@ -146,8 +149,8 @@ async function createConcepto(periodo, empleado, numero, data) {
   const { rows } = await pool.query(
     `INSERT INTO sld_recibo_concepto
        (periodo, empleado, numero, concepto, descripcion, unidad_manual, importe_manual,
-        unidad, importe, condicion, orden)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$6,$7,TRUE,$8)
+        unidad, importe, condicion, orden, empresa)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$6,$7,TRUE,$8,(SELECT empresa FROM sld_empleado WHERE id = $2))
      RETURNING concepto`,
     [periodo, empleado, numero, data.concepto, data.descripcion || null, unidadManual, importeManual, data.orden ?? null]
   );

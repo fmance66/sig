@@ -24,14 +24,14 @@ async function conceptosAplicables(empleado, tipoLiquidacion, numero) {
   const [generales, deGrupo, individuales] = await Promise.all([
     pool.query(
       `SELECT concepto, descripcion, unidad_manual, importe_manual, orden
-       FROM sld_concepto_general WHERE liquidacion = $1 AND (recibo = 0 OR recibo = $2)`,
-      [tipoLiquidacion, numero]
+       FROM sld_concepto_general WHERE empresa = $1 AND liquidacion = $2 AND (recibo = 0 OR recibo = $3)`,
+      [empleado.empresa, tipoLiquidacion, numero]
     ),
     empleado.grupo_de_conceptos
       ? pool.query(
         `SELECT concepto, descripcion, unidad_manual, importe_manual, orden
-         FROM sld_concepto_de_grupo WHERE grupo_de_conceptos = $1 AND liquidacion = $2 AND (recibo = 0 OR recibo = $3)`,
-        [empleado.grupo_de_conceptos, tipoLiquidacion, numero]
+         FROM sld_concepto_de_grupo WHERE grupo_de_conceptos = $1 AND empresa = $2 AND liquidacion = $3 AND (recibo = 0 OR recibo = $4)`,
+        [empleado.grupo_de_conceptos, empleado.empresa, tipoLiquidacion, numero]
       )
       : Promise.resolve({ rows: [] }),
     pool.query(
@@ -105,11 +105,11 @@ async function generar({ periodo, empleados, conceptosIndividuales, saldoCero })
       for (const c of conceptosFiltrados) {
         await pool.query(
           `INSERT INTO sld_recibo_concepto
-             (periodo, empleado, numero, concepto, descripcion, unidad_manual, importe_manual, unidad, importe, condicion, orden)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$6,$7,TRUE,$8)
+             (periodo, empleado, numero, concepto, descripcion, unidad_manual, importe_manual, unidad, importe, condicion, orden, empresa)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$6,$7,TRUE,$8,$9)
            ON CONFLICT (periodo, empleado, numero, concepto) DO UPDATE
              SET unidad_manual = EXCLUDED.unidad_manual, importe_manual = EXCLUDED.importe_manual`,
-          [periodo, empleadoId, numero, c.concepto, c.descripcion, c.unidad_manual, c.importe_manual, c.orden]
+          [periodo, empleadoId, numero, c.concepto, c.descripcion, c.unidad_manual, c.importe_manual, c.orden, empleado.empresa]
         );
       }
 

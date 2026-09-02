@@ -10,6 +10,7 @@ import { Toast } from 'primereact/toast';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import { toIsoDate } from '../../../utils/dates';
 import { getConceptosGeneral, createConceptoGeneral, deleteConceptoGeneral } from '../../../api/conceptos';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './conceptos.css';
 
 const LIQUIDACION_OPTIONS = [
@@ -29,6 +30,7 @@ function vigenciaTemplate(row) {
 }
 
 export default function ConceptoGeneralPage() {
+  const { empresa } = useEmpresa();
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading]     = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -37,12 +39,12 @@ export default function ConceptoGeneralPage() {
   const [saving, setSaving]       = useState(false);
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await getConceptosGeneral();
+      const res = await getConceptosGeneral(empresa.id);
       setRegistros(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el listado' });
@@ -75,6 +77,7 @@ export default function ConceptoGeneralPage() {
     try {
       await createConceptoGeneral({
         concepto: form.concepto,
+        empresa: empresa.id,
         liquidacion: form.liquidacion,
         unidad_manual: form.unidad_manual,
         importe_manual: form.importe_manual,
@@ -102,7 +105,7 @@ export default function ConceptoGeneralPage() {
       acceptClassName: 'p-button-danger',
       accept: async () => {
         try {
-          await deleteConceptoGeneral(row.concepto, row.liquidacion, row.recibo);
+          await deleteConceptoGeneral(empresa.id, row.concepto, row.liquidacion, row.recibo);
           toast.current.show({ severity: 'success', summary: 'OK', detail: 'Concepto eliminado' });
           load();
         } catch {

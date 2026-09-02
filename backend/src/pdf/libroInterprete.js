@@ -1,6 +1,5 @@
 const React = require('react');
 const { Document, Page, View } = require('@react-pdf/renderer');
-const { antiguedadEnLetras } = require('./numeroALetras');
 const { resolverContexto } = require('./reciboInterprete');
 const {
   cm, fecha, logoDataUri, renderParametro, contextoConceptoFila, analizarGrilla,
@@ -40,7 +39,6 @@ function resolverContextoLibro(recibo) {
     EMPLEADO_FECHA_NACIMIENTO: fecha(recibo.fecha_nacimiento),
     EMPLEADO_LETRA_NACIMIENTO: '', // fecha de nacimiento en letras: no implementado (decorativo)
     EMPLEADO_FECHA_EGRESO: fecha(recibo.fecha_egreso),
-    EMPLEADO_ANTIGUEDAD_LETRA: antiguedadEnLetras(recibo.fecha_ingreso),
     EMPLEADO_PROVINCIA: recibo.provincia || '',
     EMPLEADO_MODALIDAD: recibo.jornada || '',
     EMPLEADO_ESTADO_CIVIL: recibo.estado_civil || '',

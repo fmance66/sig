@@ -12,6 +12,7 @@ import { Toast } from 'primereact/toast';
 import { TabView, TabPanel } from 'primereact/tabview';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/conceptos';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import ConceptoClasesTab from './ConceptoClasesTab';
 import './conceptos.css';
 
@@ -60,6 +61,7 @@ function balanceadas(texto) {
 }
 
 export default function ConceptosPage() {
+  const { empresa } = useEmpresa();
   const [conceptos, setConceptos] = useState([]);
   const [loading, setLoading]     = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -72,12 +74,12 @@ export default function ConceptosPage() {
   const [activeTab, setActiveTab] = useState(0);
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getConceptos();
+      const res = await api.getConceptos(empresa.id);
       setConceptos(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los conceptos' });
@@ -105,8 +107,8 @@ export default function ConceptosPage() {
     setLoadingForm(true);
     try {
       const [conceptoRes, lsdRes] = await Promise.all([
-        api.getConcepto(row.id),
-        api.getConceptoLsd(row.id),
+        api.getConcepto(row.id, empresa.id),
+        api.getConceptoLsd(row.id, empresa.id),
       ]);
       const c = conceptoRes.data.resultado;
       const lsd = lsdRes.data.resultado ?? {};
@@ -174,15 +176,15 @@ export default function ConceptosPage() {
 
       let conceptoId = form.id;
       if (editMode) {
-        await api.updateConcepto(form.id, payload);
+        await api.updateConcepto(form.id, empresa.id, payload);
       } else {
-        const res = await api.createConcepto({ id: form.id, ...payload });
+        const res = await api.createConcepto({ id: form.id, empresa: empresa.id, ...payload });
         conceptoId = res.data.resultado.id;
       }
 
       const lsdPayload = {};
       LSD_FIELDS.forEach(f => { lsdPayload[f] = form[f]; });
-      await api.updateConceptoLsd(conceptoId, lsdPayload);
+      await api.updateConceptoLsd(conceptoId, empresa.id, lsdPayload);
 
       toast.current.show({ severity: 'success', summary: 'OK', detail: editMode ? 'Concepto actualizado' : 'Concepto creado' });
       setDialogVisible(false);
@@ -205,7 +207,7 @@ export default function ConceptosPage() {
       acceptClassName: 'p-button-danger',
       accept: async () => {
         try {
-          await api.deleteConcepto(row.id);
+          await api.deleteConcepto(row.id, empresa.id);
           toast.current.show({ severity: 'success', summary: 'OK', detail: 'Concepto eliminado' });
           load();
         } catch {

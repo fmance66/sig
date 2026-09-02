@@ -1,7 +1,10 @@
 const React = require('react');
 const { Document, Page, View } = require('@react-pdf/renderer');
-const { pesosEnLetras } = require('./numeroALetras');
-const { cm, money, fecha, logoDataUri, renderParametro, contextoConceptoFila, analizarGrilla } = require('./disenoComun');
+const { pesosEnLetras, antiguedadEnLetras } = require('./numeroALetras');
+const {
+  cm, money, fecha, logoDataUri, renderParametro, renderBordesUnicos, contextoConceptoFila, analizarGrilla,
+  condicionCumple,
+} = require('./disenoComun');
 
 const h = React.createElement;
 
@@ -45,15 +48,23 @@ function resolverContexto(recibo, conceptos = []) {
     EMPLEADO_NOMBRE: recibo.nombre || '',
     EMPLEADO_CUIL: recibo.cuil || '',
     EMPLEADO_FECHA_INGRESO: fecha(recibo.fecha_ingreso),
+    EMPLEADO_FECHA_EGRESO: fecha(recibo.fecha_egreso),
+    EMPLEADO_FECHA_ANTIGUEDAD: fecha(recibo.fecha_antiguedad),
     EMPLEADO_SUELDO: money(recibo.sueldo),
     EMPLEADO_TAREA: recibo.tarea || '',
     EMPLEADO_CATEGORIA: recibo.categoria_desc || recibo.categoria || '',
     EMPLEADO_CONVENIO: recibo.convenio_desc || recibo.convenio || '',
     EMPLEADO_OBRA_SOCIAL: recibo.obra_social_desc || '',
+    EMPLEADO_ANTIGUEDAD_LETRA: antiguedadEnLetras(recibo.fecha_ingreso),
+    EMPLEADO_NUMERO_DOCUMENTO: recibo.empleado_numero_documento || '',
+    EMPLEADO_LUGAR_DE_TRABAJO: recibo.empleado_lugar_trabajo || '',
+    EMPLEADO_CENTRO_DE_COSTO: recibo.empleado_centro_costo || '',
     RECIBO_PERIODO: recibo.periodo_recibo || recibo.periodo || '',
+    RECIBO_FECHA: fecha(recibo.fecha_recibo),
     RECIBO_FECHA_PAGO: fecha(recibo.fecha_pago),
     RECIBO_OBSERVACIONES: recibo.observaciones || '',
     LIQUIDACION_FECHA_DEPOSITO: fecha(recibo.liq_fecha_deposito),
+    LIQUIDACION_FECHA_PAGO: fecha(recibo.liq_fecha_pago),
     LIQUIDACION_PERIODO_DEPOSITO: recibo.liq_periodo_deposito || '',
     LIQUIDACION_BANCO_DEPOSITO: recibo.liq_banco_deposito || '',
     LIQUIDACION_LUGAR_PAGO: recibo.liq_lugar_pago || '',
@@ -61,6 +72,7 @@ function resolverContexto(recibo, conceptos = []) {
     TOTAL_NO_REMUNERATIVO: money(recibo.no_remunerativo),
     TOTAL_DESCUENTO: money(recibo.descuento),
     SUELDO_NETO: money(recibo.sueldo_neto),
+    SUELDO_BRUTO: money(recibo.sueldo_bruto),
     SUELDO_LETRA: pesosEnLetras(recibo.sueldo_neto),
     TOTAL_CONTRIBUCION: money(recibo.contribucion),
     CONTRIBUCIONES_TEXTO: contribucionesTexto(conceptos),
@@ -102,14 +114,23 @@ function construirPaginas({ recibo, conceptos, diseno }) {
     const hasta = Number.isFinite(rowsPerPage) ? desde + rowsPerPage : filas.length;
     const filasPagina = filas.slice(desde, hasta);
     const elementos = [];
+    // Cajas con borde de esta página: se dibujan aparte (ver renderBordesUnicos) en vez de que
+    // cada una pinte su propio borde, así dos cajas contiguas (ej. el recuadro de título de la
+    // grilla de conceptos y la primera fila de datos) no duplican la línea del lado que comparten.
+    const cajasBorde = [];
     let k = 0;
+    // Misma condición de admisión que renderParametro (print + condicion) — una caja que no se
+    // imprime (ej. BOX_CODIGO, reservada pero invisible en algunos diseños) o que no aplica a esta
+    // copia (ORIGINAL/DUPLICADO) no debe aportar un borde igual.
+    const admiteBorde = p => p.border_color && p.print !== false && condicionCumple(p.condicion, recibo, copia);
 
     filasPagina.forEach((c, i) => {
       const y = gridStartY + i * lineHeight;
       const contextoFila = { ...contextoBase, ...contextoConceptoFila(c) };
       templateRows.forEach(p => {
         const pDesplazado = { ...p, y, x: Number(p.x) + offsetX };
-        elementos.push(renderParametro(pDesplazado, contextoFila, recibo, logoSrc, `f${copia}_${pag}_${k++}`, PADDING_HORIZONTAL, copia));
+        if (admiteBorde(p)) cajasBorde.push({ x: pDesplazado.x, y, ancho: p.ancho, alto: p.alto, color: p.border_color });
+        elementos.push(renderParametro(pDesplazado, contextoFila, recibo, logoSrc, `f${copia}_${pag}_${k++}`, PADDING_HORIZONTAL, copia, true));
       });
     });
 
@@ -121,9 +142,12 @@ function construirPaginas({ recibo, conceptos, diseno }) {
       const corresponde = enCadaPagina || (esCabecera ? esPrimera : esUltima);
       if (corresponde) {
         const pDesplazado = { ...p, x: Number(p.x) + offsetX };
-        elementos.push(renderParametro(pDesplazado, contextoBase, recibo, logoSrc, `x${copia}_${pag}_${k++}`, PADDING_HORIZONTAL, copia));
+        if (admiteBorde(p)) cajasBorde.push({ x: pDesplazado.x, y: p.y, ancho: p.ancho, alto: p.alto, color: p.border_color });
+        elementos.push(renderParametro(pDesplazado, contextoBase, recibo, logoSrc, `x${copia}_${pag}_${k++}`, PADDING_HORIZONTAL, copia, true));
       }
     });
+
+    elementos.push(...renderBordesUnicos(cajasBorde, `b${copia}_${pag}_`));
 
     return elementos.filter(Boolean);
   }
@@ -161,9 +185,15 @@ function paginaReactPdf({ elementos, formulario }, key) {
 // bundles: [{ recibo, conceptos, diseno }] (recibo ya trae los datos de empresa/convenio/
 // categoría/obra social/liquidación aplanados — ver recibosModel.getHeader). Cada bundle trae
 // su propio diseno: { formulario, parametros } — puede variar por empresa.
-function ReciboInterpretadoDocument(bundles) {
+// Devuelve los <Page> ya armados (sin envolver en <Document>) — pdfInformes.js los combina
+// con los de reciboLey27802.js cuando un lote mezcla empresas con distinto diseño activo.
+function paginasRecibo(bundles) {
   const paginas = bundles.flatMap(b => construirPaginas(b));
-  return h(Document, null, ...paginas.map((p, i) => paginaReactPdf(p, i)));
+  return paginas.map((p, i) => paginaReactPdf(p, i));
 }
 
-module.exports = { ReciboInterpretadoDocument, resolverContexto };
+function ReciboInterpretadoDocument(bundles) {
+  return h(Document, null, ...paginasRecibo(bundles));
+}
+
+module.exports = { ReciboInterpretadoDocument, paginasRecibo, resolverContexto };

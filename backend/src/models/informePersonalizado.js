@@ -43,7 +43,7 @@ const CAMPOS_DISPONIBLES = {
     from: `sld_recibo_concepto rc
            JOIN sld_recibo r ON r.periodo = rc.periodo AND r.empleado = rc.empleado AND r.numero = rc.numero
            JOIN sld_empleado e ON e.id = r.empleado
-           JOIN sld_concepto c ON c.id = rc.concepto`,
+           JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa`,
     campos: {
       legajo: { label: 'Legajo', expr: 'e.legajo', tipo: 'TEXT' },
       apellido: { label: 'Apellido', expr: 'e.apellido', tipo: 'TEXT' },

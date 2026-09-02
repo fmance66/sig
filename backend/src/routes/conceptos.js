@@ -14,16 +14,16 @@ const CONCEPTO_COLUMNS = [
 ];
 const CONCEPTO_NUMERIC = ['decimales_unidad', 'orden'];
 
-const model      = createCatalogoModel('sld_concepto', CONCEPTO_COLUMNS, CONCEPTO_NUMERIC);
-const controller = createCatalogoController(model, 'concepto');
+const model      = createCatalogoModel('sld_concepto', CONCEPTO_COLUMNS, CONCEPTO_NUMERIC, { idColumn: ['id', 'empresa'] });
+const controller = createCatalogoController(model, 'concepto', { idParams: ['id', 'empresa'], filtroParams: ['empresa'] });
 
-router.get   ('/',    controller.list);
-router.get   ('/:id', controller.getOne);
-router.post  ('/',    controller.create);
-router.put   ('/:id', controller.update);
-router.delete('/:id', controller.remove);
+router.get   ('/',              controller.list); // ?empresa=id
+router.get   ('/:id/:empresa',  controller.getOne);
+router.post  ('/',              controller.create);
+router.put   ('/:id/:empresa',  controller.update);
+router.delete('/:id/:empresa',  controller.remove);
 
-router.get('/:id/lsd', lsdController.getOne);
-router.put('/:id/lsd', lsdController.upsert);
+router.get('/:id/:empresa/lsd', lsdController.getOne);
+router.put('/:id/:empresa/lsd', lsdController.upsert);
 
 module.exports = router;

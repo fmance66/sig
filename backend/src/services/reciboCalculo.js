@@ -69,7 +69,7 @@ async function calcularRecibo(periodo, empleado, numero) {
               c.columna, c.orden AS concepto_orden, c.descripcion AS concepto_desc,
               c.formula_unidad, c.formula_importe, c.formula_condicion
        FROM sld_recibo_concepto rc
-       JOIN sld_concepto c ON c.id = rc.concepto
+       JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
        WHERE rc.periodo = $1 AND rc.empleado = $2 AND rc.numero = $3
        ORDER BY c.orden NULLS LAST, c.id`,
       [periodo, empleado, numero]

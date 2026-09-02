@@ -29,6 +29,19 @@
   padding: 0.5rem 0.9rem;
 }
 
+.informe-filtro-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin: 0 0 0.9rem;
+}
+
+.informe-filtro-acciones .p-button {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+}
+
 /* Fila de subtotal de un grupo (Conceptos por Grupo, Remuneración por
    Grupos, Recibos Agrupados) — misma banda celeste que el sistema legacy. */
 .informe-fila-grupo > td {

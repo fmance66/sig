@@ -34,7 +34,7 @@ const CONDICION_SUGERENCIAS = ['TIENE_CATEGORIA', 'ORIGINAL', 'DUPLICADO'];
 const EMPTY_FORM = {
   nombre: '', descripcion: '', orientacion: 'VERTICAL', pagina: 'A4',
   margen_superior: '', margen_inferior: '', margen_izquierdo: '', margen_derecho: '',
-  columnas: '', filas: '', copias: '', propiedad: '', etiquetas: false, orden: '',
+  columnas: '', filas: '', copias: '', propiedad: '', etiquetas: false, orden: '', ley_27802: false,
 };
 const EMPTY_PARAM = {
   parametro: '', descripcion: '', texto: '', x: '', y: '', ancho: '', alto: '', orden: '',
@@ -147,6 +147,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
       margen_izquierdo: row.margen_izquierdo ?? '', margen_derecho: row.margen_derecho ?? '',
       columnas: row.columnas ?? '', filas: row.filas ?? '', copias: row.copias ?? '',
       propiedad: row.propiedad ?? '', etiquetas: row.etiquetas ?? false, orden: row.orden ?? '',
+      ley_27802: row.ley_27802 ?? false,
     });
     setEditMode(true);
     setEditId(row.id);
@@ -381,7 +382,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
         header={editMode ? `Modificar ${titulo.toLowerCase()}` : `Agregar ${titulo.toLowerCase()}`}
         footer={dialogFooter}
         style={{ width: '1020px' }}
-        contentStyle={{ maxHeight: '78vh', overflowY: 'auto' }}
+        contentStyle={{ maxHeight: '88vh', overflowY: 'auto' }}
         modal
         draggable={false}
         resizable={false}
@@ -447,11 +448,22 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
             <label>Orden</label>
             <InputText name="orden" value={form.orden} onChange={handleChange} type="number" />
           </div>
+          {soportaActivo && (
+            <div className="form-field form-field--checkbox">
+              <Checkbox inputId="ley_27802" checked={form.ley_27802} onChange={e => setForm(p => ({ ...p, ley_27802: e.checked }))} />
+              <label htmlFor="ley_27802">Formato Ley 27.802 (Decreto 407/2026)</label>
+            </div>
+          )}
         </div>
 
         <div className="form-section-title">Parámetros del Formulario</div>
 
-        {!editMode ? (
+        {form.ley_27802 ? (
+          <div className="tab-empty-msg">
+            <i className="fa-solid fa-circle-info" />
+            <span>Este formato usa un diseño fijo por ley — no se configura con parámetros de posición.</span>
+          </div>
+        ) : !editMode ? (
           <div className="tab-empty-msg">
             <i className="fa-solid fa-circle-info" />
             <span>Guardá primero el formulario para agregarle parámetros.</span>

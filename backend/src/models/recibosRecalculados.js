@@ -55,8 +55,8 @@ async function adicionarConcepto(filtro, { concepto, descripcion, unidad_manual,
   let aplicados = 0;
   for (const k of keys) {
     await pool.query(
-      `INSERT INTO sld_recibo_concepto (periodo, empleado, numero, concepto, descripcion, unidad_manual, importe_manual, unidad, importe, condicion)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$6,$7,TRUE)
+      `INSERT INTO sld_recibo_concepto (periodo, empleado, numero, concepto, descripcion, unidad_manual, importe_manual, unidad, importe, condicion, empresa)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$6,$7,TRUE,(SELECT empresa FROM sld_empleado WHERE id = $2))
        ON CONFLICT (periodo, empleado, numero, concepto) DO UPDATE
          SET unidad_manual = EXCLUDED.unidad_manual, importe_manual = EXCLUDED.importe_manual`,
       [k.periodo, k.empleado, k.numero, concepto, descripcion || null,

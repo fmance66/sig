@@ -588,3 +588,104 @@ defecto `admin123` — cambiarla después del primer login. Cualquier otro
 usuario/grupo/permiso creado desde la UI se pierde en una re-migración completa,
 igual que hoy se pierde cualquier empresa/recibo cargado a mano — no se buildeó
 un mecanismo de export/import para esto (fuera de alcance de lo pedido).
+
+---
+
+## 13. Recibo conforme a Ley 27.802 (Decreto 407/2026) — formato nuevo, sin fuente en MySQL
+
+**Motivo**: el Anexo III del Decreto 407/2026 (reglamentario del nuevo art. 140 LCT,
+Ley 27.802) exige un modelo de recibo con el costo laboral discriminado por categoría
+(Sindical / Seguridad Social / Obra Social / INSSJP / ART / SCVO) y un gráfico que lo
+represente. El ERP legacy (MySQL) es anterior a esta ley — no hay ningún dato, tabla
+ni diseño de recibo de origen que cubra este formato.
+
+**Qué se agregó**:
+- `backend/src/services/costoLaboralLey27802.js`: agrupa `sld_recibo_concepto` por
+  categoría legal, cruzando contra los flags booleanos de `sld_concepto_lsd`
+  (`contribucion_*`/`aporte_*`, ya migrados en la sección 1 vía `COL_TYPES` — ver
+  `sld_concepto_lsd: posiciones 2-21 todas BOOLEAN`). Como ese esquema legacy no tiene
+  columnas dedicadas a "Sindical" ni "SCVO" (piensa en SICOSS, que no las contempla),
+  se reutilizan los dos slots genéricos que sí trae: **`libre1` = Sindical, `libre2` =
+  SCVO** — convención propia de esta feature, no algo que venga etiquetado así desde
+  MySQL. Si se vuelve a tocar este archivo o se migran datos nuevos, tener en cuenta
+  que `libre1`/`libre2` no son literalmente libres: ya tienen un significado asignado.
+  Esta parte no tocó el schema — son columnas que ya estaban migradas.
+- `backend/src/pdf/reciboLey27802.js`: documento PDF aparte de `reciboInterprete.js`
+  (que sigue existiendo e interpreta los diseños por-empresa `sld_formulario_recibo`,
+  ej. el formulario real "RECIBO_FIX" de Zurawski Jorge Héctor). Este, en cambio, es un
+  layout fijo por ley — no hay nada para personalizar por empresa, así que no usa el
+  motor de cajas x/y de `disenoComun.js`, se arma directo en flexbox. Sale **por
+  duplicado** (ORIGINAL + DUPLICADO, una página A4 cada uno) con su propio renglón de
+  firma — "Firma del empleado" en el original, "Firma del empleador" en el duplicado —
+  misma convención de textos que ya usaban los parámetros `FIRMA_EMPLEADO`/
+  `FIRMA_EMPLEADOR` (condición `ORIGINAL`/`DUPLICADO`) del motor de cajas.
+
+### 13.1 Integración al sistema de diseños por empresa (`sld_formulario_recibo.ley_27802`)
+
+La primera versión de esta feature vivía aparte del todo: un botón propio en el
+frontend y una ruta propia (`/recibos-sueldo/pdf-ley27802`) que siempre generaba este
+formato, sin pasar por el mecanismo existente de "diseño activo por empresa". Se
+corrigió para que fuera **un diseño más de la lista** en "Diseño de Recibos de Sueldo"
+(junto a RECIBO, RECIBO_A4, RECIBO_FIX, HUSARES_4122), activable/desactivable por
+empresa con el mismo checkbox "Activo" que ya existía — consistente con cómo funciona
+el resto de ese módulo (ver sección "Diseño de Recibos de Sueldo" en
+`project_modulo_informes` de la memoria de sesión).
+
+**Columna nueva**: `sld_formulario_recibo.ley_27802 BOOLEAN NOT NULL DEFAULT FALSE`
+(aplicada a la base activa y agregada a `01_schema.sql`). `TRUE` en el diseño activo de
+una empresa le dice a `pdfInformes.js` que no interprete ese formulario con el motor de
+cajas x/y — lo arma con el layout fijo de `reciboLey27802.js` en su lugar. Es la única
+columna nueva de toda esta feature; todo lo demás (categorías, colores, textos) es
+código de aplicación.
+
+**Seed**: se insertó una fila `RECIBO_LEY_27802` (`ley_27802=TRUE`, `activo=FALSE`) por
+cada una de las 6 empresas existentes al momento de este cambio (ids 1-6, ver sección
+4), para que ya aparezca en el listado y cada empresa la pueda activar desde la UI sin
+tener que crearla a mano primero. **No hay seed automático en `01_schema.sql`** (a
+diferencia del admin de la sección 12): insertar ahí referenciaría ids de
+`sys_empresa` que todavía no existen en ese punto de la carga (el schema corre antes
+que los datos). Si se repite la migración desde cero (sección 6), después de cargar los
+`*_pg.sql` volver a correr:
+```sql
+INSERT INTO sld_formulario_recibo (empresa, nombre, descripcion, orientacion, pagina, ley_27802, activo)
+SELECT id, 'RECIBO_LEY_27802', 'Recibo Ley 27.802 (Decreto 407/2026)', 'VERTICAL', 'A4', TRUE, FALSE
+FROM sys_empresa
+ON CONFLICT (empresa, nombre) DO NOTHING;
+```
+Una empresa nueva creada desde la UI después de esto no la tiene — no existe
+seed-on-create para ningún diseño en este módulo (todos son 100% manuales, "Agregar
+formulario"), así que este caso sigue el mismo patrón que ya tenían RECIBO/RECIBO_FIX/etc.
+
+**Backend**: `formulario.js` (factory compartida con `sld_formulario_libro`) agregó
+`ley_27802` a `MUTABLE` — es inocuo para libro porque ese payload nunca trae esa clave
+(el filtro de `MUTABLE` es data-driven). `routes/index.js` pasa `ley_27802` como
+`extraColumn` solo en el router de recibo. `pdfInformes.js#streamRecibosPdf` ahora arma
+las páginas de cada motor por separado (`reciboInterprete.js#paginasRecibo` /
+`reciboLey27802.js#paginasRecibo`, ambos exportan el array de `<Page>` sin envolver en
+`<Document>`) y las combina en un único `<Document>` — un mismo lote de recibos puede
+mezclar empresas con distinto diseño activo (motor de cajas para unas, Ley 27.802 para
+otras) sin generar dos PDFs. Se borraron la ruta/controller/servicio dedicados
+(`/recibos-sueldo/pdf-ley27802`, `recibosLey27802Pdf`, `streamLey27802Pdf`) por quedar
+redundantes: `/recibos-sueldo/pdf` ya cubre el caso.
+
+**Frontend**: `RecibosSueldoPage.jsx` volvió a un solo botón "Descargar PDF" contra el
+endpoint de siempre (`api.getReciboSueldoPdfUrl`) — el formato lo decide el diseño
+activo de cada empresa, no el botón. `DisenoFormularioPage.jsx` agregó el checkbox
+"Formato Ley 27.802 (Decreto 407/2026)" al alta/edición de formulario, visible solo con
+`soportaActivo` (o sea, solo en la pantalla de Recibos, no en la de Libro) — cuando está
+tildado, la sub-tabla de parámetros de posición se reemplaza por un aviso ("este formato
+usa un diseño fijo por ley").
+
+**Ajuste de layout (single-page A4 por copia)**: la primera versión no entraba en una
+página con datos reales — el peor caso real de la base (33 líneas de concepto que
+efectivamente cruzan con `sld_concepto` — Thompson y French, empleado 142, período
+03/2026; hay recibos con más filas en `sld_recibo_concepto` pero muchas no tienen
+`columna` en REMUNERATIVO/NO_REMUNERATIVO/DESCUENTO/CONTRIBUCION y no se imprimen)
+empujaba el bloque de detalle de categorías + gráfico de torta entero a una página 2,
+aun con ~40% de la página 1 en blanco (es un efecto de `wrap: false` en React-pdf: si el
+bloque completo no entra en el espacio restante, se mueve entero a la próxima página en
+vez de recortarse). Se compactó paddings/márgenes/tamaños de fuente en todo el
+documento hasta que ese peor caso entra en una sola página — verificado renderizando
+contra la base real (no casos inventados) para 18 recibos de 3 empresas distintas, y
+confirmado de nuevo después de agregar el duplicado + firma (cada copia sigue
+entrando en su propia página).

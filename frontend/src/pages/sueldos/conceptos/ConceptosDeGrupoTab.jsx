@@ -25,7 +25,7 @@ function vigenciaTemplate(row) {
   return `${desde} - ${hasta}`;
 }
 
-export default function ConceptosDeGrupoTab({ grupoId, toast }) {
+export default function ConceptosDeGrupoTab({ grupoId, empresa, toast }) {
   const [conceptos, setConceptos] = useState([]);
   const [loading, setLoading]     = useState(false);
   const [showForm, setShowForm]   = useState(false);
@@ -33,13 +33,13 @@ export default function ConceptosDeGrupoTab({ grupoId, toast }) {
   const [saving, setSaving]       = useState(false);
 
   useEffect(() => {
-    if (grupoId) load();
-  }, [grupoId]);
+    if (grupoId && empresa) load();
+  }, [grupoId, empresa]);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getConceptosGrupo(grupoId);
+      const res = await api.getConceptosGrupo(grupoId, empresa);
       setConceptos(res.data.resultado);
     } catch {
       toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los conceptos del grupo' });
@@ -72,6 +72,7 @@ export default function ConceptosDeGrupoTab({ grupoId, toast }) {
     try {
       await api.createConceptoGrupo({
         grupo_de_conceptos: grupoId,
+        empresa,
         concepto: form.concepto,
         liquidacion: form.liquidacion,
         unidad_manual: form.unidad_manual,
@@ -100,7 +101,7 @@ export default function ConceptosDeGrupoTab({ grupoId, toast }) {
       acceptClassName: 'p-button-danger',
       accept: async () => {
         try {
-          await api.deleteConceptoGrupo(grupoId, row.concepto, row.liquidacion, row.recibo);
+          await api.deleteConceptoGrupo(grupoId, empresa, row.concepto, row.liquidacion, row.recibo);
           toast.current?.show({ severity: 'success', summary: 'OK', detail: 'Concepto eliminado' });
           load();
         } catch {

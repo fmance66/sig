@@ -21,6 +21,7 @@ export default function InformeFiltro({
   const oculto = campo => ocultar.includes(campo);
 
   return (
+    <>
     <div className="informe-filtro">
       {!oculto('periodo') && (
         <div className="form-field">
@@ -63,8 +64,9 @@ export default function InformeFiltro({
       {children}
       <Button label="Buscar" icon="fa-solid fa-magnifying-glass" size="small" onClick={onBuscar} loading={loading} />
       <Button label="Limpiar" icon="fa-solid fa-eraser" size="small" className="p-button-outlined" onClick={onLimpiar} />
-      {actions}
     </div>
+    {actions && <div className="informe-filtro-acciones">{actions}</div>}
+    </>
   );
 }
 

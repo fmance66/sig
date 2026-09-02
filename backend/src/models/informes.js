@@ -86,7 +86,7 @@ async function conceptosAcumulados(filtro = {}) {
      FROM sld_recibo_concepto rc
      JOIN sld_recibo r ON r.periodo = rc.periodo AND r.empleado = rc.empleado AND r.numero = rc.numero
      JOIN sld_empleado e ON e.id = r.empleado
-     JOIN sld_concepto c ON c.id = rc.concepto
+     JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
      LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
      WHERE ${FILTRO_BASE_SQL}
      GROUP BY rc.concepto, c.descripcion, c.orden
@@ -115,7 +115,7 @@ async function conceptosPorGrupo(filtro = {}) {
      FROM sld_recibo_concepto rc
      JOIN sld_recibo r ON r.periodo = rc.periodo AND r.empleado = rc.empleado AND r.numero = rc.numero
      JOIN sld_empleado e ON e.id = r.empleado
-     JOIN sld_concepto c ON c.id = rc.concepto
+     JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
      LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
      ${dim.join}
      WHERE ${FILTRO_BASE_SQL}
@@ -132,7 +132,7 @@ async function conceptosPorEmpleado(filtro = {}) {
             ec.concepto, c.descripcion AS concepto_desc, c.columna, ec.vigencia_desde, ec.vigencia_hasta, ec.orden
      FROM sld_empleado_concepto ec
      JOIN sld_empleado e ON e.id = ec.empleado
-     LEFT JOIN sld_concepto c ON c.id = ec.concepto
+     LEFT JOIN sld_concepto c ON c.id = ec.concepto AND c.empresa = ec.empresa
      WHERE ($1::text IS NULL OR e.legajo ILIKE '%'||$1||'%')
        AND ($2::text IS NULL OR e.convenio = $2)
        AND ($3::text IS NULL OR e.categoria = $3)
@@ -165,7 +165,7 @@ async function conceptosPorRecibo(filtro = {}) {
      FROM sld_recibo_concepto rc
      JOIN sld_recibo r ON r.periodo = rc.periodo AND r.empleado = rc.empleado AND r.numero = rc.numero
      JOIN sld_empleado e ON e.id = r.empleado
-     JOIN sld_concepto c ON c.id = rc.concepto
+     JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
      LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
      WHERE ${FILTRO_BASE_SQL}
        AND ($8::text IS NULL OR rc.concepto ILIKE '%'||$8||'%')

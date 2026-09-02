@@ -5,7 +5,7 @@ async function list({ periodo, legajo, empresa, convenio, categoria, grupo, esta
   const { rows } = await pool.query(
     `SELECT r.periodo, r.empleado, r.numero, r.fecha_recibo, e.legajo, e.apellido, e.nombre,
             r.contribucion, r.costo_laboral,
-            COALESCE((SELECT SUM(rc.importe) FROM sld_recibo_concepto rc JOIN sld_concepto c ON c.id = rc.concepto
+            COALESCE((SELECT SUM(rc.importe) FROM sld_recibo_concepto rc JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
                       WHERE rc.periodo = r.periodo AND rc.empleado = r.empleado AND rc.numero = r.numero AND c.columna = $8), 0) AS total
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
@@ -29,7 +29,7 @@ async function detalle(periodo, empleado, numero, columna) {
   const { rows } = await pool.query(
     `SELECT rc.concepto, c.descripcion, rc.unidad, rc.importe
      FROM sld_recibo_concepto rc
-     JOIN sld_concepto c ON c.id = rc.concepto
+     JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
      WHERE rc.periodo = $1 AND rc.empleado = $2 AND rc.numero = $3 AND c.columna = $4
      ORDER BY c.orden NULLS LAST, c.id`,
     [periodo, empleado, numero, col]

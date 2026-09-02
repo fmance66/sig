@@ -31,27 +31,28 @@ async function removeIndividual(req, res, next) {
 
 async function listGrupales(req, res, next) {
   try {
-    const { grupo } = req.query;
-    const data = await model.listGrupales(grupo);
+    const { grupo, empresa } = req.query;
+    if (!empresa) return res.status(400).json({ estado: 'error', mensaje: 'empresa es requerida' });
+    const data = await model.listGrupales(grupo, Number(empresa));
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }
 
 async function createGrupal(req, res, next) {
   try {
-    const { grupo_de_conceptos, concepto } = req.body;
-    if (!grupo_de_conceptos || !concepto) {
-      return res.status(400).json({ estado: 'error', mensaje: 'grupo_de_conceptos y concepto son requeridos' });
+    const { grupo_de_conceptos, concepto, empresa } = req.body;
+    if (!grupo_de_conceptos || !concepto || !empresa) {
+      return res.status(400).json({ estado: 'error', mensaje: 'grupo_de_conceptos, concepto y empresa son requeridos' });
     }
-    const data = await model.createGrupal(grupo_de_conceptos, req.body);
+    const data = await model.createGrupal(grupo_de_conceptos, Number(empresa), req.body);
     res.status(201).json({ estado: 'ok', data });
   } catch (e) { next(e); }
 }
 
 async function removeGrupal(req, res, next) {
   try {
-    const { grupo, concepto, liquidacion, recibo } = req.params;
-    const ok = await model.removeGrupal(grupo, concepto, liquidacion, Number(recibo));
+    const { grupo, empresa, concepto, liquidacion, recibo } = req.params;
+    const ok = await model.removeGrupal(grupo, Number(empresa), concepto, liquidacion, Number(recibo));
     if (!ok) return res.status(404).json({ estado: 'error', mensaje: 'Concepto no encontrado' });
     res.json({ estado: 'ok', mensaje: 'Concepto eliminado' });
   } catch (e) { next(e); }

@@ -9,7 +9,7 @@ const COLUMNS_BASE = [
 const MUTABLE = [
   'nombre', 'descripcion', 'orientacion', 'pagina', 'margen_superior', 'margen_inferior',
   'margen_izquierdo', 'margen_derecho', 'formulario_hermano', 'formula_archivo', 'columnas', 'filas',
-  'copias', 'propiedad', 'etiquetas', 'orden',
+  'copias', 'propiedad', 'etiquetas', 'orden', 'ley_27802',
 ];
 
 const NUMERIC = new Set([

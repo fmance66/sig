@@ -10,12 +10,14 @@ import { TabView, TabPanel } from 'primereact/tabview';
 import BuscadorTabla from '../../../components/BuscadorTabla';
 import * as api from '../../../api/gruposDeConceptos';
 import { getConceptosGrupo } from '../../../api/conceptos';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import ConceptosDeGrupoTab from './ConceptosDeGrupoTab';
 import './conceptos.css';
 
 const EMPTY_FORM = { id: '', descripcion: '', orden: '' };
 
 export default function GruposDeConceptosPage() {
+  const { empresa } = useEmpresa();
   const [grupos, setGrupos]     = useState([]);
   const [loading, setLoading]   = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -115,7 +117,7 @@ export default function GruposDeConceptosPage() {
     const nuevos = Object.keys(e.data).filter(id => !(id in conceptosPorGrupo));
     for (const id of nuevos) {
       try {
-        const res = await getConceptosGrupo(id);
+        const res = await getConceptosGrupo(id, empresa.id);
         setConceptosPorGrupo(prev => ({ ...prev, [id]: res.data.resultado }));
       } catch {
         setConceptosPorGrupo(prev => ({ ...prev, [id]: [] }));
@@ -225,7 +227,7 @@ export default function GruposDeConceptosPage() {
             </div>
           </TabPanel>
           <TabPanel header="Conceptos">
-            <ConceptosDeGrupoTab grupoId={editMode ? form.id : null} toast={toast} />
+            <ConceptosDeGrupoTab grupoId={editMode ? form.id : null} empresa={empresa?.id} toast={toast} />
           </TabPanel>
         </TabView>
       </Dialog>
