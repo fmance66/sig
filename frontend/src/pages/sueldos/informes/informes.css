@@ -61,3 +61,23 @@
 .informe-toolbar-extra {
   min-width: 170px;
 }
+
+/* Checkbox en línea con su input vecino (form-row-12) o solo en su propia
+   línea (form-field--full) — ver convención en conceptos.css */
+.form-field.form-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.form-row-12 {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem 1.25rem;
+}
+
+.form-row-12 .form-field.form-field--checkbox {
+  padding-top: 1.5rem;
+}

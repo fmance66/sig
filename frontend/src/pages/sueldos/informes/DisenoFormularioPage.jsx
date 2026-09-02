@@ -449,7 +449,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
             <InputText name="orden" value={form.orden} onChange={handleChange} type="number" />
           </div>
           {soportaActivo && (
-            <div className="form-field form-field--checkbox">
+            <div className="form-field form-field--full form-field--checkbox">
               <Checkbox inputId="ley_27802" checked={form.ley_27802} onChange={e => setForm(p => ({ ...p, ley_27802: e.checked }))} />
               <label htmlFor="ley_27802">Formato Ley 27.802 (Decreto 407/2026)</label>
             </div>

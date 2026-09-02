@@ -105,8 +105,8 @@ export const MODULES = [
             label: 'Diseño de Recibos y Libro',
             icon: 'fa-solid fa-pen-ruler',
             items: [
-              { label: 'Diseño de Recibos de Sueldo', icon: 'fa-solid fa-pen-ruler', path: '/sueldos/informes/diseno-recibos-sueldo' },
-              { label: 'Diseño de Libro de Sueldos', icon: 'fa-solid fa-pen-ruler', path: '/sueldos/informes/diseno-libro-sueldos' },
+              { label: 'Diseño de Recibos de Sueldo', icon: 'fa-solid fa-file-pen', path: '/sueldos/informes/diseno-recibos-sueldo' },
+              { label: 'Diseño de Libro de Sueldos', icon: 'fa-solid fa-book-open', path: '/sueldos/informes/diseno-libro-sueldos' },
             ],
           },
           { separator: true },
