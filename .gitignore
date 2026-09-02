@@ -34,3 +34,4 @@ frontend/dist-ssr/
 
 # Documentación original (Word, binarios pesados, no aportan al diff de Copilot)
 frontend/docs/original/*.docx
+backend/docs/recibos-sueldo*.pdf

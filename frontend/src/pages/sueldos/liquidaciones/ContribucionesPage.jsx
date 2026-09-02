@@ -75,7 +75,7 @@ export default function ContribucionesPage({ columna = 'CONTRIBUCION' }) {
   }
 
   const nombreTemplate = row => `${row.apellido ?? ''}${row.apellido && row.nombre ? ', ' : ''}${row.nombre ?? ''}`;
-  const fechaTemplate = row => row.fecha_recibo ? new Date(row.fecha_recibo).toLocaleDateString('es-AR') : '—';
+  const fechaTemplate = row => row.fecha_recibo ? new Date(row.fecha_recibo).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
 
   const esContribucion = columna === 'CONTRIBUCION';
   const titulo = esContribucion ? 'Listado de Contribuciones' : 'Listado de Auxiliares';

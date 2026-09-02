@@ -19,7 +19,7 @@ async function getOne(req, res) {
     const recibo = await Recibo.getHeader(periodo, empleado, numero);
     if (!recibo) return res.status(404).json({ estado: 'error', mensaje: 'Recibo no encontrado' });
     const conceptos = await Recibo.listConceptos(periodo, empleado, numero);
-    const novedades = await Novedad.listByEmpleado(empleado);
+    const novedades = await Novedad.list({ empleado });
     res.json({
       estado: 'ok',
       resultado: {

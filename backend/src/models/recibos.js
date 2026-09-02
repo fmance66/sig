@@ -49,7 +49,8 @@ const HEADER_DISENO_COLS = `
   l.fecha_deposito AS liq_fecha_deposito, l.periodo_deposito AS liq_periodo_deposito,
   l.banco_deposito AS liq_banco_deposito,
   emp.razon_social AS empresa_razon_social, emp.cuit AS empresa_cuit, emp.actividad AS empresa_actividad,
-  emp.direccion AS empresa_direccion, emp.localidad AS empresa_localidad, emp.logo AS empresa_logo
+  emp.direccion AS empresa_direccion, emp.localidad AS empresa_localidad,
+  emp.provincia AS empresa_provincia, emp.cpa AS empresa_cpa, emp.logo AS empresa_logo
 `;
 
 async function getHeader(periodo, empleado, numero) {

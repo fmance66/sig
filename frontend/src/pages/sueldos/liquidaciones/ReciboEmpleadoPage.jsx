@@ -34,6 +34,7 @@ export default function ReciboEmpleadoPage() {
 
   const [bundle, setBundle] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [header, setHeader] = useState(EMPTY_HEADER);
   const [saving, setSaving] = useState(false);
   const [recalculando, setRecalculando] = useState(false);
@@ -52,6 +53,7 @@ export default function ReciboEmpleadoPage() {
   const load = useCallback(async () => {
     if (isNew) return;
     setLoading(true);
+    setLoadError(false);
     try {
       const res = await api.getRecibo(periodo, empleado, numero);
       const b = res.data.resultado;
@@ -69,6 +71,7 @@ export default function ReciboEmpleadoPage() {
         observaciones: b.recibo.observaciones ?? '',
       });
     } catch {
+      setLoadError(true);
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el recibo' });
     } finally {
       setLoading(false);
@@ -218,6 +221,10 @@ export default function ReciboEmpleadoPage() {
         <Button label="Crear recibo" icon="fa-solid fa-check" size="small" onClick={handleCrear} loading={creando} className="mt-2" />
       </div>
     );
+  }
+
+  if (loadError) {
+    return <div className="page-liquidaciones"><Toast ref={toast} /><p>No se pudo cargar el recibo.</p></div>;
   }
 
   if (loading || !bundle) {

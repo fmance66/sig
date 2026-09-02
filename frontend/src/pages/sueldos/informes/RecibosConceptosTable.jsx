@@ -4,7 +4,7 @@ import { Column } from 'primereact/column';
 import * as api from '../../../api/liquidaciones';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const fecha = v => v ? new Date(v).toLocaleDateString('es-AR') : '—';
+const fecha = v => v ? new Date(v).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—';
 const rowId = r => `${r.periodo}|${r.empleado}|${r.numero}`;
 
 // Tabla de recibos con expansión perezosa a sus líneas de concepto (misma

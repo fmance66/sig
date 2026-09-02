@@ -144,7 +144,7 @@ export default function RecibosRecalculadosPage() {
             <Column field="legajo" header="Legajo" style={{ width: '90px' }} />
             <Column body={r => `${r.apellido ?? ''}${r.apellido && r.nombre ? ', ' : ''}${r.nombre ?? ''}`} header="Apellido y Nombre" />
             <Column field="periodo" header="Período" style={{ width: '110px' }} />
-            <Column body={r => r.fecha_recibo ? new Date(r.fecha_recibo).toLocaleDateString('es-AR') : '—'} header="Fecha" style={{ width: '100px' }} />
+            <Column body={r => r.fecha_recibo ? new Date(r.fecha_recibo).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'} header="Fecha" style={{ width: '100px' }} />
             <Column body={r => money(r.sueldo_neto)} header="Sueldo Neto" style={{ width: '120px' }} />
             <Column body={r => money(r.sueldo_bruto)} header="Sueldo Bruto" style={{ width: '120px' }} />
             <Column body={accionesTemplate} header="" style={{ width: '60px', textAlign: 'center' }} />

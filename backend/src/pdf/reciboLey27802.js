@@ -49,6 +49,14 @@ const s = {
   },
 };
 
+function direccionEmpresa(recibo) {
+  const localidad = recibo.empresa_cpa
+    ? [recibo.empresa_localidad, `(${recibo.empresa_cpa})`].filter(Boolean).join(' ')
+    : recibo.empresa_localidad;
+  const partes = [recibo.empresa_direccion, localidad, recibo.empresa_provincia].filter(Boolean);
+  return partes.join(', ');
+}
+
 function celda(texto, extra) {
   return h(View, { style: [s.celda, extra?.label ? s.celdaLabel : null] },
     h(Text, null, texto ?? ''));
@@ -130,6 +138,10 @@ function bloqueFirma(copia) {
   return h(View, { style: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 16 } },
     h(Text, { style: { fontSize: 6.5, fontWeight: 700, color: '#666' } }, copia),
     h(View, { style: { alignItems: 'center' } },
+      // Espacio en blanco reservado para la firma manuscrita, arriba de la línea —
+      // fijo e independiente del marginTop del bloque, para que siempre haya lugar
+      // aunque el párrafo de "Recibí la suma de..." ocupe más de una línea.
+      h(View, { style: { height: 28 } }),
       h(View, { style: { width: 170, borderTopWidth: 0.75, borderColor: '#000' } }),
       h(Text, { style: { fontSize: 6, marginTop: 2 } }, label)));
 }
@@ -173,7 +185,7 @@ function paginaRecibo(datos, copia) {
     h(View, { style: { flexDirection: 'row', justifyContent: 'space-between' } },
       h(View, null,
         h(Text, { style: s.tituloEmpresa }, recibo.empresa_razon_social || ''),
-        h(Text, null, recibo.empresa_direccion || ''),
+        h(Text, null, direccionEmpresa(recibo)),
         h(Text, null, `C.U.I.T.: ${recibo.empresa_cuit || ''}`)),
       logoSrc && h(Image, { src: logoSrc, style: s.logo })),
 
@@ -187,7 +199,7 @@ function paginaRecibo(datos, copia) {
       ['Categoría Laboral', recibo.categoria_desc || recibo.categoria || ''],
       ['Convenio', recibo.convenio_desc || recibo.convenio || ''],
       ['Período Abonado', recibo.periodo_recibo || recibo.periodo],
-      ['Fecha de Pago', fecha(recibo.fecha_pago || recibo.liq_fecha_deposito)],
+      ['Fecha de Pago', fecha(recibo.fecha_pago || recibo.liq_fecha_pago)],
     ]),
 
     h(View, { style: s.barraTitulo },

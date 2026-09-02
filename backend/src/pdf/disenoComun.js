@@ -7,7 +7,7 @@ const CM_A_PT = 28.3465;
 const cm = v => Number(v || 0) * CM_A_PT;
 
 const money = v => Number(v || 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const fecha = v => v ? new Date(v).toLocaleDateString('es-AR') : '';
+const fecha = v => v ? new Date(v).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '';
 // unidad viene de una columna NUMERIC(10,4); decimales_unidad (sld_concepto) define cuántos
 // decimales mostrar por concepto, y por defecto son 2 cuando no está configurado.
 const unidad = (v, decimales) => {
