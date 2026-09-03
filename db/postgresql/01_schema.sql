@@ -910,10 +910,11 @@ CREATE TABLE IF NOT EXISTS sld_formulario_recibo (
     etiquetas         BOOLEAN DEFAULT FALSE,
     orden             INTEGER,
     activo            BOOLEAN NOT NULL DEFAULT FALSE,
-    -- TRUE = este diseño no usa el motor de cajas x/y (parámetros): pdfInformes.js lo
-    -- interpreta con el layout fijo de reciboLey27802.js (Anexo III, Decreto 407/2026).
-    -- Ver sección 13 de MIGRACION_BITACORA.md.
-    ley_27802         BOOLEAN NOT NULL DEFAULT FALSE,
+    -- NULL = motor de cajas x/y (parámetros). No NULL = este diseño no se interpreta con
+    -- ese motor: pdfInformes.js lo arma con el layout fijo correspondiente —
+    -- LEY_27802 -> reciboLey27802.js (Anexo III, Decreto 407/2026), IPROFESIONAL ->
+    -- reciboIprofesional.js. Ver sección 13 de MIGRACION_BITACORA.md.
+    modelo_fijo       VARCHAR(20) CHECK (modelo_fijo IN ('LEY_27802','IPROFESIONAL')),
     UNIQUE (empresa, nombre)
 );
 

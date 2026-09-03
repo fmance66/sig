@@ -146,7 +146,7 @@ function formularioRouter(tableName, parametroTable, extraColumns = []) {
   return router;
 }
 
-mod('/informes/formularios-recibo', 'sueldos', formularioRouter('sld_formulario_recibo', 'sld_formulario_recibo_parametro', ['activo', 'ley_27802']));
+mod('/informes/formularios-recibo', 'sueldos', formularioRouter('sld_formulario_recibo', 'sld_formulario_recibo_parametro', ['activo', 'modelo_fijo']));
 mod('/informes/formularios-libro', 'sueldos', formularioRouter('sld_formulario_libro', 'sld_formulario_libro_parametro'));
 
 mod('/usuarios', 'seguridad', require('./usuarios'));

@@ -24,8 +24,8 @@ function pdfParams(params, seleccion) {
 }
 
 // El PDF interpreta el diseño activo de cada empresa (sld_formulario_recibo.activo) —
-// si ese diseño tiene ley_27802 = true, sale con el formato fijo del Anexo III (Decreto
-// 407/2026); si no, con el motor de cajas x/y de siempre. Ver backend/src/services/pdfInformes.js.
+// si ese diseño tiene modelo_fijo seteado (LEY_27802 / IPROFESIONAL), sale con ese layout
+// fijo; si no, con el motor de cajas x/y de siempre. Ver backend/src/services/pdfInformes.js.
 export const getReciboSueldoPdfUrl = (params, seleccion) =>
   `/api/informes/recibos-sueldo/pdf?${new URLSearchParams(pdfParams(params, seleccion)).toString()}`;
 export const getLibroSueldoPdfUrl = (params, seleccion) =>

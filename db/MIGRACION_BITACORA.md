@@ -689,3 +689,49 @@ documento hasta que ese peor caso entra en una sola página — verificado rende
 contra la base real (no casos inventados) para 18 recibos de 3 empresas distintas, y
 confirmado de nuevo después de agregar el duplicado + firma (cada copia sigue
 entrando en su propia página).
+
+## 14. Segundo modelo de recibo fijo (iProfesional) — `ley_27802` pasa a `modelo_fijo` (2026-09-02)
+
+Se agregó un segundo layout fijo (sin motor de cajas x/y), tomado del modelo publicado
+por iProfesional para difundir los datos que debe traer el nuevo recibo de sueldo
+(https://www.iprofesional.com/impuestos/456228) — mismas reglas de cálculo que
+`reciboLey27802.js` (Anexo III, Decreto 407/2026: mismo `costoLaboralLey27802.js`), pero
+con una diagramación propia: fila Q./Mes/Año en vez de "Período Abonado", Lugar de Pago
+y Fecha de Pago de Aportes en la cabecera, columna "Base" (mapeada a
+`sld_recibo_concepto.unitario`) en las grillas de conceptos, y el detalle de composición
+salarial en 2 columnas en vez de 1. Implementado en `backend/src/pdf/reciboIprofesional.js`.
+
+**El booleano `ley_27802` ya no alcanzaba** para elegir entre dos layouts fijos, así que
+se reemplazó por una columna de texto: `sld_formulario_recibo.modelo_fijo VARCHAR(20)
+CHECK (modelo_fijo IN ('LEY_27802','IPROFESIONAL'))`, `NULL` = motor de cajas x/y (el
+caso de siempre). Migración aplicada a la base activa:
+```sql
+ALTER TABLE sld_formulario_recibo ADD COLUMN modelo_fijo VARCHAR(20) CHECK (modelo_fijo IN ('LEY_27802','IPROFESIONAL'));
+UPDATE sld_formulario_recibo SET modelo_fijo = 'LEY_27802' WHERE ley_27802 = TRUE;
+ALTER TABLE sld_formulario_recibo DROP COLUMN ley_27802;
+```
+y reflejada en `01_schema.sql`. **Seed**: se insertó `RECIBO_IPROFESIONAL`
+(`modelo_fijo='IPROFESIONAL'`, `activo=FALSE`) para las 6 empresas existentes, mismo
+criterio que la sección 13 (no hay seed automático en `01_schema.sql` — insertarlo ahí
+referenciaría ids de `sys_empresa` que no existen en ese punto de la carga):
+```sql
+INSERT INTO sld_formulario_recibo (empresa, nombre, descripcion, orientacion, pagina, modelo_fijo, activo)
+SELECT id, 'RECIBO_IPROFESIONAL', 'Recibo Modelo iProfesional (costo total empleador)', 'VERTICAL', 'A4', 'IPROFESIONAL', FALSE
+FROM sys_empresa
+ON CONFLICT (empresa, nombre) DO NOTHING;
+```
+
+**Backend**: `formulario.js` (`MUTABLE`) y `routes/index.js` (`extraColumns` del router de
+recibo) cambiaron `ley_27802` por `modelo_fijo`. `pdfInformes.js#streamRecibosPdf` ahora
+arma un `Map` de bundles por motor fijo (`MOTORES_FIJOS = { LEY_27802, IPROFESIONAL }`) en
+vez de la rama única de antes — mismo mecanismo de combinar todo en un único `<Document>`
+cuando un lote mezcla empresas con distinto diseño activo.
+
+**Frontend**: `DisenoFormularioPage.jsx` reemplazó el checkbox "Formato Ley 27.802" por un
+`Dropdown` "Modelo" con 3 opciones (motor de cajas / Ley 27.802 / iProfesional) — misma
+regla que antes para ocultar la sub-tabla de parámetros cuando el modelo es fijo.
+
+**Verificado** contra datos reales de empresa 5: un recibo simple (sin contribuciones) y
+el peor caso conocido de la sección 13 (33 líneas de concepto, empleado 142 pasó a ser el
+77 en la base actual) — ambos entran en 1 página por copia (ORIGINAL + DUPLICADO), sin
+overflow a página 2.

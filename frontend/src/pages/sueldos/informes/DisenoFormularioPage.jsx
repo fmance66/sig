@@ -31,11 +31,16 @@ const FONT_FAMILIA_OPTIONS = [
 ];
 const FONT_PESO_OPTIONS = [{ label: 'Normal', value: '' }, { label: 'Negrita', value: 'BOLD' }];
 const CONDICION_SUGERENCIAS = ['TIENE_CATEGORIA', 'ORIGINAL', 'DUPLICADO'];
+const MODELO_FIJO_OPTIONS = [
+  { label: 'Motor de cajas (posiciones configurables)', value: '' },
+  { label: 'Formato Ley 27.802 (Decreto 407/2026)', value: 'LEY_27802' },
+  { label: 'Modelo iProfesional (costo total empleador)', value: 'IPROFESIONAL' },
+];
 
 const EMPTY_FORM = {
   nombre: '', descripcion: '', orientacion: 'VERTICAL', pagina: 'A4',
   margen_superior: '', margen_inferior: '', margen_izquierdo: '', margen_derecho: '',
-  columnas: '', filas: '', copias: '', propiedad: '', etiquetas: false, orden: '', ley_27802: false,
+  columnas: '', filas: '', copias: '', propiedad: '', etiquetas: false, orden: '', modelo_fijo: '',
 };
 const EMPTY_PARAM = {
   parametro: '', descripcion: '', texto: '', x: '', y: '', ancho: '', alto: '', orden: '',
@@ -148,7 +153,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
       margen_izquierdo: row.margen_izquierdo ?? '', margen_derecho: row.margen_derecho ?? '',
       columnas: row.columnas ?? '', filas: row.filas ?? '', copias: row.copias ?? '',
       propiedad: row.propiedad ?? '', etiquetas: row.etiquetas ?? false, orden: row.orden ?? '',
-      ley_27802: row.ley_27802 ?? false,
+      modelo_fijo: row.modelo_fijo ?? '',
     });
     setEditMode(true);
     setEditId(row.id);
@@ -453,19 +458,19 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
             <InputText name="orden" value={form.orden} onChange={handleChange} type="number" />
           </div>
           {soportaActivo && (
-            <div className="form-field form-field--full form-field--checkbox">
-              <Checkbox inputId="ley_27802" checked={form.ley_27802} onChange={e => setForm(p => ({ ...p, ley_27802: e.checked }))} />
-              <label htmlFor="ley_27802">Formato Ley 27.802 (Decreto 407/2026)</label>
+            <div className="form-field form-field--full">
+              <label>Modelo</label>
+              <Dropdown value={form.modelo_fijo} options={MODELO_FIJO_OPTIONS} onChange={e => setForm(p => ({ ...p, modelo_fijo: e.value }))} />
             </div>
           )}
         </div>
 
         <div className="form-section-title">Parámetros del Formulario</div>
 
-        {form.ley_27802 ? (
+        {form.modelo_fijo ? (
           <div className="tab-empty-msg">
             <i className="fa-solid fa-circle-info" />
-            <span>Este formato usa un diseño fijo por ley — no se configura con parámetros de posición.</span>
+            <span>Este formato usa un diseño fijo — no se configura con parámetros de posición.</span>
           </div>
         ) : !editMode ? (
           <div className="tab-empty-msg">

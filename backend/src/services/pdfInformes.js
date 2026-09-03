@@ -6,15 +6,23 @@ const familiaresModel = require('../models/familiares');
 const { paginasRecibo: paginasReciboInterprete } = require('../pdf/reciboInterprete');
 const { LibroInterpretadoDocument, SECCION_IDS: LIBRO_SECCION_IDS } = require('../pdf/libroInterprete');
 const { paginasRecibo: paginasReciboLey27802 } = require('../pdf/reciboLey27802');
+const { paginasRecibo: paginasReciboIprofesional } = require('../pdf/reciboIprofesional');
 
 const h = React.createElement;
 
+// Motores de layout fijo (sin cajas x/y) disponibles, indexados por sld_formulario_recibo.modelo_fijo.
+const MOTORES_FIJOS = {
+  LEY_27802: paginasReciboLey27802,
+  IPROFESIONAL: paginasReciboIprofesional,
+};
+
 // Diseño usado para el PDF de recibo — cada empresa tiene varios diseños guardados
-// (RECIBO, RECIBO_A4, RECIBO_FIX, HUSARES_4122, RECIBO_LEY_27802...) y se usa el que
-// esté marcado `activo` (ver sld_formulario_recibo_activo_uk — a lo sumo uno por
-// empresa, se cambia desde "Diseño de Recibos de Sueldo" en el frontend). Si el diseño
-// activo tiene `ley_27802 = true`, no se interpreta con el motor de cajas x/y: se arma
-// con el layout fijo de reciboLey27802.js (Anexo III, Decreto 407/2026) — ver más abajo.
+// (RECIBO, RECIBO_A4, RECIBO_FIX, HUSARES_4122, RECIBO_LEY_27802, RECIBO_IPROFESIONAL...)
+// y se usa el que esté marcado `activo` (ver sld_formulario_recibo_activo_uk — a lo sumo
+// uno por empresa, se cambia desde "Diseño de Recibos de Sueldo" en el frontend). Si el
+// diseño activo tiene `modelo_fijo` seteado, no se interpreta con el motor de cajas x/y:
+// se arma con el layout fijo correspondiente (ver MOTORES_FIJOS) — ninguno de los dos
+// admite personalización por empresa, así que no usan sld_formulario_recibo_parametro.
 async function cargarDisenoRecibo(empresa) {
   const { rows: formularioRows } = await pool.query(
     'SELECT * FROM sld_formulario_recibo WHERE empresa = $1 AND activo', [empresa]
@@ -28,14 +36,15 @@ async function cargarDisenoRecibo(empresa) {
 }
 
 // Un mismo lote de recibos puede mezclar empresas con distinto diseño activo (algunas
-// con el motor de cajas x/y, otras con el formato fijo de la Ley 27.802) — se arman las
+// con el motor de cajas x/y, otras con alguno de los formatos fijos) — se arman las
 // páginas de cada motor por separado y se combinan en un único <Document>, en vez de
-// generar dos PDFs. El orden de los conceptos dentro de cada motor no se toca; entre
-// motores, primero van los recibos del motor de cajas y después los de Ley 27.802.
+// generar varios PDFs. El orden de los conceptos dentro de cada motor no se toca; entre
+// motores, primero van los recibos del motor de cajas y después los de cada formato fijo
+// (en el orden de MOTORES_FIJOS).
 async function streamRecibosPdf(recibos) {
   const disenoPorEmpresa = new Map();
   const bundlesInterprete = [];
-  const bundlesLey27802 = [];
+  const bundlesPorMotorFijo = new Map(Object.keys(MOTORES_FIJOS).map(k => [k, []]));
   for (const r of recibos) {
     const recibo = await recibosModel.getHeader(r.periodo, r.empleado, r.numero);
     const conceptos = await recibosModel.listConceptos(r.periodo, r.empleado, r.numero);
@@ -44,16 +53,18 @@ async function streamRecibosPdf(recibos) {
       disenoPorEmpresa.set(empresa, await cargarDisenoRecibo(empresa));
     }
     const diseno = disenoPorEmpresa.get(empresa);
-    if (diseno.formulario?.ley_27802) {
-      bundlesLey27802.push({ recibo, conceptos });
+    const modeloFijo = diseno.formulario?.modelo_fijo;
+    if (modeloFijo && bundlesPorMotorFijo.has(modeloFijo)) {
+      bundlesPorMotorFijo.get(modeloFijo).push({ recibo, conceptos });
     } else {
       bundlesInterprete.push({ recibo, conceptos, diseno });
     }
   }
-  const paginas = [
-    ...(bundlesInterprete.length ? paginasReciboInterprete(bundlesInterprete) : []),
-    ...(bundlesLey27802.length ? await paginasReciboLey27802(bundlesLey27802) : []),
-  ];
+  const paginas = bundlesInterprete.length ? [...paginasReciboInterprete(bundlesInterprete)] : [];
+  for (const [modelo, paginasFn] of Object.entries(MOTORES_FIJOS)) {
+    const bundles = bundlesPorMotorFijo.get(modelo);
+    if (bundles.length) paginas.push(...await paginasFn(bundles));
+  }
   return renderToStream(h(Document, null, ...paginas));
 }
 
