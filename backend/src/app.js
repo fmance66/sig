@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
@@ -19,5 +20,11 @@ app.use(session({
 }));
 
 app.use('/api', require('./routes'));
+
+const frontendDist = path.join(__dirname, '..', '..', 'frontend', 'dist');
+app.use(express.static(frontendDist));
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(frontendDist, 'index.html'));
+});
 
 module.exports = app;
