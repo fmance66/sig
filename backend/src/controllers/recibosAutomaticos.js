@@ -2,8 +2,8 @@ const model = require('../models/recibosAutomaticos');
 
 async function listEmpleados(req, res) {
   try {
-    const { legajo, convenio, grupo, categoria, estado, provincia, ingresoDesde, ingresoHasta } = req.query;
-    const data = await model.listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, estado, provincia, ingresoDesde, ingresoHasta });
+    const { legajo, convenio, grupo, categoria, estado, provincia, ingresoDesde, ingresoHasta, empresa } = req.query;
+    const data = await model.listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, estado, provincia, ingresoDesde, ingresoHasta, empresa });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (err) {
     console.error(err);

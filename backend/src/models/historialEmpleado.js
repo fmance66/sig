@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-async function list({ empleado, campo, fechaDesde, fechaHasta } = {}) {
+async function list({ empleado, campo, fechaDesde, fechaHasta, empresa } = {}) {
   const { rows } = await pool.query(
     `SELECT h.empleado, h.campo, h.fecha_desde, h.fecha_hasta, h.valor,
             c.descripcion AS campo_desc,
@@ -12,8 +12,9 @@ async function list({ empleado, campo, fechaDesde, fechaHasta } = {}) {
        AND ($2::text IS NULL OR h.campo = $2)
        AND ($3::date IS NULL OR h.fecha_desde >= $3)
        AND ($4::date IS NULL OR h.fecha_desde <= $4)
+       AND ($5::integer IS NULL OR e.empresa = $5)
      ORDER BY h.fecha_desde DESC, e.apellido, e.nombre`,
-    [empleado || null, campo || null, fechaDesde || null, fechaHasta || null]
+    [empleado || null, campo || null, fechaDesde || null, fechaHasta || null, empresa ? Number(empresa) : null]
   );
   return rows;
 }
@@ -46,13 +47,16 @@ async function remove(empleado, campo, fechaDesde) {
   return rowCount > 0;
 }
 
-async function removeMasivo({ empleado, campo, fechaDesde } = {}) {
+async function removeMasivo({ empleado, campo, fechaDesde, empresa } = {}) {
   const { rowCount } = await pool.query(
     `DELETE FROM sld_historial_empleado h
-     WHERE ($1::integer IS NULL OR h.empleado = $1)
+     USING sld_empleado e
+     WHERE h.empleado = e.id
+       AND ($1::integer IS NULL OR h.empleado = $1)
        AND ($2::text IS NULL OR h.campo = $2)
-       AND ($3::date IS NULL OR h.fecha_desde = $3)`,
-    [empleado || null, campo || null, fechaDesde || null]
+       AND ($3::date IS NULL OR h.fecha_desde = $3)
+       AND ($4::integer IS NULL OR e.empresa = $4)`,
+    [empleado || null, campo || null, fechaDesde || null, empresa ? Number(empresa) : null]
   );
   return rowCount;
 }

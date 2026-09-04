@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -9,8 +9,10 @@ import FiltroTexto from '../liquidaciones/FiltroTexto';
 import * as api from '../../../api/novedades';
 import { toIsoDate } from '../../../utils/dates';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 
 export default function NovedadesPorTablaPage() {
+  const { empresa } = useEmpresa();
   const [fecha, setFecha] = useState(null);
   const [empleado, setEmpleado] = useState('');
   const [tipoNovedad, setTipoNovedad] = useState('');
@@ -19,6 +21,8 @@ export default function NovedadesPorTablaPage() {
   const [saving, setSaving] = useState(false);
   const toast = useRef(null);
 
+  useEffect(() => { setFilas([]); }, [empresa?.id]);
+
   async function buscar() {
     if (!fecha) {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí una fecha' });
@@ -26,7 +30,7 @@ export default function NovedadesPorTablaPage() {
     }
     setLoading(true);
     try {
-      const res = await api.getMatriz({ fecha: toIsoDate(fecha), empleado, tipoNovedad });
+      const res = await api.getMatriz({ fecha: toIsoDate(fecha), empleado, tipoNovedad, empresa: empresa?.id });
       setFilas(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar la matriz' });

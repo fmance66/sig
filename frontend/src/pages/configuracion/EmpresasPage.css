@@ -102,6 +102,47 @@
 
 /* .tab-empty-msg: ver styles/global-tables.css */
 
+/* Tab de clonado de configuración */
+.clon-config-tab {
+  min-height: 200px;
+}
+
+.clon-config-intro {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0 0 0.9rem;
+}
+
+.clon-config-status {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0.75rem 0 0;
+}
+
+.clon-config-status--warn {
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.clon-config-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.clon-config-modo-lista {
+  font-size: 0.82rem;
+  color: #374151;
+  padding-left: 1.1rem;
+  margin: 0.5rem 0 0;
+}
+
+.clon-config-modo-lista li {
+  margin-bottom: 0.4rem;
+}
+
 /* Logo de empresa */
 .logo-field {
   display: flex;

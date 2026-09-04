@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 const { calcularRecibo } = require('../services/reciboCalculo');
 
-async function listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, estado, provincia, ingresoDesde, ingresoHasta } = {}) {
+async function listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, estado, provincia, ingresoDesde, ingresoHasta, empresa } = {}) {
   const { rows } = await pool.query(
     `SELECT e.id, e.legajo, e.apellido, e.nombre, e.grupo, e.tarea, e.lugar_trabajo, e.convenio, e.categoria, e.provincia
      FROM sld_empleado e
@@ -13,9 +13,10 @@ async function listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, est
        AND ($6::text IS NULL OR e.provincia = $6)
        AND ($7::date IS NULL OR e.fecha_ingreso >= $7)
        AND ($8::date IS NULL OR e.fecha_ingreso <= $8)
+       AND ($9::integer IS NULL OR e.empresa = $9)
      ORDER BY e.orden NULLS LAST, e.apellido, e.nombre`,
     [legajo || null, convenio || null, grupo || null, categoria || null, estado || null,
-      provincia || null, ingresoDesde || null, ingresoHasta || null]
+      provincia || null, ingresoDesde || null, ingresoHasta || null, empresa ? Number(empresa) : null]
   );
   return rows;
 }

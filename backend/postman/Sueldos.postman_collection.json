@@ -146,6 +146,30 @@
                 "method": "DELETE",
                 "url": "{{base_url}}/empresas/1/logo"
               }
+            },
+            {
+              "name": "GET Tiene Configuracion",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/empresas/7/tiene-configuracion"
+              }
+            },
+            {
+              "name": "POST Clonar Configuracion",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/empresas/7/clonar-configuracion",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origen\": 1,\n  \"modo\": \"combinar\"\n}"
+                }
+              }
             }
           ]
         },

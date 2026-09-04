@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
@@ -35,6 +35,8 @@ export default function RecibosAgrupadosEmpleadoPage() {
   const [loading, setLoading] = useState(false);
   const [expandedRows, setExpandedRows] = useState(null);
   const toast = useRef(null);
+
+  useEffect(() => { setEmpleados([]); }, [empresa?.id]);
 
   async function buscar(f = filtro) {
     setLoading(true);

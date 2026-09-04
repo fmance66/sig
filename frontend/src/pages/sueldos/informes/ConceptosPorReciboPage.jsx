@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
@@ -24,6 +24,8 @@ export default function ConceptosPorReciboPage() {
   const [lineas, setLineas] = useState([]);
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
+
+  useEffect(() => { setLineas([]); }, [empresa?.id]);
 
   async function buscar(f = filtro) {
     setLoading(true);

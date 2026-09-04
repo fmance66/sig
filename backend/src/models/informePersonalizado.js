@@ -180,6 +180,10 @@ async function ejecutar(informe, filtro = {}) {
   const select = campoDefs.map(c => `${c.def.expr} AS "${c.campo_clave}"`).join(', ');
   const params = [];
   const condiciones = [];
+  if (filtro.empresa && tablaDef.from.includes('sld_empleado e')) {
+    params.push(Number(filtro.empresa));
+    condiciones.push(`e.empresa = $${params.length}`);
+  }
   if (filtro.legajo && tablaDef.from.includes('sld_empleado e')) {
     params.push(`%${filtro.legajo}%`);
     condiciones.push(`e.legajo ILIKE $${params.length}`);

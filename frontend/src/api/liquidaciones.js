@@ -5,7 +5,8 @@ export const getLiquidaciones   = (params)      => client.get('/liquidaciones', 
 export const getLiquidacion     = (periodo)      => client.get(`/liquidaciones/${encodeURIComponent(periodo)}`);
 export const createLiquidacion  = (data)         => client.post('/liquidaciones', data);
 export const updateLiquidacion  = (periodo, data) => client.put(`/liquidaciones/${encodeURIComponent(periodo)}`, data);
-export const deleteLiquidacion  = (periodo)      => client.delete(`/liquidaciones/${encodeURIComponent(periodo)}`);
+export const deleteLiquidacion  = (periodo, empresa) =>
+  client.delete(`/liquidaciones/${encodeURIComponent(periodo)}`, { params: { empresa } });
 
 // Recibos (cabecera + conceptos)
 export const getRecibos          = (params) => client.get('/recibos', { params });

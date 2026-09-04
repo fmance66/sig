@@ -34,14 +34,14 @@ export default function NovedadesPage() {
   const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
   useEffect(() => { tiposApi.getAll().then(res => setTipos(res.data.resultado)).catch(() => {}); }, []);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getNovedadesList({});
+      const res = await api.getNovedadesList({ empresa: empresa?.id });
       setNovedades(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las novedades' });

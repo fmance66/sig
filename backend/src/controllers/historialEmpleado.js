@@ -2,8 +2,8 @@ const model = require('../models/historialEmpleado');
 
 async function list(req, res, next) {
   try {
-    const { empleado, campo, fechaDesde, fechaHasta } = req.query;
-    const data = await model.list({ empleado, campo, fechaDesde, fechaHasta });
+    const { empleado, campo, fechaDesde, fechaHasta, empresa } = req.query;
+    const data = await model.list({ empleado, campo, fechaDesde, fechaHasta, empresa });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }
@@ -39,8 +39,8 @@ async function remove(req, res, next) {
 
 async function removeMasivo(req, res, next) {
   try {
-    const { empleado, campo, fechaDesde } = req.body;
-    const cantidad = await model.removeMasivo({ empleado, campo, fechaDesde });
+    const { empleado, campo, fechaDesde, empresa } = req.body;
+    const cantidad = await model.removeMasivo({ empleado, campo, fechaDesde, empresa });
     res.json({ estado: 'ok', mensaje: `${cantidad} registro(s) eliminado(s)`, resultado: { cantidad } });
   } catch (e) { next(e); }
 }

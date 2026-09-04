@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-async function listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, estado, provincia } = {}) {
+async function listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, estado, provincia, empresa } = {}) {
   const { rows } = await pool.query(
     `SELECT e.id, e.legajo, e.apellido, e.nombre, e.grupo, e.tarea, e.convenio, e.categoria, e.estado, e.provincia
      FROM sld_empleado e
@@ -10,8 +10,10 @@ async function listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, est
        AND ($4::text IS NULL OR e.categoria = $4)
        AND ($5::text IS NULL OR e.estado = $5)
        AND ($6::text IS NULL OR e.provincia = $6)
+       AND ($7::integer IS NULL OR e.empresa = $7)
      ORDER BY e.orden NULLS LAST, e.apellido, e.nombre`,
-    [legajo || null, convenio || null, grupo || null, categoria || null, estado || null, provincia || null]
+    [legajo || null, convenio || null, grupo || null, categoria || null, estado || null, provincia || null,
+      empresa ? Number(empresa) : null]
   );
   return rows;
 }

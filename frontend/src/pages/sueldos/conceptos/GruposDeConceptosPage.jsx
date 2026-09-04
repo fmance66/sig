@@ -33,6 +33,7 @@ export default function GruposDeConceptosPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setConceptosPorGrupo({}); setExpandedRows(null); }, [empresa?.id]);
 
   async function load() {
     setLoading(true);

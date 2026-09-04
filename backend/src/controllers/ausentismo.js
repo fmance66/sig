@@ -2,8 +2,8 @@ const model = require('../models/ausentismo');
 
 async function list(req, res, next) {
   try {
-    const { empleado, motivo, fechaDesde, fechaHasta } = req.query;
-    const data = await model.list({ empleado, motivo, fechaDesde, fechaHasta });
+    const { empleado, motivo, fechaDesde, fechaHasta, empresa } = req.query;
+    const data = await model.list({ empleado, motivo, fechaDesde, fechaHasta, empresa });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }

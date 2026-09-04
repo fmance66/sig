@@ -243,6 +243,7 @@ export const ADMIN_MODULES = [
         icon: 'fa-solid fa-building',
         items: [
           { label: 'Administrar empresas', icon: 'fa-solid fa-list', path: '/configuracion/empresas' },
+          { label: 'Clonar Configuración', icon: 'fa-solid fa-copy', path: '/configuracion/empresas/clonar-configuracion' },
           { separator: true },
           {
             label: 'Copia de Seguridad',

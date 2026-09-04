@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-async function list({ empleado, motivo, fechaDesde, fechaHasta } = {}) {
+async function list({ empleado, motivo, fechaDesde, fechaHasta, empresa } = {}) {
   const { rows } = await pool.query(
     `SELECT a.empleado, a.motivo, a.fecha_desde, a.fecha_hasta, a.observaciones,
             m.descripcion AS motivo_desc, m.tipo AS motivo_tipo,
@@ -12,8 +12,9 @@ async function list({ empleado, motivo, fechaDesde, fechaHasta } = {}) {
        AND ($2::text IS NULL OR a.motivo = $2)
        AND ($3::date IS NULL OR a.fecha_desde >= $3)
        AND ($4::date IS NULL OR a.fecha_desde <= $4)
+       AND ($5::integer IS NULL OR e.empresa = $5)
      ORDER BY a.fecha_desde DESC, e.apellido, e.nombre`,
-    [empleado || null, motivo || null, fechaDesde || null, fechaHasta || null]
+    [empleado || null, motivo || null, fechaDesde || null, fechaHasta || null, empresa ? Number(empresa) : null]
   );
   return rows;
 }

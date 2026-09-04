@@ -7,12 +7,14 @@ import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './liquidaciones.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const EMPTY_FILTRO = { periodo: '', legajo: '', convenio: '', categoria: '', grupo: '', estado: '' };
 
 export default function ContribucionesPage({ columna = 'CONTRIBUCION' }) {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(EMPTY_FILTRO);
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ export default function ContribucionesPage({ columna = 'CONTRIBUCION' }) {
   const [detallePorRecibo, setDetallePorRecibo] = useState({});
   const toast = useRef(null);
 
-  useEffect(() => { buscar(); }, [columna]);
+  useEffect(() => { if (empresa) buscar(); }, [columna, empresa?.id]);
 
   function rowId(r) { return `${r.periodo}|${r.empleado}|${r.numero}`; }
 
@@ -32,7 +34,7 @@ export default function ContribucionesPage({ columna = 'CONTRIBUCION' }) {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getListadoContribuciones({ ...f, columna });
+      const res = await api.getListadoContribuciones({ ...f, columna, empresa: empresa?.id });
       setRegistros(res.data.resultado.map(r => ({ ...r, _id: rowId(r) })));
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el listado' });

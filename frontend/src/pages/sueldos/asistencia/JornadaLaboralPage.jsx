@@ -52,13 +52,13 @@ export default function JornadaLaboralPage() {
   const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getJornadasLaboralesList();
+      const res = await api.getJornadasLaboralesList({ empresa: empresa?.id });
       setJornadas(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las jornadas laborales' });

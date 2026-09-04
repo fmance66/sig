@@ -31,6 +31,7 @@ export default function NovedadesSecuencialesPage() {
 
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
   useEffect(() => { tiposApi.getAll().then(res => setTipos(res.data.resultado)).catch(() => {}); }, []);
+  useEffect(() => { setForm(EMPTY_FORM); setFilas([]); }, [empresa?.id]);
 
   function handleTabChange(e) {
     setActiveTab(e.index);
@@ -41,7 +42,7 @@ export default function NovedadesSecuencialesPage() {
   async function recargar(base) {
     setLoading(true);
     try {
-      const res = await api.getNovedadesList(base);
+      const res = await api.getNovedadesList({ ...base, empresa: empresa?.id });
       setFilas(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo recargar el listado' });

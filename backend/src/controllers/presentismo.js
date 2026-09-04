@@ -2,8 +2,8 @@ const model = require('../models/presentismo');
 
 async function list(req, res, next) {
   try {
-    const { empleado, fechaDesde, fechaHasta, tipo } = req.query;
-    const data = await model.list({ empleado, fechaDesde, fechaHasta, tipo });
+    const { empleado, fechaDesde, fechaHasta, tipo, empresa } = req.query;
+    const data = await model.list({ empleado, fechaDesde, fechaHasta, tipo, empresa });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }

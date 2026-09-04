@@ -8,9 +8,11 @@ import FiltroTexto from '../liquidaciones/FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
 import { informesPersonalizados, ejecutarInformePersonalizado } from '../../../api/informes';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './informes.css';
 
 export default function InformesPersonalizadosPage() {
+  const { empresa } = useEmpresa();
   const [informes, setInformes] = useState([]);
   const [informeId, setInformeId] = useState(null);
   const [legajo, setLegajo] = useState('');
@@ -23,6 +25,8 @@ export default function InformesPersonalizadosPage() {
     informesPersonalizados.getAll().then(res => setInformes(res.data.resultado)).catch(() => {});
   }, []);
 
+  useEffect(() => { setResultado({ columnas: [], filas: [] }); }, [empresa?.id]);
+
   async function ejecutar() {
     if (!informeId) {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un informe' });
@@ -30,7 +34,7 @@ export default function InformesPersonalizadosPage() {
     }
     setLoading(true);
     try {
-      const res = await ejecutarInformePersonalizado(informeId, { legajo, periodo });
+      const res = await ejecutarInformePersonalizado(informeId, { legajo, periodo, empresa: empresa?.id });
       setResultado(res.data.resultado);
     } catch (err) {
       const msg = err.response?.data?.mensaje || 'No se pudo ejecutar el informe';

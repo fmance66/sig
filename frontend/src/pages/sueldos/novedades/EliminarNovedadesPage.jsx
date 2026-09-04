@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -9,16 +9,20 @@ import * as api from '../../../api/novedades';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import { toIsoDate } from '../../../utils/dates';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 
 const EMPTY_FILTRO = { empleado: '', tipoNovedad: '' };
 
 export default function EliminarNovedadesPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(EMPTY_FILTRO);
   const [fecha, setFecha] = useState(null);
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading] = useState(false);
   const [eliminando, setEliminando] = useState(false);
   const toast = useRef(null);
+
+  useEffect(() => { setRegistros([]); }, [empresa?.id]);
 
   function handleFiltroChange(e) {
     const { name, value } = e.target;
@@ -34,7 +38,7 @@ export default function EliminarNovedadesPage() {
   async function buscar() {
     setLoading(true);
     try {
-      const res = await api.getNovedadesList({ ...filtro, fecha: toIsoDate(fecha) });
+      const res = await api.getNovedadesList({ ...filtro, fecha: toIsoDate(fecha), empresa: empresa?.id });
       setRegistros(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener la vista previa' });
@@ -58,7 +62,7 @@ export default function EliminarNovedadesPage() {
       accept: async () => {
         setEliminando(true);
         try {
-          await api.deleteNovedadesMasivo({ ...filtro, fecha: toIsoDate(fecha) });
+          await api.deleteNovedadesMasivo({ ...filtro, fecha: toIsoDate(fecha), empresa: empresa?.id });
           toast.current.show({ severity: 'success', summary: 'OK', detail: 'Eliminación realizada' });
           setRegistros([]);
         } catch (err) {

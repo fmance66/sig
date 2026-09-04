@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-async function list({ empleado, tipoNovedad, fecha } = {}) {
+async function list({ empleado, tipoNovedad, fecha, empresa } = {}) {
   const { rows } = await pool.query(
     `SELECT n.empleado, n.tipo_novedad, n.fecha, n.value,
             t.descripcion AS tipo_novedad_desc,
@@ -11,8 +11,9 @@ async function list({ empleado, tipoNovedad, fecha } = {}) {
      WHERE ($1::integer IS NULL OR n.empleado = $1)
        AND ($2::text IS NULL OR n.tipo_novedad = $2)
        AND ($3::date IS NULL OR n.fecha = $3)
+       AND ($4::integer IS NULL OR e.empresa = $4)
      ORDER BY n.fecha DESC, e.apellido, e.nombre`,
-    [empleado || null, tipoNovedad || null, fecha || null]
+    [empleado || null, tipoNovedad || null, fecha || null, empresa ? Number(empresa) : null]
   );
   return rows;
 }
@@ -45,18 +46,21 @@ async function remove(empleado, tipo_novedad, fecha) {
   return rowCount > 0;
 }
 
-async function removeMasivo({ empleado, tipoNovedad, fecha } = {}) {
+async function removeMasivo({ empleado, tipoNovedad, fecha, empresa } = {}) {
   const { rowCount } = await pool.query(
     `DELETE FROM sld_novedad n
-     WHERE ($1::integer IS NULL OR n.empleado = $1)
+     USING sld_empleado e
+     WHERE n.empleado = e.id
+       AND ($1::integer IS NULL OR n.empleado = $1)
        AND ($2::text IS NULL OR n.tipo_novedad = $2)
-       AND ($3::date IS NULL OR n.fecha = $3)`,
-    [empleado || null, tipoNovedad || null, fecha || null]
+       AND ($3::date IS NULL OR n.fecha = $3)
+       AND ($4::integer IS NULL OR e.empresa = $4)`,
+    [empleado || null, tipoNovedad || null, fecha || null, empresa ? Number(empresa) : null]
   );
   return rowCount;
 }
 
-async function matrizGet(fecha, { empleado, tipoNovedad } = {}) {
+async function matrizGet(fecha, { empleado, tipoNovedad, empresa } = {}) {
   const { rows } = await pool.query(
     `SELECT e.id AS empleado, e.legajo, e.apellido, e.nombre,
             t.id AS tipo_novedad, t.descripcion AS tipo_novedad_desc,
@@ -67,8 +71,9 @@ async function matrizGet(fecha, { empleado, tipoNovedad } = {}) {
        ON n.empleado = e.id AND n.tipo_novedad = t.id AND n.fecha = $1
      WHERE ($2::text IS NULL OR e.legajo ILIKE '%'||$2||'%' OR e.apellido ILIKE '%'||$2||'%' OR e.nombre ILIKE '%'||$2||'%')
        AND ($3::text IS NULL OR t.id ILIKE '%'||$3||'%' OR t.descripcion ILIKE '%'||$3||'%')
+       AND ($4::integer IS NULL OR e.empresa = $4)
      ORDER BY e.apellido, e.nombre, t.orden NULLS LAST, t.id`,
-    [fecha, empleado || null, tipoNovedad || null]
+    [fecha, empleado || null, tipoNovedad || null, empresa ? Number(empresa) : null]
   );
   return rows;
 }

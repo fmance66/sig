@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -9,18 +9,22 @@ import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './liquidaciones.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const EMPTY_FILTRO = { periodo: '', legajo: '', convenio: '', categoria: '', grupo: '' };
 
 export default function EliminacionMasivaPage() {
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(EMPTY_FILTRO);
   const [modo, setModo] = useState('recibos'); // 'recibos' | 'liquidacion'
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading] = useState(false);
   const [eliminando, setEliminando] = useState(false);
   const toast = useRef(null);
+
+  useEffect(() => { setRegistros([]); }, [empresa?.id]);
 
   function handleFiltroChange(e) {
     const { name, value } = e.target;
@@ -35,7 +39,7 @@ export default function EliminacionMasivaPage() {
   async function buscar() {
     setLoading(true);
     try {
-      const res = await api.getRecibos(filtro);
+      const res = await api.getRecibos({ ...filtro, empresa: empresa?.id });
       setRegistros(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener la vista previa' });
@@ -50,7 +54,7 @@ export default function EliminacionMasivaPage() {
       return;
     }
     const mensaje = modo === 'liquidacion'
-      ? `Se eliminará COMPLETA la liquidación "${filtro.periodo}" (y todos sus recibos). ¿Confirma?`
+      ? `Se eliminarán todos los recibos de esta empresa en el período "${filtro.periodo}" (el período en sí solo se borra si ninguna otra empresa le quedó recibos ahí). ¿Confirma?`
       : `Se eliminarán ${registros.length} recibo(s) que matchean el filtro. La liquidación se mantiene. ¿Confirma?`;
 
     if (modo === 'liquidacion' && !filtro.periodo.trim()) {
@@ -69,9 +73,9 @@ export default function EliminacionMasivaPage() {
         setEliminando(true);
         try {
           if (modo === 'liquidacion') {
-            await api.deleteLiquidacion(filtro.periodo);
+            await api.deleteLiquidacion(filtro.periodo, empresa?.id);
           } else {
-            await api.deleteRecibosMasivo(filtro);
+            await api.deleteRecibosMasivo({ ...filtro, empresa: empresa?.id });
           }
           toast.current.show({ severity: 'success', summary: 'OK', detail: 'Eliminación realizada' });
           setRegistros([]);

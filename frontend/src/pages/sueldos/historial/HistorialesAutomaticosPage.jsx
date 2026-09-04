@@ -11,11 +11,13 @@ import * as api from '../../../api/historialAutomatico';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import { toIsoDate } from '../../../utils/dates';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 
 const camposApi = createCatalogoApi('/campos-historial');
 const EMPTY_FILTRO = { legajo: '', convenio: '', grupo: '', categoria: '', estado: '', provincia: '' };
 
 export default function HistorialesAutomaticosPage() {
+  const { empresa } = useEmpresa();
   const [campos, setCampos] = useState([]);
   const [campo, setCampo] = useState(null);
   const [fechaDesde, setFechaDesde] = useState(null);
@@ -30,13 +32,14 @@ export default function HistorialesAutomaticosPage() {
 
   useEffect(() => {
     camposApi.getAll().then(res => setCampos(res.data.resultado)).catch(() => {});
-    buscar();
   }, []);
+
+  useEffect(() => { if (empresa) buscar(); }, [empresa?.id]);
 
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getEmpleadosCandidatos(f);
+      const res = await api.getEmpleadosCandidatos({ ...f, empresa: empresa?.id });
       setEmpleados(res.data.resultado);
       setSeleccionados([]);
     } catch {

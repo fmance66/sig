@@ -2,8 +2,8 @@ const model = require('../models/novedades');
 
 async function list(req, res, next) {
   try {
-    const { empleado, tipoNovedad, fecha } = req.query;
-    const data = await model.list({ empleado, tipoNovedad, fecha });
+    const { empleado, tipoNovedad, fecha, empresa } = req.query;
+    const data = await model.list({ empleado, tipoNovedad, fecha, empresa });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }
@@ -39,17 +39,17 @@ async function remove(req, res, next) {
 
 async function removeMasivo(req, res, next) {
   try {
-    const { empleado, tipoNovedad, fecha } = req.body;
-    const cantidad = await model.removeMasivo({ empleado, tipoNovedad, fecha });
+    const { empleado, tipoNovedad, fecha, empresa } = req.body;
+    const cantidad = await model.removeMasivo({ empleado, tipoNovedad, fecha, empresa });
     res.json({ estado: 'ok', mensaje: `${cantidad} novedad(es) eliminada(s)`, resultado: { cantidad } });
   } catch (e) { next(e); }
 }
 
 async function matrizGet(req, res, next) {
   try {
-    const { fecha, empleado, tipoNovedad } = req.query;
+    const { fecha, empleado, tipoNovedad, empresa } = req.query;
     if (!fecha) return res.status(400).json({ estado: 'error', mensaje: 'fecha es requerida' });
-    const data = await model.matrizGet(fecha, { empleado, tipoNovedad });
+    const data = await model.matrizGet(fecha, { empleado, tipoNovedad, empresa });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }

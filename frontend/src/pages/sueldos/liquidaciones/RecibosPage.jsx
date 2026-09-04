@@ -9,6 +9,7 @@ import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './liquidaciones.css';
 
 const EMPTY_FILTRO = { periodo: '', legajo: '', convenio: '', categoria: '', grupo: '', estado: '' };
@@ -18,6 +19,7 @@ const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleStr
 export default function RecibosPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { empresa } = useEmpresa();
   const [recibos, setRecibos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filtro, setFiltro] = useState({ ...EMPTY_FILTRO, periodo: searchParams.get('periodo') || '' });
@@ -25,14 +27,14 @@ export default function RecibosPage() {
   const [conceptosPorRecibo, setConceptosPorRecibo] = useState({});
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
 
   function rowId(r) { return `${r.periodo}|${r.empleado}|${r.numero}`; }
 
   async function load(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getRecibos(f);
+      const res = await api.getRecibos({ ...f, empresa: empresa?.id });
       setRecibos(res.data.resultado.map(r => ({ ...r, _id: rowId(r) })));
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los recibos' });

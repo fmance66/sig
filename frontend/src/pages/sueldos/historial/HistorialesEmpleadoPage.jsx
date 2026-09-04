@@ -34,14 +34,14 @@ export default function HistorialesEmpleadoPage() {
   const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
   useEffect(() => { camposApi.getAll().then(res => setCampos(res.data.resultado)).catch(() => {}); }, []);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getHistorialesEmpleadoList({});
+      const res = await api.getHistorialesEmpleadoList({ empresa: empresa?.id });
       setHistoriales(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los historiales' });

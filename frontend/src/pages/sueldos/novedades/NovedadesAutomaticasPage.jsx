@@ -11,11 +11,13 @@ import * as api from '../../../api/novedadesAutomaticas';
 import FiltroTexto from '../liquidaciones/FiltroTexto';
 import { toIsoDate } from '../../../utils/dates';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 
 const tiposApi = createCatalogoApi('/tipos-novedad');
 const EMPTY_FILTRO = { legajo: '', convenio: '', grupo: '', categoria: '', estado: '', provincia: '' };
 
 export default function NovedadesAutomaticasPage() {
+  const { empresa } = useEmpresa();
   const [tipos, setTipos] = useState([]);
   const [tipoNovedad, setTipoNovedad] = useState(null);
   const [fecha, setFecha] = useState(null);
@@ -29,13 +31,14 @@ export default function NovedadesAutomaticasPage() {
 
   useEffect(() => {
     tiposApi.getAll().then(res => setTipos(res.data.resultado)).catch(() => {});
-    buscar();
   }, []);
+
+  useEffect(() => { if (empresa) buscar(); }, [empresa?.id]);
 
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getEmpleadosCandidatos(f);
+      const res = await api.getEmpleadosCandidatos({ ...f, empresa: empresa?.id });
       setEmpleados(res.data.resultado);
       setSeleccionados([]);
     } catch {

@@ -47,8 +47,9 @@ async function update(req, res) {
 
 async function remove(req, res) {
   try {
-    const ok = await Liquidacion.remove(req.params.periodo);
-    if (!ok) return res.status(404).json({ estado: 'error', mensaje: 'Liquidación no encontrada' });
+    const { encontrada, eliminada } = await Liquidacion.remove(req.params.periodo, req.query.empresa);
+    if (!encontrada) return res.status(404).json({ estado: 'error', mensaje: 'Liquidación no encontrada' });
+    if (!eliminada) return res.status(404).json({ estado: 'error', mensaje: 'No hay recibos de esta empresa en ese período' });
     res.json({ estado: 'ok', mensaje: 'Liquidación eliminada' });
   } catch (err) {
     console.error(err);

@@ -137,7 +137,7 @@ export default function LiquidacionesPage() {
 
   function handleDelete(row) {
     confirmDialog({
-      message: `¿Está seguro de eliminar la liquidación "${row.periodo}"? Se eliminarán también todos sus recibos.`,
+      message: `¿Está seguro de eliminar la liquidación "${row.periodo}"? Se eliminarán también todos los recibos de esta empresa en ese período.`,
       header: 'Confirmar eliminación',
       icon: 'fa-solid fa-triangle-exclamation',
       acceptLabel: 'Eliminar',
@@ -145,7 +145,7 @@ export default function LiquidacionesPage() {
       acceptClassName: 'p-button-danger',
       accept: async () => {
         try {
-          await api.deleteLiquidacion(row.periodo);
+          await api.deleteLiquidacion(row.periodo, empresa?.id);
           toast.current.show({ severity: 'success', summary: 'OK', detail: 'Liquidación eliminada' });
           load();
         } catch {

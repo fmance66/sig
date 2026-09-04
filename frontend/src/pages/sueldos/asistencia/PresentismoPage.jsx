@@ -34,13 +34,13 @@ export default function PresentismoPage() {
   const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getPresentismosList({});
+      const res = await api.getPresentismosList({ empresa: empresa?.id });
       setPresentismos(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los presentismos' });

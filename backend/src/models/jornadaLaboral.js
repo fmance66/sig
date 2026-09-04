@@ -2,12 +2,14 @@ const pool = require('../config/db');
 
 const DIAS = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO'];
 
-async function list() {
+async function list({ empresa } = {}) {
   const { rows } = await pool.query(
     `SELECT j.empleado, j.horario, j.feriados, e.legajo, e.apellido, e.nombre
      FROM sld_jornada_laboral j
      LEFT JOIN sld_empleado e ON e.id = j.empleado
-     ORDER BY e.apellido, e.nombre`
+     WHERE ($1::integer IS NULL OR e.empresa = $1)
+     ORDER BY e.apellido, e.nombre`,
+    [empresa ? Number(empresa) : null]
   );
   return rows;
 }

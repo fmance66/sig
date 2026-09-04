@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
@@ -17,6 +17,8 @@ export default function RemuneracionPorConceptosPage() {
   const [empleados, setEmpleados] = useState([]);
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
+
+  useEffect(() => { setEmpleados([]); }, [empresa?.id]);
 
   async function buscar(f = filtro) {
     setLoading(true);

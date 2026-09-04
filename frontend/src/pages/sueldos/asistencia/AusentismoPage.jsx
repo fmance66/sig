@@ -34,14 +34,14 @@ export default function AusentismoPage() {
   const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
   useEffect(() => { motivosApi.getAll().then(res => setMotivos(res.data.resultado)).catch(() => {}); }, []);
 
   async function load() {
     setLoading(true);
     try {
-      const res = await api.getAusentismosList({});
+      const res = await api.getAusentismosList({ empresa: empresa?.id });
       setAusentismos(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los ausentismos' });

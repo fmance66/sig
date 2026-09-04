@@ -69,9 +69,38 @@ async function update(periodo, data) {
   return rows[0] ?? null;
 }
 
-async function remove(periodo) {
-  const { rowCount } = await pool.query('DELETE FROM sld_liquidacion WHERE periodo = $1', [periodo]);
-  return rowCount > 0;
+// El período (sld_liquidacion) es global y puede tener recibos de varias empresas a la vez
+// (ver comentario de list() más arriba), así que borrarlo sin acotar por empresa dispara el
+// ON DELETE CASCADE hacia sld_recibo y se lleva puestos los recibos de TODAS las empresas que
+// liquidaron ese período. Con `empresa` se borran solo los recibos de esa empresa, y el período
+// en sí solo se borra si ninguna otra empresa le quedó recibos ahí.
+async function remove(periodo, empresa) {
+  const liq = await pool.query('SELECT 1 FROM sld_liquidacion WHERE periodo = $1', [periodo]);
+  if (!liq.rows.length) return { encontrada: false, eliminada: false };
+
+  if (!empresa) {
+    const { rowCount } = await pool.query('DELETE FROM sld_liquidacion WHERE periodo = $1', [periodo]);
+    return { encontrada: true, eliminada: rowCount > 0 };
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const del = await client.query(
+      `DELETE FROM sld_recibo r USING sld_empleado e
+       WHERE r.periodo = $1 AND r.empleado = e.id AND e.empresa = $2`,
+      [periodo, Number(empresa)]
+    );
+    const { rows } = await client.query('SELECT 1 FROM sld_recibo WHERE periodo = $1 LIMIT 1', [periodo]);
+    if (!rows.length) await client.query('DELETE FROM sld_liquidacion WHERE periodo = $1', [periodo]);
+    await client.query('COMMIT');
+    return { encontrada: true, eliminada: del.rowCount > 0 };
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
 }
 
 module.exports = { list, getByPeriodo, create, update, remove };

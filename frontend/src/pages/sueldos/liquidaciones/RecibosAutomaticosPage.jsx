@@ -9,6 +9,7 @@ import { Toast } from 'primereact/toast';
 import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './liquidaciones.css';
 
 const EMPTY_FILTRO = { legajo: '', convenio: '', grupo: '', categoria: '', estado: '', provincia: '' };
@@ -16,6 +17,7 @@ const EMPTY_FILTRO = { legajo: '', convenio: '', grupo: '', categoria: '', estad
 export default function RecibosAutomaticosPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { empresa } = useEmpresa();
   const [liquidaciones, setLiquidaciones] = useState([]);
   const [periodo, setPeriodo] = useState(searchParams.get('periodo') || null);
   const [filtro, setFiltro] = useState(EMPTY_FILTRO);
@@ -28,14 +30,15 @@ export default function RecibosAutomaticosPage() {
   const toast = useRef(null);
 
   useEffect(() => {
-    api.getLiquidaciones().then(res => setLiquidaciones(res.data.resultado)).catch(() => {});
-    buscar();
-  }, []);
+    api.getLiquidaciones({ empresa: empresa?.id }).then(res => setLiquidaciones(res.data.resultado)).catch(() => {});
+  }, [empresa?.id]);
+
+  useEffect(() => { if (empresa) buscar(); }, [empresa?.id]);
 
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getEmpleadosCandidatos(f);
+      const res = await api.getEmpleadosCandidatos({ ...f, empresa: empresa?.id });
       setEmpleados(res.data.resultado);
       setSeleccionados([]);
     } catch {

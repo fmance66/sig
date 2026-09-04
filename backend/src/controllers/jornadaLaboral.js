@@ -2,7 +2,7 @@ const model = require('../models/jornadaLaboral');
 
 async function list(req, res, next) {
   try {
-    const data = await model.list();
+    const data = await model.list({ empresa: req.query.empresa });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (e) { next(e); }
 }

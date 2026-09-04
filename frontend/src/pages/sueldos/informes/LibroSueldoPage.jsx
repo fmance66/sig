@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import InformeFiltro, { FILTRO_VACIO } from './InformeFiltro';
@@ -15,6 +15,8 @@ export default function LibroSueldoPage() {
   const [seleccion, setSeleccion] = useState([]);
   const [loading, setLoading] = useState(false);
   const toast = useRef(null);
+
+  useEffect(() => { setRecibos([]); setSeleccion([]); }, [empresa?.id]);
 
   async function buscar(f = filtro) {
     setLoading(true);

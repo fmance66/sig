@@ -32,7 +32,7 @@ export default function RecibosRecalculadosPage() {
   const [aplicando, setAplicando] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  useEffect(() => { buscar(); }, []);
+  useEffect(() => { if (empresa) buscar(); }, [empresa?.id]);
 
   function handleFiltroChange(e) {
     const { name, value } = e.target;
