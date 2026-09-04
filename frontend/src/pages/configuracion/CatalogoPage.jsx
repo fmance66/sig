@@ -64,6 +64,7 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
   const [editMode, setEditMode]         = useState(false);
   const [form, setForm]                 = useState(() => emptyForm(fields));
   const [saving, setSaving]             = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { load(); }, [basePath]);
@@ -164,7 +165,7 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
   );
 
   const hasPaginator = registros.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {registros.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && registros.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -257,6 +258,7 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={filterFields}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage={`No hay registros de ${entityLabel}`}

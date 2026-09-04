@@ -82,6 +82,27 @@ const NOT_NULL_DEFAULTS = {
 };
 
 // ---------------------------------------------------------------------------
+// Tablas per-empresa cuyo dump MySQL de origen (una base por empresa) nunca tuvo
+// columna `empresa` porque no hacía falta — pero el schema Postgres compartido sí
+// la requiere (NOT NULL, sin DEFAULT: ver 01_schema.sql). Se agrega acá al final
+// de cada fila con el número de empresa ya resuelto para todo el archivo
+// (empresaNum), igual para las 7 tablas porque cada dump es de una sola empresa.
+// ---------------------------------------------------------------------------
+const TABLES_NEEDING_EMPRESA_COLUMN = new Set([
+  'sld_concepto', 'sld_concepto_lsd', 'sld_concepto_general', 'sld_concepto_grupo',
+  'sld_concepto_de_grupo', 'sld_empleado_concepto', 'sld_recibo_concepto',
+]);
+
+// ---------------------------------------------------------------------------
+// sld_concepto: si simbolo_unidad es alguna variante de "días", decimales_unidad
+// tiene que ser 0 (una fórmula no da media jornada) — el dump de origen trae
+// NULL en la mayoría de esos casos (confirmado: es así en el MySQL original,
+// no un bug de la migración), así que se fuerza acá para no arrastrar el hueco
+// a cada migración futura. Ver db/MIGRACION_BITACORA.md.
+// ---------------------------------------------------------------------------
+const SIMBOLOS_DIAS = new Set(['dias', 'Dias', 'días', 'Días', 'Día', 'Dia']);
+
+// ---------------------------------------------------------------------------
 // VARCHAR limits a truncar (cols que tienen datos más largos que el schema)
 // ---------------------------------------------------------------------------
 const VARCHAR_LIMITS = {
@@ -392,6 +413,30 @@ function convertTokens(tableName, tokens, colNames, resolverMaps, rawBytesArr) {
     return tok;
   });
 
+  if (tableName === 'sld_concepto' && colNames) {
+    const simboloIdx    = colNames.indexOf('simbolo_unidad');
+    const decimalesIdx  = colNames.indexOf('decimales_unidad');
+    const visibleIdx    = colNames.indexOf('unidad_visible');
+    const simboloBlank  = simboloIdx === -1 || tokens[simboloIdx] === 'NULL' || tokens[simboloIdx] === "''";
+    const decimalesBlank = decimalesIdx === -1 || tokens[decimalesIdx] === 'NULL';
+
+    if (simboloIdx !== -1 && decimalesIdx !== -1 && !simboloBlank) {
+      const simboloRaw = unquoteToken(tokens[simboloIdx]);
+      // El dump viene declarado latin1 pero con bytes UTF-8 reales adentro (tabla
+      // `latin1` volcada con `SET NAMES utf8`, ver cabecera del dump) — todo el
+      // archivo se lee como latin1 para preservar bytes de imágenes tal cual, así
+      // que un acento como "días" llega acá como el string mojibake "dÃ­as". Para
+      // comparar contra literales limpios hay que revertir esa doble decodificación
+      // (no afecta lo que se escribe: simbolo_unidad sale intacto, solo se lee acá).
+      const simbolo = Buffer.from(simboloRaw, 'latin1').toString('utf8').trim();
+      if (SIMBOLOS_DIAS.has(simbolo)) converted[decimalesIdx] = '0';
+    }
+
+    // Sin símbolo de unidad y sin decimales configurados: no hay nada que mostrar
+    // en la columna "Unidad" del recibo, así que no tiene sentido dejarla visible.
+    if (visibleIdx !== -1 && simboloBlank && decimalesBlank) converted[visibleIdx] = 'FALSE';
+  }
+
   return { tokens: converted, drop };
 }
 
@@ -574,6 +619,8 @@ function transformInsert(line, tableName, resolverMaps, colNames) {
       if (legajoPos !== -1) {
         outColNames = [...colNames.slice(0, legajoPos + 1), 'legajo', ...colNames.slice(legajoPos + 1)];
       }
+      const needsEmpresaCol = TABLES_NEEDING_EMPRESA_COLUMN.has(tableName);
+      if (needsEmpresaCol) outColNames = [...outColNames, 'empresa'];
 
       const colList = needsColNames ? `(${outColNames.join(',')}) ` : '';
       const prefix  = `INSERT INTO ${tableName} ${colList}VALUES `;
@@ -636,6 +683,7 @@ function transformInsert(line, tableName, resolverMaps, colNames) {
         if (legajoPos !== -1) {
           finalTokens = [...converted.slice(0, legajoPos + 1), tokens[legajoPos], ...converted.slice(legajoPos + 1)];
         }
+        if (needsEmpresaCol) finalTokens = [...finalTokens, String(resolverMaps.empresaNum)];
         tuples.push(`(${finalTokens.join(',')})`);
       }
 

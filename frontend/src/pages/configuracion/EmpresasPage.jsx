@@ -33,6 +33,7 @@ export default function EmpresasPage() {
   const [form, setForm]               = useState(EMPTY_FORM);
   const [saving, setSaving]           = useState(false);
   const [activeTab, setActiveTab]     = useState(0);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
@@ -143,7 +144,7 @@ export default function EmpresasPage() {
   );
 
   const hasPaginator = empresas.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {empresas.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && empresas.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -204,6 +205,7 @@ export default function EmpresasPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['cuit', 'razon_social', 'telefono']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage="No hay empresas registradas"

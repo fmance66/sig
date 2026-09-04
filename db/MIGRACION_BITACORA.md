@@ -735,3 +735,92 @@ regla que antes para ocultar la sub-tabla de parámetros cuando el modelo es fij
 el peor caso conocido de la sección 13 (33 líneas de concepto, empleado 142 pasó a ser el
 77 en la base actual) — ambos entran en 1 página por copia (ORIGINAL + DUPLICADO), sin
 overflow a página 2.
+
+## 15. `UNIDADXTECLADO`/`IMPORTEXTECLADO` → `UNIDAD_MANUAL`/`IMPORTE_MANUAL` en fórmulas de conceptos (2026-09-03)
+
+El dump MySQL trajo dos convenciones de nombre para lo mismo en `sld_concepto.formula_unidad`
+/`formula_importe`: la mayoría de los conceptos ya usaba `UNIDAD_MANUAL`/`IMPORTE_MANUAL`
+(los nombres que entiende `backend/src/lib/formulaEngine.js`), pero 30 filas en las
+empresas 4, 5 y 6 (sobre todo conceptos de contribuciones: SIPA, INSSJPami, FNE, Asig.
+Familiares, Obra Social, Pasteleros Cuota Empresaria/FFG, etc.) usaban en cambio
+`UNIDADXTECLADO`/`IMPORTEXTECLADO` — mismo significado ("unidad/importe tipeado por
+teclado"), otro nombre, que el motor no reconocía y hacía caer esas fórmulas al fallback
+de carga manual aunque varias eran cálculos reales de porcentaje (ej.
+`(TOTAL_REMUNERATIVO-7003.68)*UNIDADXTECLADO/100`).
+
+Se normalizó el dato en la base activa (no en `01_schema.sql`, es contenido de fila, no
+esquema) con un `REPLACE` de texto sobre las 30 filas afectadas:
+```sql
+UPDATE sld_concepto
+SET formula_unidad = REPLACE(formula_unidad, 'UNIDADXTECLADO', 'UNIDAD_MANUAL')
+WHERE formula_unidad ILIKE '%UNIDADXTECLADO%';
+
+UPDATE sld_concepto
+SET formula_importe = REPLACE(
+      REPLACE(formula_importe, 'UNIDADXTECLADO', 'UNIDAD_MANUAL'),
+      'IMPORTEXTECLADO', 'IMPORTE_MANUAL'
+    )
+WHERE formula_importe ILIKE '%UNIDADXTECLADO%' OR formula_importe ILIKE '%IMPORTEXTECLADO%';
+```
+Verificado antes de aplicar que `formula_condicion`, `formula_unitario` y
+`sld_formula_auxiliar.formula` no tenían ninguna ocurrencia (no hacía falta tocarlos), y
+después de aplicar que no queda ningún `%TECLADO%` en ninguna columna de fórmula.
+
+`formulaEngine.js` igual mantiene el alias (`VARIABLE_ALIASES`, ver sección de código) como
+red de seguridad — por si una futura empresa migrada trae de nuevo la variante
+`UNIDADXTECLADO` en su dump de origen.
+
+## 16. `sld_concepto.decimales_unidad = 0` cuando `simbolo_unidad` es "días" (2026-09-03)
+
+Pedido del usuario: todo concepto cuya unidad se mide en días (símbolo `dias`/`Dias`/`días`/
+`Días`/`Día`/`Dia`) tiene que tener `decimales_unidad = 0` — no tiene sentido una fórmula
+dando media jornada. En la base activa, 77 de 87 conceptos con ese símbolo tenían el campo
+en blanco (NULL) en las 5 empresas; ninguno tenía ya cargado un valor distinto de 0 (sin
+conflicto de intención). Aplicado:
+```sql
+UPDATE sld_concepto SET decimales_unidad = 0
+WHERE simbolo_unidad IN ('dias','Dias','días','Días','Día') AND decimales_unidad IS NULL;
+```
+
+**Para que la migración también lo respete** se agregó la misma regla a
+`migrate-from-mysql.js` (`SIMBOLOS_DIAS` + post-proceso en `convertTokens` para la tabla
+`sld_concepto`): si `simbolo_unidad` matchea, fuerza `decimales_unidad` a `'0'` en el INSERT
+generado, sin importar lo que traiga el dump.
+
+**Gotcha de codificación encontrado al implementar esto**: el dump MySQL declara la tabla
+`latin1` pero mysqldump la exportó con `SET NAMES utf8` (se ve en la cabecera del dump) —
+el resultado son los bytes UTF-8 reales de "días" (`c3 ad` para la í) puestos tal cual en
+el archivo. El script entero se lee con `fs.readFileSync(..., 'latin1')` a propósito, para
+preservar bytes binarios de fotos/logos sin tocarlos — pero eso significa que cualquier
+texto acentuado llega a la memoria de Node como mojibake (`"días"` se ve como `"dÃ­as"`
+puertas adentro del script). Mientras el pipeline solo copie el texto sin inspeccionarlo,
+el mojibake se cancela solo (se lee y se vuelve a escribir como latin1 → mismos bytes en
+el archivo de salida, Postgres los recibe intactos y los muestra bien). Pero en cuanto se
+necesita **comparar** el contenido de un campo de texto contra un literal limpio (como acá,
+`simbolo_unidad === 'días'`), hay que revertir la doble decodificación primero:
+`Buffer.from(valorLeido, 'latin1').toString('utf8')`. Verificado regenerando el dump de
+Thompson y French: 47/47 conceptos con símbolo de días quedaron con `decimales_unidad = 0`.
+
+**Si en el futuro se necesita comparar CUALQUIER texto del dump contra un literal con
+acentos**, aplicar la misma conversión — no asumir que el string ya viene limpio solo
+porque el resto de la migración funciona bien con acentos (funciona porque nunca los
+compara, solo los transporta).
+
+## 17. `sld_concepto.unidad_visible = FALSE` cuando no hay símbolo ni decimales (2026-09-03)
+
+Mismo día, pedido relacionado: si un concepto no tiene `simbolo_unidad` NI
+`decimales_unidad` cargados, no hay nada que mostrar en la columna "Unidad" del recibo —
+`unidad_visible` tiene que ser `FALSE`. En la base activa, 263 de 266 conceptos en esa
+condición tenían `unidad_visible` en `TRUE` (o `NULL`) en las 5 empresas:
+```sql
+UPDATE sld_concepto SET unidad_visible = FALSE
+WHERE (simbolo_unidad IS NULL OR simbolo_unidad = '') AND decimales_unidad IS NULL
+  AND (unidad_visible IS DISTINCT FROM FALSE);
+```
+
+Agregado también a `migrate-from-mysql.js` (mismo bloque de post-proceso de `sld_concepto`
+que la sección 16): si `simbolo_unidad` y `decimales_unidad` vienen ambos en blanco en el
+dump, fuerza `unidad_visible` a `'FALSE'` en el INSERT generado. Verificado regenerando el
+dump de Thompson y French: 64/64 conceptos en esa condición quedaron con `unidad_visible =
+FALSE`, sin afectar la regla de la sección 16 (son mutuamente excluyentes: una fórmula con
+símbolo "días" nunca tiene el símbolo en blanco).

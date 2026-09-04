@@ -73,6 +73,7 @@ export default function ConceptosPage() {
   const [saving, setSaving]       = useState(false);
   const [loadingForm, setLoadingForm] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
@@ -243,7 +244,7 @@ export default function ConceptosPage() {
   );
 
   const hasPaginator = registrosFiltrados.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {registrosFiltrados.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
 
   const dialogFooter = (
     <div className="dialog-footer-btns mt-2">
@@ -271,6 +272,7 @@ export default function ConceptosPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['id', 'descripcion', 'clase']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         emptyMessage="No hay conceptos registrados"
         size="small"

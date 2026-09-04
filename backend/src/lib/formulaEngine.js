@@ -37,6 +37,16 @@ const KNOWN_VARIABLES = new Set([
 
 const KNOWN_FUNCTIONS = new Set(['ROUND', 'INTEGER', 'ABS', 'MAX', 'MIN', 'MONTH']);
 
+// Alias del DSL legacy: "UNIDADXTECLADO"/"IMPORTEXTECLADO" ("unidad/importe por
+// teclado") son el mismo concepto que UNIDAD_MANUAL/IMPORTE_MANUAL, con otro
+// nombre — no una función sin soportar. Varias empresas migradas los usan
+// dentro de fórmulas reales de contribuciones (ej. UNIDADXTECLADO/100 * base),
+// no solo como passthrough puro.
+const VARIABLE_ALIASES = {
+  UNIDADXTECLADO: 'UNIDAD_MANUAL',
+  IMPORTEXTECLADO: 'IMPORTE_MANUAL',
+};
+
 // ---------------------------------------------------------------------------
 // Tokenizer
 // ---------------------------------------------------------------------------
@@ -257,8 +267,9 @@ function parse(source) {
         const args = parseArgs();
         return { type: 'CALL', name, args };
       }
-      if (!KNOWN_VARIABLES.has(name)) throw new UnsupportedFormulaError(name);
-      return { type: 'VARIABLE', name };
+      const resolvedName = VARIABLE_ALIASES[name] || name;
+      if (!KNOWN_VARIABLES.has(resolvedName)) throw new UnsupportedFormulaError(name);
+      return { type: 'VARIABLE', name: resolvedName };
     }
 
     throw new FormulaSyntaxError(`Token inesperado: ${tok.type}`);
@@ -343,9 +354,12 @@ function evalNode(node, context) {
       const args = node.args.map(a => evalNode(a, context));
       switch (node.name) {
         case 'ROUND': {
-          const decimals = args.length > 1 ? toNumber(args[1]) : 0;
-          const factor = 10 ** decimals;
-          return Math.round(toNumber(args[0]) * factor) / factor;
+          // DSL legacy: el segundo argumento es el múltiplo al que se redondea
+          // (ROUND(x,1) = peso entero más cercano, ROUND(x,100) = centena más
+          // cercana), no la cantidad de decimales como en el ROUND de SQL.
+          const unidad = args.length > 1 ? toNumber(args[1]) : 1;
+          if (!unidad) return Math.round(toNumber(args[0]));
+          return Math.round(toNumber(args[0]) / unidad) * unidad;
         }
         case 'INTEGER': return Math.trunc(toNumber(args[0]));
         case 'ABS': return Math.abs(toNumber(args[0]));

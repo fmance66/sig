@@ -27,6 +27,7 @@ export default function DisenoInformesPersonalizadosPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
 
   const [campos, setCampos] = useState([]);
   const [loadingCampos, setLoadingCampos] = useState(false);
@@ -206,7 +207,7 @@ export default function DisenoInformesPersonalizadosPage() {
   );
 
   const hasPaginator = informes.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {informes.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
 
   const dialogFooter = (
     <div className="dialog-footer-btns mt-2">
@@ -238,6 +239,7 @@ export default function DisenoInformesPersonalizadosPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['id', 'descripcion']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         emptyMessage="No hay informes personalizados registrados"
         size="small"

@@ -171,8 +171,8 @@ function contextoConceptoFila(c) {
   return {
     CONCEPTO_CODIGO: c.concepto,
     CONCEPTO_DESCRIPCION: c.concepto_desc || c.descripcion || '',
-    CONCEPTO_UNIDAD: c.unidad != null ? unidad(c.unidad, c.decimales_unidad) : '',
-    CONCEPTO_SIMBOLO: c.simbolo_unidad || '',
+    CONCEPTO_UNIDAD: c.unidad_visible !== false && c.unidad != null ? unidad(c.unidad, c.decimales_unidad) : '',
+    CONCEPTO_SIMBOLO: c.unidad_visible !== false ? (c.simbolo_unidad || '') : '',
     IMPORTE_REMUNERATIVO: c.columna === 'REMUNERATIVO' ? money(c.importe) : '',
     IMPORTE_NO_REMUNERATIVO: c.columna === 'NO_REMUNERATIVO' ? money(c.importe) : '',
     IMPORTE_DESCUENTO: c.columna === 'DESCUENTO' ? money(c.importe) : '',

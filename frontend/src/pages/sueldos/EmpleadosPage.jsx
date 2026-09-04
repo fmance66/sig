@@ -85,6 +85,7 @@ export default function EmpleadosPage() {
   const [saving, setSaving]       = useState(false);
   const [loadingForm, setLoadingForm] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id, mostrarInactivos]);
@@ -263,7 +264,7 @@ export default function EmpleadosPage() {
   );
 
   const hasPaginator = empleados.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {empleados.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && empleados.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -309,6 +310,7 @@ export default function EmpleadosPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['legajo', 'apellido', 'nombre', 'cuil', 'convenio', 'categoria']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage={mostrarInactivos ? 'No hay empleados inactivos' : 'No hay empleados registrados'}

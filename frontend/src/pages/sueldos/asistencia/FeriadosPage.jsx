@@ -24,6 +24,7 @@ export default function FeriadosPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
@@ -119,7 +120,7 @@ export default function FeriadosPage() {
   );
 
   const hasPaginator = feriados.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {feriados.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && feriados.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -150,6 +151,7 @@ export default function FeriadosPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['descripcion']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage="No hay feriados registrados"

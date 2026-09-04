@@ -14,7 +14,7 @@ const INTEGER_COLS = new Set(['smtp_port', 'orden']);
 
 function normalize(col, val) {
   if (val === '' || val === undefined) return null;
-  if (INTEGER_COLS.has(col) && val !== null) return Number(val) || null;
+  if (INTEGER_COLS.has(col) && val !== null) { const n = Number(val); return Number.isNaN(n) ? null : n; }
   return val;
 }
 

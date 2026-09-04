@@ -31,6 +31,7 @@ export default function PresentismoPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
@@ -144,7 +145,7 @@ export default function PresentismoPage() {
   );
 
   const hasPaginator = presentismos.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {presentismos.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && presentismos.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -175,6 +176,7 @@ export default function PresentismoPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['legajo', 'apellido', 'nombre', 'tipo']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage="No hay presentismos registrados"

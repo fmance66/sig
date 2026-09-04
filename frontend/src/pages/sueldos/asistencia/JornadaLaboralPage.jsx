@@ -49,6 +49,7 @@ export default function JornadaLaboralPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
@@ -176,7 +177,7 @@ export default function JornadaLaboralPage() {
   );
 
   const hasPaginator = jornadas.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {jornadas.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && jornadas.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -207,6 +208,7 @@ export default function JornadaLaboralPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['legajo', 'apellido', 'nombre']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage="No hay jornadas laborales registradas"

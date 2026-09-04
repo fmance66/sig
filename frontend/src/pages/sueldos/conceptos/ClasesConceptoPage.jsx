@@ -22,6 +22,7 @@ export default function ClasesConceptoPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm]         = useState(EMPTY_FORM);
   const [saving, setSaving]     = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
 
   const [grupos, setGrupos]         = useState([]);
   const [loadingGrupos, setLoadingGrupos] = useState(false);
@@ -194,7 +195,7 @@ export default function ClasesConceptoPage() {
   );
 
   const hasPaginator = clases.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {clases.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
 
   const dialogFooter = (
     <div className="dialog-footer-btns mt-2">
@@ -222,6 +223,7 @@ export default function ClasesConceptoPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['id', 'descripcion']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         emptyMessage="No hay clases de concepto registradas"
         size="small"

@@ -17,6 +17,8 @@ import { getEmpleados } from '../../../api/empleados';
 import { toDate, toIsoDate } from '../../../utils/dates';
 import NovedadesTab from '../NovedadesTab';
 import BotonVolver from '../../../components/BotonVolver';
+import PeriodoSelect from '../../../components/PeriodoSelect';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './liquidaciones.css';
 
 const money = v => v === null || v === undefined ? '0,00' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -28,22 +30,150 @@ const EMPTY_HEADER = {
 
 const EMPTY_ADD = { concepto: null, unidad_manual: '', importe_manual: '' };
 
+const COLUMNAS_CONCEPTOS = ['REMUNERATIVO', 'NO_REMUNERATIVO', 'DESCUENTO'];
+const COLUMNAS_CONTRIBUCIONES = ['CONTRIBUCION'];
+
+function numeroEditor(options) {
+  return (
+    <InputText
+      type="number" value={options.value ?? ''}
+      onChange={e => options.editorCallback(e.target.value)}
+      onKeyDown={e => e.stopPropagation()}
+    />
+  );
+}
+
+// Tabla de renglones de sld_recibo_concepto con agregar/editar/eliminar — usada
+// tanto por "Conceptos" (REMUNERATIVO/NO_REMUNERATIVO/DESCUENTO) como por
+// "Contribuciones" (CONTRIBUCION): mismas operaciones de backend, solo cambia
+// qué columnas de sld_concepto se ofrecen para agregar.
+function ConceptosTab({ rows, catalogo, columnas, mostrarColumna, periodo, empleado, numero, toast, onChanged, emptyMessage = 'No hay conceptos cargados' }) {
+  const [addForm, setAddForm] = useState(EMPTY_ADD);
+  const [adding, setAdding] = useState(false);
+
+  const conceptoOptions = catalogo
+    .filter(c => columnas.includes(c.columna))
+    .map(c => ({ label: `${c.id} — ${c.descripcion}`, value: c.id }));
+
+  async function handleAgregar() {
+    if (!addForm.concepto) {
+      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un concepto' });
+      return;
+    }
+    setAdding(true);
+    try {
+      await api.addConceptoRecibo(periodo, empleado, numero, addForm);
+      await api.recalcularRecibo(periodo, empleado, numero);
+      setAddForm(EMPTY_ADD);
+      toast.current.show({ severity: 'success', summary: 'OK', detail: 'Concepto agregado' });
+      onChanged();
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || 'No se pudo agregar el concepto';
+      toast.current.show({ severity: 'error', summary: 'Error', detail: msg });
+    } finally {
+      setAdding(false);
+    }
+  }
+
+  function handleEliminar(row) {
+    confirmDialog({
+      message: `¿Eliminar el concepto "${row.concepto_desc || row.concepto}" del recibo?`,
+      header: 'Confirmar eliminación',
+      icon: 'fa-solid fa-triangle-exclamation',
+      acceptLabel: 'Eliminar',
+      rejectLabel: 'Cancelar',
+      acceptClassName: 'p-button-danger',
+      accept: async () => {
+        try {
+          await api.deleteConceptoRecibo(periodo, empleado, numero, row.concepto);
+          await api.recalcularRecibo(periodo, empleado, numero);
+          toast.current.show({ severity: 'success', summary: 'OK', detail: 'Concepto eliminado' });
+          onChanged();
+        } catch {
+          toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar' });
+        }
+      },
+    });
+  }
+
+  async function handleEditComplete(e) {
+    const { rowData, newValue, field } = e;
+    const manualField = field === 'unidad' ? 'unidad_manual' : 'importe_manual';
+    if (String(newValue ?? '') === String(rowData[field] ?? '')) return;
+    const valor = newValue === '' || newValue === null || newValue === undefined ? null : Number(newValue);
+    if (valor !== null && Number.isNaN(valor)) return;
+    try {
+      await api.updateConceptoRecibo(periodo, empleado, numero, rowData.concepto, { [manualField]: valor });
+      await api.recalcularRecibo(periodo, empleado, numero);
+      toast.current.show({ severity: 'success', summary: 'OK', detail: 'Concepto actualizado' });
+      onChanged();
+    } catch (err) {
+      const msg = err.response?.data?.mensaje || 'No se pudo actualizar el concepto';
+      toast.current.show({ severity: 'error', summary: 'Error', detail: msg });
+    }
+  }
+
+  const estadoTemplate = row => {
+    if (row.error) return <i className="fa-solid fa-circle-xmark error-icon" title={row.message} />;
+    if (row.warning) return <i className="fa-solid fa-triangle-exclamation warning-icon" title={row.message} />;
+    if (!row.condicion) return <i className="fa-solid fa-minus" style={{ color: '#9ca3af' }} title="No cumple la condición" />;
+    return <i className="fa-solid fa-circle-check ok-icon" />;
+  };
+
+  const accionesTemplate = row => (
+    <div className="acciones-col">
+      <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleEliminar(row)} />
+    </div>
+  );
+
+  return (
+    <>
+      <div className="concepto-add-form">
+        <div className="form-field">
+          <label>Concepto</label>
+          <Dropdown value={addForm.concepto} options={conceptoOptions} filter showClear
+            onChange={e => setAddForm(p => ({ ...p, concepto: e.value }))} placeholder="Seleccionar" style={{ width: '260px' }}
+            panelClassName="liquidaciones-dropdown-panel" />
+        </div>
+        <div className="form-field">
+          <label>Unidad</label>
+          <InputText value={addForm.unidad_manual} type="number"
+            onChange={e => setAddForm(p => ({ ...p, unidad_manual: e.target.value }))} />
+        </div>
+        <div className="form-field">
+          <label>Importe</label>
+          <InputText value={addForm.importe_manual} type="number"
+            onChange={e => setAddForm(p => ({ ...p, importe_manual: e.target.value }))} />
+        </div>
+        <Button label="Agregar" icon="fa-solid fa-plus" size="small" onClick={handleAgregar} loading={adding} />
+      </div>
+      <DataTable value={rows} size="small" stripedRows editMode="cell" emptyMessage={emptyMessage}>
+        <Column field="concepto" header="Código" style={{ width: '80px' }} />
+        <Column field="concepto_desc" header="Concepto" />
+        {mostrarColumna && <Column field="columna" header="Columna" style={{ width: '140px' }} />}
+        <Column field="unidad" header="Unidad" style={{ width: '90px' }} editor={numeroEditor} onCellEditComplete={handleEditComplete} />
+        <Column field="importe" body={c => money(c.importe)} header="Importe" style={{ width: '110px' }} editor={numeroEditor} onCellEditComplete={handleEditComplete} />
+        <Column body={estadoTemplate} header="" style={{ width: '50px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="" style={{ width: '60px', textAlign: 'center' }} />
+      </DataTable>
+    </>
+  );
+}
+
 export default function ReciboEmpleadoPage() {
   const { periodo, empleado, numero } = useParams();
   const navigate = useNavigate();
   const isNew = !periodo;
+  const { empresa } = useEmpresa();
 
   const [bundle, setBundle] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [header, setHeader] = useState(EMPTY_HEADER);
   const [saving, setSaving] = useState(false);
   const [recalculando, setRecalculando] = useState(false);
   const [conceptosCatalogo, setConceptosCatalogo] = useState([]);
-  const [addForm, setAddForm] = useState(EMPTY_ADD);
-  const [adding, setAdding] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
 
-  const [liquidaciones, setLiquidaciones] = useState([]);
   const [empleados, setEmpleados] = useState([]);
   const [nuevoPeriodo, setNuevoPeriodo] = useState(null);
   const [nuevoEmpleado, setNuevoEmpleado] = useState(null);
@@ -53,7 +183,6 @@ export default function ReciboEmpleadoPage() {
 
   const load = useCallback(async () => {
     if (isNew) return;
-    setLoading(true);
     setLoadError(false);
     try {
       const res = await api.getRecibo(periodo, empleado, numero);
@@ -74,22 +203,20 @@ export default function ReciboEmpleadoPage() {
     } catch {
       setLoadError(true);
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el recibo' });
-    } finally {
-      setLoading(false);
     }
   }, [isNew, periodo, empleado, numero]);
 
   useEffect(() => { load(); }, [load]);
 
   useEffect(() => {
-    getConceptos().then(res => setConceptosCatalogo(res.data.resultado)).catch(() => {});
-  }, []);
+    if (!bundle) return;
+    getConceptos(bundle.recibo.empresa_id).then(res => setConceptosCatalogo(res.data.resultado)).catch(() => {});
+  }, [bundle]);
 
   useEffect(() => {
     if (!isNew) return;
-    api.getLiquidaciones().then(res => setLiquidaciones(res.data.resultado)).catch(() => {});
-    getEmpleados(undefined, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {});
-  }, [isNew]);
+    getEmpleados(empresa?.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {});
+  }, [isNew, empresa]);
 
   async function handleCrear() {
     if (!nuevoPeriodo || !nuevoEmpleado) {
@@ -146,63 +273,7 @@ export default function ReciboEmpleadoPage() {
     }
   }
 
-  async function handleAgregarConcepto() {
-    if (!addForm.concepto) {
-      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un concepto' });
-      return;
-    }
-    setAdding(true);
-    try {
-      await api.addConceptoRecibo(periodo, empleado, numero, addForm);
-      await api.recalcularRecibo(periodo, empleado, numero);
-      setAddForm(EMPTY_ADD);
-      toast.current.show({ severity: 'success', summary: 'OK', detail: 'Concepto agregado' });
-      load();
-    } catch (err) {
-      const msg = err.response?.data?.mensaje || 'No se pudo agregar el concepto';
-      toast.current.show({ severity: 'error', summary: 'Error', detail: msg });
-    } finally {
-      setAdding(false);
-    }
-  }
-
-  function handleEliminarConcepto(row) {
-    confirmDialog({
-      message: `¿Eliminar el concepto "${row.concepto_desc || row.concepto}" del recibo?`,
-      header: 'Confirmar eliminación',
-      icon: 'fa-solid fa-triangle-exclamation',
-      acceptLabel: 'Eliminar',
-      rejectLabel: 'Cancelar',
-      acceptClassName: 'p-button-danger',
-      accept: async () => {
-        try {
-          await api.deleteConceptoRecibo(periodo, empleado, numero, row.concepto);
-          await api.recalcularRecibo(periodo, empleado, numero);
-          toast.current.show({ severity: 'success', summary: 'OK', detail: 'Concepto eliminado' });
-          load();
-        } catch {
-          toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar' });
-        }
-      },
-    });
-  }
-
-  const estadoConceptoTemplate = (row) => {
-    if (row.error) return <i className="fa-solid fa-circle-xmark error-icon" title={row.message} />;
-    if (row.warning) return <i className="fa-solid fa-triangle-exclamation warning-icon" title={row.message} />;
-    if (!row.condicion) return <i className="fa-solid fa-minus" style={{ color: '#9ca3af' }} title="No cumple la condición" />;
-    return <i className="fa-solid fa-circle-check ok-icon" />;
-  };
-
-  const accionesConceptoTemplate = (row) => (
-    <div className="acciones-col">
-      <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleEliminarConcepto(row)} />
-    </div>
-  );
-
-  const conceptoOptions = conceptosCatalogo.map(c => ({ label: `${c.id} — ${c.descripcion}`, value: c.id }));
   const empleadoOptions = empleados.map(e => ({ label: `${e.legajo} — ${e.apellido}, ${e.nombre}`, value: e.id }));
-  const periodoOptions = liquidaciones.map(l => ({ label: `${l.periodo} — ${l.descripcion || ''}`, value: l.periodo }));
 
   if (isNew) {
     return (
@@ -215,7 +286,7 @@ export default function ReciboEmpleadoPage() {
         <div className="form-grid recibo-header-form">
           <div className="form-field">
             <label>Período <span className="required">*</span></label>
-            <Dropdown value={nuevoPeriodo} options={periodoOptions} onChange={e => setNuevoPeriodo(e.value)} filter showClear placeholder="Seleccionar período" style={{ width: '320px' }} panelClassName="liquidaciones-dropdown-panel" />
+            <PeriodoSelect value={nuevoPeriodo} onChange={e => setNuevoPeriodo(e.value)} style={{ width: '320px' }} />
           </div>
           <div className="form-field">
             <label>Empleado <span className="required">*</span></label>
@@ -227,11 +298,15 @@ export default function ReciboEmpleadoPage() {
     );
   }
 
-  if (loadError) {
+  if (loadError && !bundle) {
     return <div className="page-liquidaciones"><Toast ref={toast} /><p>No se pudo cargar el recibo.</p></div>;
   }
 
-  if (loading || !bundle) {
+  // Solo se muestra este placeholder en la carga inicial (sin bundle todavía).
+  // Recargas posteriores (Guardar, Recalcular, editar/agregar/borrar un
+  // concepto) mantienen la página actual mientras llega la respuesta, para no
+  // perder la posición de scroll ni la pestaña activa en cada acción.
+  if (!bundle) {
     return <div className="page-liquidaciones"><Toast ref={toast} /><p>Cargando recibo...</p></div>;
   }
 
@@ -297,45 +372,20 @@ export default function ReciboEmpleadoPage() {
             <Button label="Recalcular" icon="fa-solid fa-rotate" size="small" className="p-button-outlined" onClick={handleRecalcular} loading={recalculando} />
           </div>
 
-          <TabView className="conceptos-tabs mt-3">
+          <TabView className="conceptos-tabs mt-3" activeIndex={activeTab} onTabChange={e => setActiveTab(e.index)}>
             <TabPanel header="Conceptos">
-              <div className="concepto-add-form">
-                <div className="form-field">
-                  <label>Concepto</label>
-                  <Dropdown value={addForm.concepto} options={conceptoOptions} filter showClear
-                    onChange={e => setAddForm(p => ({ ...p, concepto: e.value }))} placeholder="Seleccionar" style={{ width: '260px' }}
-                    panelClassName="liquidaciones-dropdown-panel" />
-                </div>
-                <div className="form-field">
-                  <label>Unidad</label>
-                  <InputText value={addForm.unidad_manual} type="number"
-                    onChange={e => setAddForm(p => ({ ...p, unidad_manual: e.target.value }))} />
-                </div>
-                <div className="form-field">
-                  <label>Importe</label>
-                  <InputText value={addForm.importe_manual} type="number"
-                    onChange={e => setAddForm(p => ({ ...p, importe_manual: e.target.value }))} />
-                </div>
-                <Button label="Agregar" icon="fa-solid fa-plus" size="small" onClick={handleAgregarConcepto} loading={adding} />
-              </div>
-              <DataTable value={conceptosPrincipales} size="small" stripedRows emptyMessage="No hay conceptos cargados">
-                <Column field="concepto" header="Código" style={{ width: '80px' }} />
-                <Column field="concepto_desc" header="Concepto" />
-                <Column field="columna" header="Columna" style={{ width: '140px' }} />
-                <Column field="unidad" header="Unidad" style={{ width: '90px' }} />
-                <Column body={c => money(c.importe)} header="Importe" style={{ width: '110px' }} />
-                <Column body={estadoConceptoTemplate} header="" style={{ width: '50px', textAlign: 'center' }} />
-                <Column body={accionesConceptoTemplate} header="" style={{ width: '60px', textAlign: 'center' }} />
-              </DataTable>
+              <ConceptosTab
+                rows={conceptosPrincipales} catalogo={conceptosCatalogo} columnas={COLUMNAS_CONCEPTOS} mostrarColumna
+                periodo={periodo} empleado={empleado} numero={numero} toast={toast} onChanged={load}
+              />
             </TabPanel>
 
             <TabPanel header="Contribuciones">
-              <DataTable value={bundle.contribuciones} size="small" stripedRows emptyMessage="Sin contribuciones">
-                <Column field="concepto" header="Código" style={{ width: '80px' }} />
-                <Column field="concepto_desc" header="Concepto" />
-                <Column field="unidad" header="Unidad" style={{ width: '90px' }} />
-                <Column body={c => money(c.importe)} header="Importe" style={{ width: '110px' }} />
-              </DataTable>
+              <ConceptosTab
+                rows={bundle.contribuciones} catalogo={conceptosCatalogo} columnas={COLUMNAS_CONTRIBUCIONES}
+                periodo={periodo} empleado={empleado} numero={numero} toast={toast} onChanged={load}
+                emptyMessage="Sin contribuciones"
+              />
             </TabPanel>
 
             <TabPanel header="Conceptos Auxiliares">

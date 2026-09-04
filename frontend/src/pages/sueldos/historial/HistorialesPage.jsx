@@ -27,6 +27,7 @@ export default function HistorialesPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
@@ -134,7 +135,7 @@ export default function HistorialesPage() {
   );
 
   const hasPaginator = historiales.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {historiales.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && historiales.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -165,6 +166,7 @@ export default function HistorialesPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['campo', 'campo_desc', 'valor']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage="No hay historiales registrados"

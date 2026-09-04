@@ -27,6 +27,7 @@ export default function GruposDeConceptosPage() {
   const [form, setForm]         = useState(EMPTY_FORM);
   const [saving, setSaving]     = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(0);
   const [expandedRows, setExpandedRows] = useState(null);
   const [conceptosPorGrupo, setConceptosPorGrupo] = useState({});
   const toast = useRef(null);
@@ -156,7 +157,7 @@ export default function GruposDeConceptosPage() {
   );
 
   const hasPaginator = grupos.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {grupos.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
 
   const dialogFooter = (
     <div className="dialog-footer-btns mt-2">
@@ -184,6 +185,7 @@ export default function GruposDeConceptosPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['id', 'descripcion']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         emptyMessage="No hay grupos de conceptos registrados"
         size="small"

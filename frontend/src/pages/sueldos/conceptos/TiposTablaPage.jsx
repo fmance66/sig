@@ -60,6 +60,7 @@ export default function TiposTablaPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm]         = useState(EMPTY_FORM);
   const [saving, setSaving]     = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
@@ -164,7 +165,7 @@ export default function TiposTablaPage() {
   );
 
   const hasPaginator = tipos.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {tipos.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
 
   const dialogFooter = (
     <div className="dialog-footer-btns mt-2">
@@ -192,6 +193,7 @@ export default function TiposTablaPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['id', 'descripcion']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         emptyMessage="No hay tipos de tabla registrados"
         size="small"

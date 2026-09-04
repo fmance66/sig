@@ -26,6 +26,7 @@ export default function UsuariosPage() {
   const [editMode, setEditMode]       = useState(false);
   const [form, setForm]               = useState(EMPTY_FORM);
   const [saving, setSaving]           = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
@@ -115,7 +116,7 @@ export default function UsuariosPage() {
   );
 
   const hasPaginator = usuarios.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {usuarios.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && usuarios.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -159,6 +160,7 @@ export default function UsuariosPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['usuario', 'nombre']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage="No hay usuarios registrados"

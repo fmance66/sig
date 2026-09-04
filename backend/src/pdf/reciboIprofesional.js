@@ -89,7 +89,7 @@ function tablaConceptos(conceptos) {
       h(Text, { style: s.colMonto }, 'Monto')),
     ...conceptos.map((c, i) => h(View, { key: i, style: s.filaConcepto },
       h(Text, { style: s.colConcepto }, `${c.concepto} ${c.concepto_desc || ''}`),
-      h(Text, { style: s.colUnidad }, c.unidad != null ? `${unidad(c.unidad, c.decimales_unidad)} ${c.simbolo_unidad || ''}` : ''),
+      h(Text, { style: s.colUnidad }, c.unidad_visible !== false && c.unidad != null ? `${unidad(c.unidad, c.decimales_unidad)} ${c.simbolo_unidad || ''}` : ''),
       h(Text, { style: s.colBase }, c.unitario != null ? money(c.unitario) : ''),
       h(Text, { style: s.colMonto }, money(c.importe)))));
 }

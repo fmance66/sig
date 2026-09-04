@@ -63,6 +63,7 @@ export default function LiquidacionesPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
@@ -180,7 +181,7 @@ export default function LiquidacionesPage() {
   );
 
   const hasPaginator = liquidaciones.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {liquidaciones.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && liquidaciones.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -212,6 +213,7 @@ export default function LiquidacionesPage() {
         footer={tableFooter}
         globalFilter={globalFilter}
         globalFilterFields={['periodo', 'descripcion']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         emptyMessage="No hay liquidaciones registradas"
         size="small"

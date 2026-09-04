@@ -19,7 +19,13 @@ function createCatalogoModel(tableName, columns, numericColumns = [], options = 
 
   function normalize(col, val) {
     if (val === '' || val === undefined) return null;
-    if (numeric.has(col) && val !== null) return Number(val) || null;
+    if (numeric.has(col) && val !== null) {
+      // OJO: no usar `Number(val) || null` — 0 es falsy en JS y esa forma
+      // convierte cualquier 0 legítimo (ej. decimales_unidad=0, orden=0) en
+      // NULL. Solo debe caer a null si el valor no es un número válido.
+      const n = Number(val);
+      return Number.isNaN(n) ? null : n;
+    }
     return val;
   }
 

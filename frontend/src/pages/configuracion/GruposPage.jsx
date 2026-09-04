@@ -23,6 +23,7 @@ export default function GruposPage() {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [editMode, setEditMode]       = useState(false);
   const [activeTab, setActiveTab]     = useState(0);
+  const [visibleCount, setVisibleCount] = useState(0);
   const [form, setForm]               = useState(EMPTY_FORM);
   const [saving, setSaving]           = useState(false);
   const [usuariosGrupo, setUsuariosGrupo] = useState([]);
@@ -146,7 +147,7 @@ export default function GruposPage() {
   );
 
   const hasPaginator = grupos.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {grupos.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
   const tableFooter = !hasPaginator && grupos.length > 0
     ? <div className="table-footer-right">{totalRegistros}</div>
     : null;
@@ -186,6 +187,7 @@ export default function GruposPage() {
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['nombre', 'descripcion']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         footer={tableFooter}
         emptyMessage="No hay grupos registrados"

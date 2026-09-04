@@ -91,6 +91,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
   const [editId, setEditId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(0);
 
   const [parametros, setParametros] = useState([]);
   const [loadingParametros, setLoadingParametros] = useState(false);
@@ -342,7 +343,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
   );
 
   const hasPaginator = formularios.length > 10;
-  const totalRegistros = <span className="total-registros">Total: {formularios.length} registros</span>;
+  const totalRegistros = <span className="total-registros">Total: {visibleCount} registros</span>;
 
   const dialogFooter = (
     <div className="dialog-footer-btns mt-2">
@@ -370,6 +371,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
         paginatorRight={totalRegistros}
         globalFilter={globalFilter}
         globalFilterFields={['nombre', 'descripcion']}
+        onValueChange={(data) => setVisibleCount(data.length)}
         header={tableHeader}
         emptyMessage="No hay formularios registrados"
         size="small"

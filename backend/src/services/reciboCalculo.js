@@ -142,6 +142,12 @@ async function calcularRecibo(periodo, empleado, numero) {
         result = { unidad: manualUnidad, importe: manualImporte, condicion: true, warning: false, error: true, message: err.message };
       }
     }
+    // Redondear a centavos acá (no solo al guardar en la columna NUMERIC(12,2)):
+    // los totales de cabecera y las referencias cruzadas (#id) tienen que sumar
+    // los mismos valores que ve el usuario en cada renglón, no el float sin
+    // redondear de la fórmula — si no, el total termina un par de centavos
+    // distinto de la suma manual de los renglones mostrados.
+    result.importe = Math.round(result.importe * 100) / 100;
     resolving.delete(row.concepto);
     resultCache.set(row.concepto, result);
     return result;

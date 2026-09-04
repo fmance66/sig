@@ -12,6 +12,7 @@ import { getConceptos } from '../../../api/conceptos';
 import FiltroTexto from './FiltroTexto';
 import PeriodoSelect from '../../../components/PeriodoSelect';
 import BotonVolver from '../../../components/BotonVolver';
+import { useEmpresa } from '../../../context/EmpresaContext';
 import './liquidaciones.css';
 
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -19,6 +20,7 @@ const EMPTY_FILTRO = { periodo: '', legajo: '', convenio: '', categoria: '', gru
 
 export default function RecibosRecalculadosPage() {
   const navigate = useNavigate();
+  const { empresa } = useEmpresa();
   const [filtro, setFiltro] = useState(EMPTY_FILTRO);
   const [recibos, setRecibos] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +42,7 @@ export default function RecibosRecalculadosPage() {
   async function buscar(f = filtro) {
     setLoading(true);
     try {
-      const res = await api.getRecibosRecalculados(f);
+      const res = await api.getRecibosRecalculados({ ...f, empresa: empresa?.id });
       setRecibos(res.data.resultado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudieron obtener los recibos' });
@@ -57,7 +59,7 @@ export default function RecibosRecalculadosPage() {
   async function handleRecalcularLote() {
     setRecalculando(true);
     try {
-      const res = await api.recalcularRecibosLote(filtro);
+      const res = await api.recalcularRecibosLote({ ...filtro, empresa: empresa?.id });
       toast.current.show({ severity: 'success', summary: 'OK', detail: `${res.data.registros} recibo(s) recalculado(s)` });
       buscar();
     } catch {
@@ -69,8 +71,8 @@ export default function RecibosRecalculadosPage() {
 
   function onTabChange(e) {
     setActiveTab(e.index);
-    if (e.index === 1 && !conceptosCatalogo.length) {
-      getConceptos().then(res => setConceptosCatalogo(res.data.resultado)).catch(() => {});
+    if (e.index === 1) {
+      getConceptos(empresa?.id).then(res => setConceptosCatalogo(res.data.resultado)).catch(() => {});
     }
   }
 
@@ -81,7 +83,7 @@ export default function RecibosRecalculadosPage() {
     }
     setAplicando(true);
     try {
-      const res = await api.adicionarConceptoLote({ filtro, ...conceptoForm });
+      const res = await api.adicionarConceptoLote({ filtro: { ...filtro, empresa: empresa?.id }, ...conceptoForm });
       toast.current.show({ severity: 'success', summary: 'OK', detail: res.data.mensaje });
       setConceptoForm({ concepto: null, unidad_manual: '', importe_manual: '' });
     } catch (err) {

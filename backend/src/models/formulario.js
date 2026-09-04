@@ -19,7 +19,7 @@ const NUMERIC = new Set([
 
 function normalize(col, val) {
   if (val === '' || val === undefined) return null;
-  if (NUMERIC.has(col) && val !== null) return Number(val) || null;
+  if (NUMERIC.has(col) && val !== null) { const n = Number(val); return Number.isNaN(n) ? null : n; }
   return val;
 }
 

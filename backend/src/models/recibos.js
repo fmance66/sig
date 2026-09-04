@@ -76,7 +76,8 @@ async function listConceptos(periodo, empleado, numero) {
     `SELECT rc.periodo, rc.empleado, rc.numero, rc.concepto, rc.descripcion,
             rc.unidad_manual, rc.importe_manual, rc.unidad, rc.importe, rc.unitario,
             rc.condicion, rc.warning, rc.error, rc.message, rc.orden,
-            c.descripcion AS concepto_desc, c.columna, c.simbolo_unidad, c.decimales_unidad, c.orden AS concepto_orden
+            c.descripcion AS concepto_desc, c.columna, c.simbolo_unidad, c.decimales_unidad,
+            c.unidad_visible, c.orden AS concepto_orden
      FROM sld_recibo_concepto rc
      JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
      WHERE rc.periodo = $1 AND rc.empleado = $2 AND rc.numero = $3
