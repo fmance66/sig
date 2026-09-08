@@ -414,6 +414,7 @@ CREATE TABLE IF NOT EXISTS sld_tope_previsional (
     minimo      NUMERIC(14,2),
     maximo      NUMERIC(14,2),
     origen      VARCHAR(10) CHECK (origen IN ('SCRAPE','MANUAL')) DEFAULT 'MANUAL',
+    fuente      TEXT,       -- URL de donde salió el valor, cuando origen='SCRAPE'
     actualizado TIMESTAMP   DEFAULT NOW()
 );
 

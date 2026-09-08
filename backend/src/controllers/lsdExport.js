@@ -29,7 +29,8 @@ async function liquidacion(req, res, next) {
       return res.status(404).json({ estado: 'error', mensaje: 'No existe una liquidación para ese período' });
     }
     res.setHeader('Content-Type', 'text/plain; charset=windows-1252');
-    res.setHeader('Content-Disposition', 'attachment; filename="LSD_Liquidacion.txt"');
+    const nombre = `LSD_Liquidacion_${lsdLiquidacion.periodoAAAAMM(periodo)}.txt`;
+    res.setHeader('Content-Disposition', `attachment; filename="${nombre}"`);
     res.send(Buffer.from(contenido, 'latin1'));
   } catch (e) { next(e); }
 }

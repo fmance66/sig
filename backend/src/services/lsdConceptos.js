@@ -63,7 +63,9 @@ async function generar(empresa) {
       ORDER BY c.id`,
     [empresa]
   );
-  return rows.map(armarLinea).join('\r\n') + (rows.length ? '\r\n' : '');
+  // Sin \r\n final: un trailing newline hace que muchos parsers de ancho fijo
+  // vean una línea vacía extra al final del archivo y la rechacen.
+  return rows.map(armarLinea).join('\r\n');
 }
 
 module.exports = { generar };

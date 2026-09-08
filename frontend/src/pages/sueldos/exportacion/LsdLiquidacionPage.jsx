@@ -21,11 +21,12 @@ export default function LsdLiquidacionPage() {
         const body = await res.json().catch(() => null);
         throw new Error(body?.mensaje || 'Error al generar el archivo');
       }
+      const nombre = res.headers.get('content-disposition')?.match(/filename="([^"]+)"/)?.[1] || 'LSD_Liquidacion.txt';
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'LSD_Liquidacion.txt';
+      a.download = nombre;
       a.click();
       URL.revokeObjectURL(url);
       toast.current.show({ severity: 'success', summary: 'OK', detail: 'Archivo generado' });

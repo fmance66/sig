@@ -34,11 +34,11 @@ async function upsert(req, res, next) {
     if (!RE_PERIODO.test(periodo)) {
       return res.status(400).json({ estado: 'error', mensaje: 'Período inválido (formato AAAAMM)' });
     }
-    const { minimo, maximo, origen } = req.body;
+    const { minimo, maximo, origen, fuente } = req.body;
     if (minimo == null || maximo == null) {
       return res.status(400).json({ estado: 'error', mensaje: 'Faltan los valores de tope mínimo/máximo' });
     }
-    const data = await model.upsert(periodo, { minimo, maximo, origen });
+    const data = await model.upsert(periodo, { minimo, maximo, origen, fuente });
     res.json({ estado: 'ok', resultado: { ...data, guardado: true } });
   } catch (e) { next(e); }
 }

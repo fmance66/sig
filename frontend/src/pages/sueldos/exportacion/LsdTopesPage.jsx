@@ -22,6 +22,7 @@ export default function LsdTopesPage() {
   const [minimo, setMinimo] = useState(null);
   const [maximo, setMaximo] = useState(null);
   const [origen, setOrigen] = useState(null); // 'SCRAPE' | 'MANUAL' | null
+  const [fuente, setFuente] = useState(null);
   const [guardado, setGuardado] = useState(false);
   const [editado, setEditado] = useState(false);
   const [cargando, setCargando] = useState(false);
@@ -41,6 +42,7 @@ export default function LsdTopesPage() {
       setMinimo(r.minimo);
       setMaximo(r.maximo);
       setOrigen(r.origen);
+      setFuente(r.fuente ?? null);
       setGuardado(r.guardado);
     } catch {
       toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se pudo consultar el tope del período' });
@@ -53,9 +55,12 @@ export default function LsdTopesPage() {
     if (minimo == null || maximo == null) return;
     setGuardando(true);
     try {
-      const res = await api.guardarTope(periodo, { minimo, maximo, origen: editado ? 'MANUAL' : (origen ?? 'MANUAL') });
+      const res = await api.guardarTope(periodo, {
+        minimo, maximo, origen: editado ? 'MANUAL' : (origen ?? 'MANUAL'), fuente,
+      });
       const r = res.data.resultado;
       setOrigen(r.origen);
+      setFuente(r.fuente ?? null);
       setGuardado(true);
       setEditado(false);
       toast.current.show({ severity: 'success', summary: 'OK', detail: 'Tope guardado' });
@@ -64,6 +69,10 @@ export default function LsdTopesPage() {
     } finally {
       setGuardando(false);
     }
+  }
+
+  function nombreSitio(url) {
+    try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
   }
 
   function estado() {
@@ -115,6 +124,11 @@ export default function LsdTopesPage() {
           </div>
 
           <div className="lsd-topes-estado">{estado()}</div>
+          {fuente && (
+            <div className="lsd-topes-fuente">
+              Fuente: <a href={fuente} target="_blank" rel="noreferrer">{nombreSitio(fuente)}</a>
+            </div>
+          )}
 
           <Button
             label="Guardar"

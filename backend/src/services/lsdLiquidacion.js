@@ -70,7 +70,11 @@ function unidadCodigo(simbolo) {
   return ' ';
 }
 
-function registro01({ cuit, periodo, tipo, cantidadTrabajadores }) {
+// El campo 8 es la cantidad de registros '04' informados (no la cantidad de
+// empleados/registros '02') — como todavía no se genera el registro '04'
+// (Fase 3, pendiente), siempre va en 0. Si se pone la cantidad de empleados
+// acá, ARCA rechaza el archivo por no coincidir con los '04' encontrados.
+function registro01({ cuit, periodo, tipo }) {
   return [
     '01',
     padNum(cuit, 11),
@@ -79,7 +83,7 @@ function registro01({ cuit, periodo, tipo, cantidadTrabajadores }) {
     TIPO_LIQUIDACION[tipo] || 'M',
     '00001',
     '30',
-    padNum(cantidadTrabajadores, 6),
+    padNum(0, 6),
   ].join('');
 }
 
@@ -139,10 +143,7 @@ async function generar(empresa, periodo) {
   )).rows;
 
   const lineas = [
-    registro01({
-      cuit: empresaRow?.cuit, periodo: periodoAAAAMM(periodo), tipo: liquidacion.tipo,
-      cantidadTrabajadores: empleados.length,
-    }),
+    registro01({ cuit: empresaRow?.cuit, periodo: periodoAAAAMM(periodo), tipo: liquidacion.tipo }),
   ];
 
   const conceptosPorEmpleado = new Map();
@@ -158,7 +159,10 @@ async function generar(empresa, periodo) {
     }
   }
 
-  return lineas.join('\r\n') + '\r\n';
+  // Sin \r\n final: un trailing newline hace que muchos parsers de ancho fijo
+  // (incluido el validador de ARCA) vean una línea vacía extra al final del
+  // archivo y la rechacen por "tipo de Registro inválido".
+  return lineas.join('\r\n');
 }
 
-module.exports = { generar };
+module.exports = { generar, periodoAAAAMM };
