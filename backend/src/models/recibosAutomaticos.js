@@ -9,7 +9,7 @@ async function listEmpleadosCandidatos({ legajo, convenio, grupo, categoria, est
        AND ($2::text IS NULL OR e.convenio = $2)
        AND ($3::text IS NULL OR e.grupo ILIKE '%'||$3||'%')
        AND ($4::text IS NULL OR e.categoria = $4)
-       AND ($5::text IS NULL OR e.estado = $5)
+       AND (($5::text IS NULL AND lower(trim(e.estado)) = 'activo') OR e.estado = $5)
        AND ($6::text IS NULL OR e.provincia = $6)
        AND ($7::date IS NULL OR e.fecha_ingreso >= $7)
        AND ($8::date IS NULL OR e.fecha_ingreso <= $8)

@@ -40,6 +40,7 @@ export default function RecibosRecalculadosPage() {
   }
 
   async function buscar(f = filtro) {
+    if (!f.periodo) { setRecibos([]); return; }
     setLoading(true);
     try {
       const res = await api.getRecibosRecalculados({ ...f, empresa: empresa?.id });
@@ -57,6 +58,10 @@ export default function RecibosRecalculadosPage() {
   }
 
   async function handleRecalcularLote() {
+    if (!filtro.periodo) {
+      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un período' });
+      return;
+    }
     setRecalculando(true);
     try {
       const res = await api.recalcularRecibosLote({ ...filtro, empresa: empresa?.id });
@@ -77,6 +82,10 @@ export default function RecibosRecalculadosPage() {
   }
 
   async function handleAplicarConcepto() {
+    if (!filtro.periodo) {
+      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un período' });
+      return;
+    }
     if (!conceptoForm.concepto) {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un concepto' });
       return;
@@ -118,7 +127,10 @@ export default function RecibosRecalculadosPage() {
         <label>Grupo</label>
         <FiltroTexto name="grupo" value={filtro.grupo} onChange={handleFiltroChange} />
       </div>
-      <Button label="Buscar" icon="fa-solid fa-magnifying-glass" size="small" onClick={() => buscar()} loading={loading} />
+      <Button label="Buscar" icon="fa-solid fa-magnifying-glass" size="small" onClick={() => {
+        if (!filtro.periodo) { toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un período' }); return; }
+        buscar();
+      }} loading={loading} />
       <Button label="Limpiar" icon="fa-solid fa-eraser" size="small" className="p-button-outlined" onClick={limpiarFiltros} />
     </div>
   );
@@ -146,7 +158,7 @@ export default function RecibosRecalculadosPage() {
             footer={recibos.length > 0 && recibos.length <= 15
               ? <div className="table-footer-right"><span className="total-registros">Total: {recibos.length} registros</span></div>
               : null}
-            emptyMessage="No hay recibos para los filtros seleccionados">
+            emptyMessage={filtro.periodo ? 'No hay recibos para los filtros seleccionados' : 'Elegí un período para buscar recibos'}>
             <Column field="legajo" header="Legajo" style={{ width: '90px' }} />
             <Column body={r => `${r.apellido ?? ''}${r.apellido && r.nombre ? ', ' : ''}${r.nombre ?? ''}`} header="Apellido y Nombre" />
             <Column field="periodo" header="Período" style={{ width: '110px' }} />

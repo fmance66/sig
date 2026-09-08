@@ -27,7 +27,7 @@ async function list({ periodo, legajo, empresa, convenio, categoria, grupo, esta
        AND ($5::text IS NULL OR e.categoria = $5)
        AND ($6::text IS NULL OR e.grupo = $6)
        AND ($7::text IS NULL OR l.estado = $7)
-     ORDER BY r.orden NULLS LAST, r.periodo, e.apellido, e.nombre`,
+     ORDER BY l.fecha DESC NULLS LAST, r.orden NULLS LAST, e.apellido, e.nombre`,
     [periodo || null, legajo || null, empresa ? Number(empresa) : null,
       convenio || null, categoria || null, grupo || null, estado || null]
   );

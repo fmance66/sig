@@ -3,12 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
 import { InputSwitch } from 'primereact/inputswitch';
 import { Toast } from 'primereact/toast';
 import * as api from '../../../api/liquidaciones';
 import FiltroTexto from './FiltroTexto';
 import BotonVolver from '../../../components/BotonVolver';
+import PeriodoSelect from '../../../components/PeriodoSelect';
 import { useEmpresa } from '../../../context/EmpresaContext';
 import './liquidaciones.css';
 
@@ -18,7 +18,6 @@ export default function RecibosAutomaticosPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { empresa } = useEmpresa();
-  const [liquidaciones, setLiquidaciones] = useState([]);
   const [periodo, setPeriodo] = useState(searchParams.get('periodo') || null);
   const [filtro, setFiltro] = useState(EMPTY_FILTRO);
   const [empleados, setEmpleados] = useState([]);
@@ -29,13 +28,10 @@ export default function RecibosAutomaticosPage() {
   const [conceptosIndividuales, setConceptosIndividuales] = useState(true);
   const toast = useRef(null);
 
-  useEffect(() => {
-    api.getLiquidaciones({ empresa: empresa?.id }).then(res => setLiquidaciones(res.data.resultado)).catch(() => {});
-  }, [empresa?.id]);
-
   useEffect(() => { if (empresa) buscar(); }, [empresa?.id]);
 
   async function buscar(f = filtro) {
+    if (!periodo) { setEmpleados([]); return; }
     setLoading(true);
     try {
       const res = await api.getEmpleadosCandidatos({ ...f, empresa: empresa?.id });
@@ -88,8 +84,6 @@ export default function RecibosAutomaticosPage() {
     }
   }
 
-  const periodoOptions = liquidaciones.map(l => ({ label: `${l.periodo} — ${l.descripcion || ''}`, value: l.periodo }));
-
   return (
     <div className="page-liquidaciones">
       <Toast ref={toast} />
@@ -101,7 +95,7 @@ export default function RecibosAutomaticosPage() {
       <div className="filtros-toolbar">
         <div className="form-field">
           <label>Período <span className="required">*</span></label>
-          <Dropdown value={periodo} options={periodoOptions} onChange={e => setPeriodo(e.value)} filter showClear placeholder="Seleccionar período" style={{ width: '280px' }} panelClassName="liquidaciones-dropdown-panel" />
+          <PeriodoSelect value={periodo} onChange={e => setPeriodo(e.value)} empresa={empresa?.id} style={{ width: '280px' }} />
         </div>
         <div className="form-field">
           <label>Legajo</label>
@@ -123,7 +117,10 @@ export default function RecibosAutomaticosPage() {
           <label>Provincia</label>
           <FiltroTexto name="provincia" value={filtro.provincia} onChange={handleFiltroChange} />
         </div>
-        <Button label="Buscar" icon="fa-solid fa-magnifying-glass" size="small" onClick={() => buscar()} loading={loading} />
+        <Button label="Buscar" icon="fa-solid fa-magnifying-glass" size="small" onClick={() => {
+          if (!periodo) { toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un período' }); return; }
+          buscar();
+        }} loading={loading} />
         <Button label="Limpiar" icon="fa-solid fa-eraser" size="small" className="p-button-outlined" onClick={limpiarFiltros} />
       </div>
 
@@ -149,7 +146,7 @@ export default function RecibosAutomaticosPage() {
         dataKey="id"
         size="small"
         stripedRows
-        emptyMessage="Buscá empleados para generar sus recibos"
+        emptyMessage={periodo ? 'Buscá empleados para generar sus recibos' : 'Elegí un período para buscar empleados'}
         paginator={empleados.length > 15}
         rows={15}
         paginatorRight={<span className="total-registros">Total: {empleados.length} registros</span>}
