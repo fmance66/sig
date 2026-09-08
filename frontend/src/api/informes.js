@@ -27,9 +27,9 @@ function pdfParams(params, seleccion) {
 // si ese diseño tiene modelo_fijo seteado (LEY_27802 / IPROFESIONAL), sale con ese layout
 // fijo; si no, con el motor de cajas x/y de siempre. Ver backend/src/services/pdfInformes.js.
 export const getReciboSueldoPdfUrl = (params, seleccion) =>
-  `/api/informes/recibos-sueldo/pdf?${new URLSearchParams(pdfParams(params, seleccion)).toString()}`;
+  `${client.defaults.baseURL}/informes/recibos-sueldo/pdf?${new URLSearchParams(pdfParams(params, seleccion)).toString()}`;
 export const getLibroSueldoPdfUrl = (params, seleccion) =>
-  `/api/informes/libro-sueldos/pdf?${new URLSearchParams(pdfParams(params, seleccion)).toString()}`;
+  `${client.defaults.baseURL}/informes/libro-sueldos/pdf?${new URLSearchParams(pdfParams(params, seleccion)).toString()}`;
 
 // Diseño de Recibos de Sueldo / Diseño de Libro de Sueldos
 export const formulariosRecibo = {
