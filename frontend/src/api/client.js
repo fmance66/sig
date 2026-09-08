@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: '/api',
+  // En dev, Vite proxea /api al backend local; en prod, Vercel no tiene backend
+  // propio, así que necesita la URL completa del backend en Render.
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });
