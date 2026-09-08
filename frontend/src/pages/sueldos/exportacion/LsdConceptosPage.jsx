@@ -14,7 +14,7 @@ export default function LsdConceptosPage() {
   async function handleGenerar() {
     setGenerando(true);
     try {
-      const res = await fetch(api.getConceptosUrl(empresa.id));
+      const res = await fetch(api.getConceptosUrl(empresa.id), { credentials: 'include' });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         throw new Error(body?.mensaje || 'Error al generar el archivo');

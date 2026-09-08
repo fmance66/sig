@@ -24,7 +24,7 @@ export default function CopiaSeguridadPage() {
   async function handleGenerar() {
     setGenerando(true);
     try {
-      const res = await fetch(api.getGenerarUrl());
+      const res = await fetch(api.getGenerarUrl(), { credentials: 'include' });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         throw new Error(body?.mensaje || 'Error al generar la copia de seguridad');

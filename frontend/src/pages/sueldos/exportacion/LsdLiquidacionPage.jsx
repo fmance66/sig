@@ -16,7 +16,7 @@ export default function LsdLiquidacionPage() {
   async function handleGenerar() {
     setGenerando(true);
     try {
-      const res = await fetch(api.getLiquidacionUrl(empresa.id, periodo));
+      const res = await fetch(api.getLiquidacionUrl(empresa.id, periodo), { credentials: 'include' });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         throw new Error(body?.mensaje || 'Error al generar el archivo');
