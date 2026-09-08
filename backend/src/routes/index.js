@@ -52,6 +52,7 @@ mod('/recibos-automaticos', 'sueldos', require('./recibosAutomaticos'));
 mod('/recibos-recalculados', 'sueldos', require('./recibosRecalculados'));
 mod('/listado-contribuciones', 'sueldos', require('./contribuciones'));
 mod('/informes', 'sueldos', require('./informes'));
+mod('/lsd', 'sueldos', require('./lsd'));
 
 mod('/convenios', 'configuracion', catalogo('sld_convenio',
   ['descripcion', 'liquidacion', 'dias', 'horas', 'moneda', 'obra_social', 'grupo_de_conceptos', 'orden'],

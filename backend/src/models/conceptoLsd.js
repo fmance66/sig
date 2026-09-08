@@ -2,7 +2,7 @@ const pool = require('../config/db');
 
 const COLS = `
   concepto, aporte_sipa, aporte_inssjyp, aporte_obrasocial, aporte_fsr, aporte_uatre,
-  aporte_diferencial, aporte_regespecial, aporte_libre1, aporte_libre2,
+  aporte_diferencial, aporte_regespecial, aporte_renatre, aporte_libre1, aporte_libre2,
   contribucion_sipa, contribucion_inssjyp, contribucion_obrasocial, contribucion_fsr,
   contribucion_renatre, contribucion_aaff, contribucion_fne, contribucion_lrt,
   contribucion_libre1, contribucion_libre2, repetible
@@ -10,7 +10,7 @@ const COLS = `
 
 const MUTABLE = [
   'aporte_sipa', 'aporte_inssjyp', 'aporte_obrasocial', 'aporte_fsr', 'aporte_uatre',
-  'aporte_diferencial', 'aporte_regespecial', 'aporte_libre1', 'aporte_libre2',
+  'aporte_diferencial', 'aporte_regespecial', 'aporte_renatre', 'aporte_libre1', 'aporte_libre2',
   'contribucion_sipa', 'contribucion_inssjyp', 'contribucion_obrasocial', 'contribucion_fsr',
   'contribucion_renatre', 'contribucion_aaff', 'contribucion_fne', 'contribucion_lrt',
   'contribucion_libre1', 'contribucion_libre2', 'repetible',

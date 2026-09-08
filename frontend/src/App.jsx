@@ -49,6 +49,9 @@ import DisenoRecibosSueldoPage from './pages/sueldos/informes/DisenoRecibosSueld
 import DisenoLibroSueldosPage from './pages/sueldos/informes/DisenoLibroSueldosPage';
 import InformesPersonalizadosPage from './pages/sueldos/informes/InformesPersonalizadosPage';
 import DisenoInformesPersonalizadosPage from './pages/sueldos/informes/DisenoInformesPersonalizadosPage';
+import LsdConceptosPage from './pages/sueldos/exportacion/LsdConceptosPage';
+import LsdLiquidacionPage from './pages/sueldos/exportacion/LsdLiquidacionPage';
+import LsdTopesPage from './pages/sueldos/exportacion/LsdTopesPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import CopiarConfiguracionPage from './pages/configuracion/CopiarConfiguracionPage';
 import CopiaSeguridadPage from './pages/configuracion/CopiaSeguridadPage';
@@ -136,6 +139,11 @@ export default function App() {
           <Route path="sueldos/informes/diseno-libro-sueldos" element={<DisenoLibroSueldosPage />} />
           <Route path="sueldos/informes/personalizados" element={<InformesPersonalizadosPage />} />
           <Route path="sueldos/informes/diseno-personalizados" element={<DisenoInformesPersonalizadosPage />} />
+
+          {/* exportación */}
+          <Route path="sueldos/exportacion/lsd-conceptos" element={<LsdConceptosPage />} />
+          <Route path="sueldos/exportacion/lsd-liquidacion" element={<LsdLiquidacionPage />} />
+          <Route path="sueldos/exportacion/lsd-topes" element={<LsdTopesPage />} />
           {/* ayuda */}
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}

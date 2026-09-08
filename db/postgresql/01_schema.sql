@@ -385,6 +385,7 @@ CREATE TABLE IF NOT EXISTS sld_concepto_lsd (
     aporte_uatre            BOOLEAN DEFAULT FALSE,
     aporte_diferencial      BOOLEAN DEFAULT FALSE,
     aporte_regespecial      BOOLEAN DEFAULT FALSE,
+    aporte_renatre          BOOLEAN DEFAULT FALSE,
     aporte_libre1           BOOLEAN DEFAULT FALSE,
     aporte_libre2           BOOLEAN DEFAULT FALSE,
     contribucion_sipa       BOOLEAN DEFAULT FALSE,
@@ -400,6 +401,20 @@ CREATE TABLE IF NOT EXISTS sld_concepto_lsd (
     repetible               BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (concepto, empresa),
     FOREIGN KEY (concepto, empresa) REFERENCES sld_concepto(id, empresa) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Valor mensual de tope previsional (ANSES, art. 9 Ley 24.241) usado para topear
+-- las bases imponibles de aportes (SIPA/INSSJyP/Obra Social+FSR) del Libro de
+-- Sueldos Digital — ver Guía Nº 31 LSD de ARCA. Es un valor nacional (no varía
+-- por empresa) que cambia todos los meses; se completa por scraping asistido
+-- (ver services/topePrevisionalScraper.js) pero siempre queda editable a mano
+-- antes de generar el archivo de liquidación.
+CREATE TABLE IF NOT EXISTS sld_tope_previsional (
+    periodo     VARCHAR(6)  PRIMARY KEY,  -- formato AAAAMM
+    minimo      NUMERIC(14,2),
+    maximo      NUMERIC(14,2),
+    origen      VARCHAR(10) CHECK (origen IN ('SCRAPE','MANUAL')) DEFAULT 'MANUAL',
+    actualizado TIMESTAMP   DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS sld_concepto_general (

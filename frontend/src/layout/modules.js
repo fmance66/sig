@@ -171,6 +171,17 @@ export const MODULES = [
         icon: 'fa-solid fa-file-export',
         items: [
           {
+            label: 'Libro de Sueldos Digital (ARCA)',
+            icon: 'fa-solid fa-landmark',
+            className: 'submenu-flip-left',
+            items: [
+              { label: 'Archivo de Conceptos', icon: 'fa-solid fa-tags', path: '/sueldos/exportacion/lsd-conceptos' },
+              { label: 'Archivo de Liquidación', icon: 'fa-solid fa-file-invoice-dollar', path: '/sueldos/exportacion/lsd-liquidacion' },
+              { label: 'Topes Previsionales', icon: 'fa-solid fa-gauge-high', path: '/sueldos/exportacion/lsd-topes' },
+            ],
+          },
+          { separator: true },
+          {
             label: 'Archivos',
             icon: 'fa-solid fa-file-export',
             className: 'submenu-flip-left',

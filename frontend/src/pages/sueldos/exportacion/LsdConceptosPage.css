@@ -1,0 +1,29 @@
+/* page-title, form-field: ver styles/global-tables.css */
+
+.page-lsd-conceptos {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.lsd-card {
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.lsd-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.4rem;
+}
+
+.lsd-card-desc {
+  font-size: 0.8rem;
+  color: #4b5563;
+  margin: 0 0 0.8rem;
+}

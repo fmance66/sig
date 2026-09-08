@@ -34,7 +34,7 @@ const EMPTY_FORM = {
   formula_unidad: '', formula_importe: '', formula_unitario: '', formula_condicion: '',
   activo: true, orden: '', clase: null,
   aporte_sipa: false, aporte_inssjyp: false, aporte_obrasocial: false, aporte_fsr: false,
-  aporte_uatre: false, aporte_diferencial: false, aporte_regespecial: false,
+  aporte_uatre: false, aporte_diferencial: false, aporte_regespecial: false, aporte_renatre: false,
   aporte_libre1: false, aporte_libre2: false,
   contribucion_sipa: false, contribucion_inssjyp: false, contribucion_obrasocial: false,
   contribucion_fsr: false, contribucion_renatre: false, contribucion_aaff: false,
@@ -45,7 +45,7 @@ const EMPTY_FORM = {
 
 const LSD_FIELDS = [
   'aporte_sipa', 'aporte_inssjyp', 'aporte_obrasocial', 'aporte_fsr', 'aporte_uatre',
-  'aporte_diferencial', 'aporte_regespecial', 'aporte_libre1', 'aporte_libre2',
+  'aporte_diferencial', 'aporte_regespecial', 'aporte_renatre', 'aporte_libre1', 'aporte_libre2',
   'contribucion_sipa', 'contribucion_inssjyp', 'contribucion_obrasocial', 'contribucion_fsr',
   'contribucion_renatre', 'contribucion_aaff', 'contribucion_fne', 'contribucion_lrt',
   'contribucion_libre1', 'contribucion_libre2', 'repetible',
@@ -433,7 +433,8 @@ export default function ConceptosPage() {
                 {[
                   ['aporte_sipa', 'SIPA'], ['aporte_inssjyp', 'INSSJyP'], ['aporte_obrasocial', 'OS'],
                   ['aporte_fsr', 'FSR'], ['aporte_uatre', 'UATRE'], ['aporte_diferencial', 'Diferencial'],
-                  ['aporte_regespecial', 'Reg. Esp.'], ['aporte_libre1', 'Libre 1'], ['aporte_libre2', 'Libre 2'],
+                  ['aporte_regespecial', 'Reg. Esp.'], ['aporte_renatre', 'RENATEA'],
+                  ['aporte_libre1', 'Libre 1'], ['aporte_libre2', 'Libre 2'],
                 ].map(([field, label]) => (
                   <label key={field} className="lsd-check">
                     <Checkbox inputId={field} checked={form[field]} onChange={e => handleCheck(field, e.checked)} />

@@ -203,6 +203,44 @@
           ]
         },
         {
+          "name": "LSD",
+          "item": [
+            {
+              "name": "GET Archivo de Conceptos",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/lsd/conceptos?empresa=1"
+              }
+            },
+            {
+              "name": "GET Archivo de Liquidación",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/lsd/liquidacion?empresa=1&periodo=09%2F2026"
+              }
+            },
+            {
+              "name": "GET Tope Previsional (período)",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/lsd/topes/202609"
+              }
+            },
+            {
+              "name": "PUT Tope Previsional (período)",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/lsd/topes/202609",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"minimo\": 144363.55,\n  \"maximo\": 4691748.47,\n  \"origen\": \"MANUAL\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
           "name": "Seguridad",
           "item": [
             {
