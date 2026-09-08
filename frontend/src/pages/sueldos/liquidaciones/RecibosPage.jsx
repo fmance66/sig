@@ -118,7 +118,7 @@ export default function RecibosPage() {
     <div className="filtros-toolbar">
       <div className="form-field">
         <label>Período</label>
-        <PeriodoSelect value={filtro.periodo} onChange={e => setFiltro(prev => ({ ...prev, periodo: e.value || '' }))} placeholder="" style={{ width: '220px' }} />
+        <PeriodoSelect value={filtro.periodo} onChange={e => setFiltro(prev => ({ ...prev, periodo: e.value || '' }))} empresa={empresa?.id} placeholder="" style={{ width: '220px' }} />
       </div>
       <div className="form-field">
         <label>Legajo</label>

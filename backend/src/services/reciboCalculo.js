@@ -62,7 +62,7 @@ async function calcularRecibo(periodo, empleado, numero) {
   if (!recibo) return null;
 
   const [liquidacionRes, empleadoRes, conceptosRes] = await Promise.all([
-    pool.query('SELECT * FROM sld_liquidacion WHERE periodo = $1', [periodo]),
+    pool.query('SELECT * FROM sld_liquidacion WHERE periodo = $1 AND empresa = $2', [periodo, recibo.empresa]),
     pool.query('SELECT * FROM sld_empleado WHERE id = $1', [empleado]),
     pool.query(
       `SELECT rc.concepto, rc.unidad_manual, rc.importe_manual,

@@ -2683,7 +2683,7 @@
                   "request": {
                     "method": "GET",
                     "url": {
-                      "raw": "{{base_url}}/liquidaciones?periodo=2026&estado=ABIERTA",
+                      "raw": "{{base_url}}/liquidaciones?periodo=2026&estado=ABIERTA&empresa=1",
                       "host": [
                         "{{base_url}}"
                       ],
@@ -2698,6 +2698,10 @@
                         {
                           "key": "estado",
                           "value": "ABIERTA"
+                        },
+                        {
+                          "key": "empresa",
+                          "value": "1"
                         }
                       ]
                     }
@@ -2707,7 +2711,7 @@
                   "name": "GET Liquidación por Período",
                   "request": {
                     "method": "GET",
-                    "url": "{{base_url}}/liquidaciones/08%2F2026"
+                    "url": "{{base_url}}/liquidaciones/08%2F2026?empresa=1"
                   }
                 },
                 {
@@ -2723,7 +2727,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"periodo\": \"08/2026\",\n  \"tipo\": \"MENSUAL\",\n  \"estado\": \"ABIERTA\",\n  \"fecha\": \"2026-08-01\",\n  \"fecha_desde\": \"2026-07-01\",\n  \"fecha_hasta\": \"2026-07-31\",\n  \"descripcion\": \"Julio 2026\",\n  \"fecha_pago\": \"2026-08-06\",\n  \"lugar_pago\": \"Av. de Mayo 347 Ramos Mejía Pcia.Bs.As.\"\n}"
+                      "raw": "{\n  \"periodo\": \"08/2026\",\n  \"empresa\": 1,\n  \"tipo\": \"MENSUAL\",\n  \"estado\": \"ABIERTA\",\n  \"fecha\": \"2026-08-01\",\n  \"fecha_desde\": \"2026-07-01\",\n  \"fecha_hasta\": \"2026-07-31\",\n  \"descripcion\": \"Julio 2026\",\n  \"fecha_pago\": \"2026-08-06\",\n  \"lugar_pago\": \"Av. de Mayo 347 Ramos Mejía Pcia.Bs.As.\"\n}"
                     }
                   }
                 },
@@ -2731,7 +2735,7 @@
                   "name": "PUT Liquidación",
                   "request": {
                     "method": "PUT",
-                    "url": "{{base_url}}/liquidaciones/08%2F2026",
+                    "url": "{{base_url}}/liquidaciones/08%2F2026?empresa=1",
                     "header": [
                       {
                         "key": "Content-Type",
@@ -2748,7 +2752,7 @@
                   "name": "DELETE Liquidación",
                   "request": {
                     "method": "DELETE",
-                    "url": "{{base_url}}/liquidaciones/08%2F2026"
+                    "url": "{{base_url}}/liquidaciones/08%2F2026?empresa=1"
                   }
                 }
               ]
@@ -2977,7 +2981,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"periodo\": \"08/2026\",\n  \"empleados\": [1, 2],\n  \"conceptosIndividuales\": true,\n  \"saldoCero\": false\n}"
+                      "raw": "{\n  \"periodo\": \"08/2026\",\n  \"empresa\": 1,\n  \"empleados\": [1, 2],\n  \"conceptosIndividuales\": true,\n  \"saldoCero\": false\n}"
                     }
                   }
                 }

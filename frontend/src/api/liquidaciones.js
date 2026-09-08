@@ -2,9 +2,11 @@ import client from './client';
 
 // Liquidación (período)
 export const getLiquidaciones   = (params)      => client.get('/liquidaciones', { params });
-export const getLiquidacion     = (periodo)      => client.get(`/liquidaciones/${encodeURIComponent(periodo)}`);
+export const getLiquidacion     = (periodo, empresa) =>
+  client.get(`/liquidaciones/${encodeURIComponent(periodo)}`, { params: { empresa } });
 export const createLiquidacion  = (data)         => client.post('/liquidaciones', data);
-export const updateLiquidacion  = (periodo, data) => client.put(`/liquidaciones/${encodeURIComponent(periodo)}`, data);
+export const updateLiquidacion  = (periodo, empresa, data) =>
+  client.put(`/liquidaciones/${encodeURIComponent(periodo)}`, data, { params: { empresa } });
 export const deleteLiquidacion  = (periodo, empresa) =>
   client.delete(`/liquidaciones/${encodeURIComponent(periodo)}`, { params: { empresa } });
 

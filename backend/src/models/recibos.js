@@ -19,7 +19,7 @@ async function list({ periodo, legajo, empresa, convenio, categoria, grupo, esta
     `SELECT ${HEADER_COLS}, e.legajo, e.apellido, e.nombre, e.convenio, e.categoria, e.grupo
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      WHERE ($1::text IS NULL OR r.periodo = $1)
        AND ($2::text IS NULL OR e.legajo ILIKE '%'||$2||'%')
        AND ($3::integer IS NULL OR e.empresa = $3)
@@ -59,7 +59,7 @@ async function getHeader(periodo, empleado, numero) {
             ${HEADER_DISENO_COLS}
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      LEFT JOIN sld_convenio cv ON cv.id = e.convenio
      LEFT JOIN sld_categoria cat ON cat.convenio = e.convenio AND cat.id = e.categoria
      LEFT JOIN sld_obra_social os ON os.id = e.obra_social
@@ -98,9 +98,9 @@ async function nextNumero(periodo, empleado) {
 async function createHeader(data) {
   const numero = data.numero || await nextNumero(data.periodo, data.empleado);
   const cols = HEADER_MUTABLE.filter(c => data[c] !== undefined);
-  const allCols = ['periodo', 'empleado', 'numero', ...cols];
+  const allCols = ['periodo', 'empleado', 'numero', 'empresa', ...cols];
+  const ph = ['$1', '$2', '$3', '(SELECT empresa FROM sld_empleado WHERE id = $2)', ...cols.map((_, i) => `$${i + 4}`)];
   const allVals = [data.periodo, data.empleado, numero, ...cols.map(c => toDbValue(data[c]))];
-  const ph = allCols.map((_, i) => `$${i + 1}`);
   const { rows } = await pool.query(
     `INSERT INTO sld_recibo (${allCols.join(',')}) VALUES (${ph.join(',')}) RETURNING periodo, empleado, numero`,
     allVals

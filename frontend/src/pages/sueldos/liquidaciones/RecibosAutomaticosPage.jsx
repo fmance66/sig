@@ -71,7 +71,7 @@ export default function RecibosAutomaticosPage() {
     setGenerando(true);
     try {
       const res = await api.generarRecibosAutomaticos({
-        periodo, empleados: seleccionados.map(e => e.id), conceptosIndividuales, saldoCero,
+        periodo, empresa: empresa?.id, empleados: seleccionados.map(e => e.id), conceptosIndividuales, saldoCero,
       });
       const r = res.data.resultado;
       toast.current.show({

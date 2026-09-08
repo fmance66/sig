@@ -13,11 +13,11 @@ async function listEmpleados(req, res) {
 
 async function generar(req, res) {
   try {
-    const { periodo, empleados, conceptosIndividuales, saldoCero } = req.body;
-    if (!periodo || !Array.isArray(empleados) || !empleados.length) {
-      return res.status(400).json({ estado: 'error', mensaje: 'periodo y empleados[] son requeridos' });
+    const { periodo, empresa, empleados, conceptosIndividuales, saldoCero } = req.body;
+    if (!periodo || !empresa || !Array.isArray(empleados) || !empleados.length) {
+      return res.status(400).json({ estado: 'error', mensaje: 'periodo, empresa y empleados[] son requeridos' });
     }
-    const resumen = await model.generar({ periodo, empleados, conceptosIndividuales, saldoCero });
+    const resumen = await model.generar({ periodo, empresa, empleados, conceptosIndividuales, saldoCero });
     res.json({ estado: 'ok', resultado: resumen });
   } catch (err) {
     console.error(err);

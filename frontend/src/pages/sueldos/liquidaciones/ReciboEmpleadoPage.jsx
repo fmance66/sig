@@ -286,7 +286,7 @@ export default function ReciboEmpleadoPage() {
         <div className="form-grid recibo-header-form">
           <div className="form-field">
             <label>Período <span className="required">*</span></label>
-            <PeriodoSelect value={nuevoPeriodo} onChange={e => setNuevoPeriodo(e.value)} style={{ width: '320px' }} />
+            <PeriodoSelect value={nuevoPeriodo} onChange={e => setNuevoPeriodo(e.value)} empresa={empresa?.id} style={{ width: '320px' }} />
           </div>
           <div className="form-field">
             <label>Empleado <span className="required">*</span></label>

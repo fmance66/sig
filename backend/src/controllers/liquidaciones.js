@@ -13,7 +13,8 @@ async function list(req, res) {
 
 async function getOne(req, res) {
   try {
-    const data = await Liquidacion.getByPeriodo(req.params.periodo);
+    if (!req.query.empresa) return res.status(400).json({ estado: 'error', mensaje: 'empresa es requerida' });
+    const data = await Liquidacion.getByPeriodo(req.params.periodo, req.query.empresa);
     if (!data) return res.status(404).json({ estado: 'error', mensaje: 'Liquidación no encontrada' });
     res.json({ estado: 'ok', resultado: data });
   } catch (err) {
@@ -25,10 +26,11 @@ async function getOne(req, res) {
 async function create(req, res) {
   try {
     if (!req.body.periodo) return res.status(400).json({ estado: 'error', mensaje: 'periodo es requerido' });
+    if (!req.body.empresa) return res.status(400).json({ estado: 'error', mensaje: 'empresa es requerida' });
     const data = await Liquidacion.create(req.body);
     res.status(201).json({ estado: 'ok', resultado: data });
   } catch (err) {
-    if (err.code === '23505') return res.status(409).json({ estado: 'error', mensaje: 'Ya existe una liquidación con ese período' });
+    if (err.code === '23505') return res.status(409).json({ estado: 'error', mensaje: 'Ya existe una liquidación con ese período para esta empresa' });
     console.error(err);
     res.status(500).json({ estado: 'error', mensaje: 'Error al crear liquidación' });
   }
@@ -36,7 +38,8 @@ async function create(req, res) {
 
 async function update(req, res) {
   try {
-    const data = await Liquidacion.update(req.params.periodo, req.body);
+    if (!req.query.empresa) return res.status(400).json({ estado: 'error', mensaje: 'empresa es requerida' });
+    const data = await Liquidacion.update(req.params.periodo, req.query.empresa, req.body);
     if (!data) return res.status(404).json({ estado: 'error', mensaje: 'Liquidación no encontrada' });
     res.json({ estado: 'ok', resultado: data });
   } catch (err) {
@@ -47,9 +50,9 @@ async function update(req, res) {
 
 async function remove(req, res) {
   try {
-    const { encontrada, eliminada } = await Liquidacion.remove(req.params.periodo, req.query.empresa);
-    if (!encontrada) return res.status(404).json({ estado: 'error', mensaje: 'Liquidación no encontrada' });
-    if (!eliminada) return res.status(404).json({ estado: 'error', mensaje: 'No hay recibos de esta empresa en ese período' });
+    if (!req.query.empresa) return res.status(400).json({ estado: 'error', mensaje: 'empresa es requerida' });
+    const eliminada = await Liquidacion.remove(req.params.periodo, req.query.empresa);
+    if (!eliminada) return res.status(404).json({ estado: 'error', mensaje: 'Liquidación no encontrada' });
     res.json({ estado: 'ok', mensaje: 'Liquidación eliminada' });
   } catch (err) {
     console.error(err);

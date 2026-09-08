@@ -65,7 +65,7 @@ export default function InformesPersonalizadosPage() {
         </div>
         <div className="form-field">
           <label>Período</label>
-          <PeriodoSelect value={periodo} onChange={e => setPeriodo(e.value || '')} placeholder="" style={{ width: '220px' }} />
+          <PeriodoSelect value={periodo} onChange={e => setPeriodo(e.value || '')} empresa={empresa?.id} placeholder="" style={{ width: '220px' }} />
         </div>
         <Button label="Ejecutar" icon="fa-solid fa-play" size="small" onClick={ejecutar} loading={loading} />
       </div>

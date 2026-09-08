@@ -35,7 +35,7 @@ async function getMasaSalarialPorPeriodo(empresa, limit = 6) {
             MAX(l.fecha) AS fecha
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      WHERE e.empresa = $1
      GROUP BY r.periodo
      ORDER BY MAX(l.fecha) DESC NULLS LAST
@@ -56,7 +56,7 @@ async function getUltimoPeriodo(empresa) {
             l.estado, l.descripcion, l.fecha_pago
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      WHERE e.empresa = $1
      GROUP BY r.periodo, l.estado, l.descripcion, l.fecha_pago, l.fecha
      ORDER BY l.fecha DESC NULLS LAST
@@ -95,7 +95,7 @@ async function getUltimoPeriodoPorEmpresa() {
        SELECT DISTINCT ON (e.empresa) e.empresa AS empresa_id, r.periodo
        FROM sld_recibo r
        JOIN sld_empleado e ON e.id = r.empleado
-       LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+       LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
        ORDER BY e.empresa, l.fecha DESC NULLS LAST
      )
      SELECT emp.id AS empresa_id, emp.razon_social, u.periodo,

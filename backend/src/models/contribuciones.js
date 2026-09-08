@@ -9,7 +9,7 @@ async function list({ periodo, legajo, empresa, convenio, categoria, grupo, esta
                       WHERE rc.periodo = r.periodo AND rc.empleado = r.empleado AND rc.numero = r.numero AND c.columna = $8), 0) AS total
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      WHERE ($1::text IS NULL OR r.periodo = $1)
        AND ($2::text IS NULL OR e.legajo ILIKE '%'||$2||'%')
        AND ($3::integer IS NULL OR e.empresa = $3)

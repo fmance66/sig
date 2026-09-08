@@ -87,7 +87,7 @@ async function conceptosAcumulados(filtro = {}) {
      JOIN sld_recibo r ON r.periodo = rc.periodo AND r.empleado = rc.empleado AND r.numero = rc.numero
      JOIN sld_empleado e ON e.id = r.empleado
      JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      WHERE ${FILTRO_BASE_SQL}
      GROUP BY rc.concepto, c.descripcion, c.orden
      ORDER BY c.orden NULLS LAST, rc.concepto`,
@@ -116,7 +116,7 @@ async function conceptosPorGrupo(filtro = {}) {
      JOIN sld_recibo r ON r.periodo = rc.periodo AND r.empleado = rc.empleado AND r.numero = rc.numero
      JOIN sld_empleado e ON e.id = r.empleado
      JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      ${dim.join}
      WHERE ${FILTRO_BASE_SQL}
      GROUP BY ${dim.groupCol}, ${dim.descExpr}, rc.concepto, c.descripcion, c.orden
@@ -166,7 +166,7 @@ async function conceptosPorRecibo(filtro = {}) {
      JOIN sld_recibo r ON r.periodo = rc.periodo AND r.empleado = rc.empleado AND r.numero = rc.numero
      JOIN sld_empleado e ON e.id = r.empleado
      JOIN sld_concepto c ON c.id = rc.concepto AND c.empresa = rc.empresa
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      WHERE ${FILTRO_BASE_SQL}
        AND ($8::text IS NULL OR rc.concepto ILIKE '%'||$8||'%')
      ORDER BY ${orden}`,
@@ -184,7 +184,7 @@ async function remuneracionPorConceptos(filtro = {}) {
      FROM sld_empleado e
      LEFT JOIN sld_recibo r ON r.empleado = e.id
        AND ($1::text IS NULL OR r.periodo = $1)
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      WHERE ($2::text IS NULL OR e.legajo ILIKE '%'||$2||'%')
        AND ($3::text IS NULL OR e.convenio = $3)
        AND ($4::text IS NULL OR e.categoria = $4)
@@ -212,7 +212,7 @@ async function remuneracionPorGrupos(filtro = {}) {
             r.remunerativo, r.no_remunerativo, r.descuento, r.sueldo_neto
      FROM sld_recibo r
      JOIN sld_empleado e ON e.id = r.empleado
-     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo
+     LEFT JOIN sld_liquidacion l ON l.periodo = r.periodo AND l.empresa = r.empresa
      ${dim.join}
      WHERE ${FILTRO_BASE_SQL}
      ORDER BY ${dim.groupCol} NULLS LAST, e.apellido NULLS LAST, e.nombre NULLS LAST`,

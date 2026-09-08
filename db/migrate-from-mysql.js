@@ -86,11 +86,16 @@ const NOT_NULL_DEFAULTS = {
 // columna `empresa` porque no hacía falta — pero el schema Postgres compartido sí
 // la requiere (NOT NULL, sin DEFAULT: ver 01_schema.sql). Se agrega acá al final
 // de cada fila con el número de empresa ya resuelto para todo el archivo
-// (empresaNum), igual para las 7 tablas porque cada dump es de una sola empresa.
+// (empresaNum), igual para todas estas tablas porque cada dump es de una sola
+// empresa. sld_liquidacion además se beneficia de esto para el ON CONFLICT DO
+// NOTHING genérico: al pasar de PK(periodo) a PK(periodo, empresa), dos empresas
+// con el mismo periodo calendario ya no chocan entre sí (antes la segunda
+// empresa en procesarse quedaba pisada/descartada en silencio).
 // ---------------------------------------------------------------------------
 const TABLES_NEEDING_EMPRESA_COLUMN = new Set([
   'sld_concepto', 'sld_concepto_lsd', 'sld_concepto_general', 'sld_concepto_grupo',
   'sld_concepto_de_grupo', 'sld_empleado_concepto', 'sld_recibo_concepto',
+  'sld_liquidacion', 'sld_recibo',
 ]);
 
 // ---------------------------------------------------------------------------

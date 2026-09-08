@@ -62,8 +62,8 @@ async function snapshotReciboEmpleado(empleado, fecha) {
   );
 }
 
-async function generar({ periodo, empleados, conceptosIndividuales, saldoCero }) {
-  const liquidacionRes = await pool.query('SELECT * FROM sld_liquidacion WHERE periodo = $1', [periodo]);
+async function generar({ periodo, empresa, empleados, conceptosIndividuales, saldoCero }) {
+  const liquidacionRes = await pool.query('SELECT * FROM sld_liquidacion WHERE periodo = $1 AND empresa = $2', [periodo, empresa]);
   const liquidacion = liquidacionRes.rows[0];
   if (!liquidacion) throw Object.assign(new Error('La liquidación (período) no existe'), { status: 404 });
 
@@ -84,9 +84,9 @@ async function generar({ periodo, empleados, conceptosIndividuales, saldoCero })
 
       if (!yaExistia) {
         await pool.query(
-          `INSERT INTO sld_recibo (periodo, empleado, numero, periodo_recibo, fecha_recibo, fecha_pago)
-           VALUES ($1, $2, $3, $4, $5, $6)`,
-          [periodo, empleadoId, numero, liquidacion.descripcion || periodo, liquidacion.fecha, liquidacion.fecha_pago]
+          `INSERT INTO sld_recibo (periodo, empleado, numero, empresa, periodo_recibo, fecha_recibo, fecha_pago)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [periodo, empleadoId, numero, empleado.empresa, liquidacion.descripcion || periodo, liquidacion.fecha, liquidacion.fecha_pago]
         );
       }
 

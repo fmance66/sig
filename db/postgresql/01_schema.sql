@@ -474,7 +474,8 @@ CREATE TABLE IF NOT EXISTS sld_categoria_periodo (
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS sld_liquidacion (
-    periodo             VARCHAR(30) PRIMARY KEY,
+    periodo             VARCHAR(30) NOT NULL,
+    empresa             INTEGER     NOT NULL REFERENCES sys_empresa(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tipo                VARCHAR(15) CHECK (tipo IN ('MENSUAL','QUINCENA_1','QUINCENA_2','AGUINALDO','VACACIONES','RENUNCIA','DESPIDO','OTROS')),
     estado              VARCHAR(8)  CHECK (estado IN ('ABIERTA','CERRADA','ACTIVA')) DEFAULT 'ABIERTA',
     fecha               DATE,
@@ -487,7 +488,8 @@ CREATE TABLE IF NOT EXISTS sld_liquidacion (
     fecha_deposito      DATE,
     periodo_deposito    VARCHAR(40),
     banco_deposito      VARCHAR(60),
-    orden               INTEGER
+    orden               INTEGER,
+    PRIMARY KEY (periodo, empresa)
 );
 
 -- -----------------------------------------------------------------------------
@@ -693,7 +695,8 @@ CREATE TABLE IF NOT EXISTS sld_concepto_de_grupo (
 -- -----------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS sld_recibo (
-    periodo         VARCHAR(30) NOT NULL REFERENCES sld_liquidacion(periodo) ON DELETE CASCADE ON UPDATE CASCADE,
+    periodo         VARCHAR(30) NOT NULL,
+    empresa         INTEGER     NOT NULL REFERENCES sys_empresa(id) ON DELETE CASCADE ON UPDATE CASCADE,
     empleado        INTEGER     NOT NULL REFERENCES sld_empleado(id) ON DELETE CASCADE ON UPDATE CASCADE,
     numero          INTEGER     NOT NULL DEFAULT 1,
     periodo_recibo  VARCHAR(30),
@@ -713,7 +716,8 @@ CREATE TABLE IF NOT EXISTS sld_recibo (
     mail            BOOLEAN     DEFAULT FALSE,
     visible         BOOLEAN     DEFAULT TRUE,
     orden           INTEGER,
-    PRIMARY KEY (periodo, empleado, numero)
+    PRIMARY KEY (periodo, empleado, numero),
+    FOREIGN KEY (periodo, empresa) REFERENCES sld_liquidacion(periodo, empresa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sld_recibo_concepto (

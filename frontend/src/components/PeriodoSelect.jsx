@@ -6,9 +6,8 @@ import { getLiquidaciones } from '../api/liquidaciones';
 // (value / onChange(e) con e.value), pero autocontenido — trae la lista de
 // sld_liquidacion una sola vez y arma las opciones, en vez de que cada
 // pantalla repita el fetch + el .map de "periodo — descripcion".
-// sld_liquidacion es una tabla global (no tiene columna empresa), así que si
-// se pasa `empresa` se acota a los períodos que tienen al menos un recibo de
-// esa empresa — evita ofrecer períodos "vacíos" para la empresa seleccionada.
+// sld_liquidacion tiene PK compuesta (periodo, empresa): pasarle `empresa`
+// filtra directo por esa columna, igual que cualquier otro catálogo por empresa.
 export default function PeriodoSelect({ value, onChange, empresa, placeholder = 'Seleccionar período', style, ...props }) {
   const [periodos, setPeriodos] = useState([]);
 

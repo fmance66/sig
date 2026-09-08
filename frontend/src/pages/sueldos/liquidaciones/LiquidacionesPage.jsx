@@ -120,9 +120,9 @@ export default function LiquidacionesPage() {
       payload.fecha_deposito = toIsoDate(form.fecha_deposito);
 
       if (editMode) {
-        await api.updateLiquidacion(form.periodo, payload);
+        await api.updateLiquidacion(form.periodo, empresa?.id, payload);
       } else {
-        await api.createLiquidacion({ periodo: form.periodo, ...payload });
+        await api.createLiquidacion({ periodo: form.periodo, empresa: empresa?.id, ...payload });
       }
       toast.current.show({ severity: 'success', summary: 'OK', detail: editMode ? 'Liquidación actualizada' : 'Liquidación creada' });
       setDialogVisible(false);
