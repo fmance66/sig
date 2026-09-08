@@ -32,6 +32,7 @@ export default function RecibosPage() {
   function rowId(r) { return `${r.periodo}|${r.empleado}|${r.numero}`; }
 
   async function load(f = filtro) {
+    if (!f.periodo) { setRecibos([]); return; }
     setLoading(true);
     try {
       const res = await api.getRecibos({ ...f, empresa: empresa?.id });
@@ -136,7 +137,10 @@ export default function RecibosPage() {
         <label>Grupo</label>
         <FiltroTexto name="grupo" value={filtro.grupo} onChange={handleFiltroChange} />
       </div>
-      <Button label="Buscar" icon="fa-solid fa-magnifying-glass" size="small" onClick={() => load()} />
+      <Button label="Buscar" icon="fa-solid fa-magnifying-glass" size="small" onClick={() => {
+        if (!filtro.periodo) { toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí un período' }); return; }
+        load();
+      }} />
       <Button label="Limpiar" icon="fa-solid fa-eraser" size="small" className="p-button-outlined" onClick={limpiarFiltros} />
     </div>
   );
@@ -167,7 +171,7 @@ export default function RecibosPage() {
         rowsPerPageOptions={[15, 25, 50, 100]}
         paginatorRight={totalRegistros}
         footer={tableFooter}
-        emptyMessage="No hay recibos para los filtros seleccionados"
+        emptyMessage={filtro.periodo ? 'No hay recibos para los filtros seleccionados' : 'Elegí un período para buscar recibos'}
         size="small"
         stripedRows
         removableSort
