@@ -14,6 +14,6 @@ router.put   ('/:id',     controller.update);
 router.delete('/:id',     controller.remove);
 
 router.get   ('/:id/tiene-configuracion',   controller.tieneConfiguracion);
-router.post  ('/:id/clonar-configuracion',  controller.clonarConfiguracion);
+router.post  ('/:id/copiar-configuracion',  controller.copiarConfiguracion);
 
 module.exports = router;

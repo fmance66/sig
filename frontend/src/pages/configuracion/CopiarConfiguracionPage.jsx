@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Dropdown } from 'primereact/dropdown';
+import { Checkbox } from 'primereact/checkbox';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
@@ -7,17 +8,26 @@ import * as api from '../../api/empresas';
 import BotonVolver from '../../components/BotonVolver';
 import './EmpresasPage.css';
 
+const CATEGORIAS = [
+  { clave: 'conceptos', label: 'Conceptos (fórmulas, aportes y asignaciones automáticas)' },
+  { clave: 'formulariosRecibo', label: 'Diseño de Recibo' },
+  { clave: 'formulariosLibro', label: 'Diseño de Libro' },
+];
+const INCLUIR_TODO = { conceptos: true, formulariosRecibo: true, formulariosLibro: true };
+
 // Copia conceptos (fórmulas, aportes) y diseño de recibo/libro de una empresa a otra —
 // para que una empresa nueva no arranque con todo vacío (ver memoria
 // project_multiempresa_filtro_faltante: esas tablas son por-empresa, el resto de
-// catálogos ya es global y no hace falta clonarlo).
-export default function ClonarConfiguracionPage() {
+// catálogos ya es global y no hace falta copiarlo). El usuario elige qué categorías
+// copiar — por defecto las tres.
+export default function CopiarConfiguracionPage() {
   const [empresas, setEmpresas] = useState([]);
   const [origenId, setOrigenId] = useState(null);
   const [destinoId, setDestinoId] = useState(null);
+  const [incluir, setIncluir] = useState(INCLUIR_TODO);
   const [tieneConfig, setTieneConfig] = useState(null);
   const [checking, setChecking] = useState(false);
-  const [clonando, setClonando] = useState(false);
+  const [copiando, setCopiando] = useState(false);
   const [modoDialogVisible, setModoDialogVisible] = useState(false);
   const toast = useRef(null);
 
@@ -37,30 +47,43 @@ export default function ClonarConfiguracionPage() {
   const origenOptions = empresas.filter(e => e.id !== destinoId).map(e => ({ label: e.razon_social, value: e.id }));
   const destinoOptions = empresas.filter(e => e.id !== origenId).map(e => ({ label: e.razon_social, value: e.id }));
 
-  function handleClonarClick() {
+  const categoriasSeleccionadas = CATEGORIAS.filter(c => incluir[c.clave]);
+  const categoriasEnConflicto = tieneConfig
+    ? categoriasSeleccionadas.filter(c => tieneConfig[c.clave])
+    : [];
+
+  function toggleCategoria(clave) {
+    setIncluir(prev => ({ ...prev, [clave]: !prev[clave] }));
+  }
+
+  function handleCopiarClick() {
     if (!origenId || !destinoId) {
       toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí la empresa de origen y la de destino' });
       return;
     }
-    if (tieneConfig) {
+    if (!categoriasSeleccionadas.length) {
+      toast.current.show({ severity: 'warn', summary: 'Atención', detail: 'Elegí al menos una categoría para copiar' });
+      return;
+    }
+    if (categoriasEnConflicto.length) {
       setModoDialogVisible(true);
     } else {
-      ejecutarClon('reemplazar');
+      ejecutarCopia('reemplazar');
     }
   }
 
-  async function ejecutarClon(modo) {
+  async function ejecutarCopia(modo) {
     setModoDialogVisible(false);
-    setClonando(true);
+    setCopiando(true);
     try {
-      await api.clonarConfiguracion(destinoId, origenId, modo);
-      toast.current.show({ severity: 'success', summary: 'OK', detail: 'Configuración clonada' });
-      setTieneConfig(true);
+      await api.copiarConfiguracion(destinoId, origenId, modo, incluir);
+      toast.current.show({ severity: 'success', summary: 'OK', detail: 'Configuración copiada' });
+      api.tieneConfiguracion(destinoId).then(res => setTieneConfig(res.data.resultado.tieneConfiguracion)).catch(() => {});
     } catch (err) {
-      const msg = err.response?.data?.mensaje || 'No se pudo clonar la configuración';
+      const msg = err.response?.data?.mensaje || 'No se pudo copiar la configuración';
       toast.current.show({ severity: 'error', summary: 'Error', detail: msg });
     } finally {
-      setClonando(false);
+      setCopiando(false);
     }
   }
 
@@ -70,11 +93,11 @@ export default function ClonarConfiguracionPage() {
 
       <div className="page-header-row">
         <BotonVolver />
-        <h2 className="page-title"><i className="fa-solid fa-copy" /> Clonar Configuración</h2>
+        <h2 className="page-title"><i className="fa-solid fa-copy" /> Copiar Configuración</h2>
       </div>
 
-      <p className="clon-config-intro">
-        Copia los conceptos (fórmulas, aportes) y el diseño de recibo/libro de una empresa hacia otra.
+      <p className="copiar-config-intro">
+        Copia conceptos (fórmulas, aportes) y/o diseño de recibo/libro de una empresa hacia otra.
         No copia empleados, recibos ni ningún otro dato transaccional.
       </p>
 
@@ -105,36 +128,46 @@ export default function ClonarConfiguracionPage() {
         </div>
       </div>
 
-      {checking ? (
-        <p className="clon-config-status">Verificando configuración actual de la empresa destino…</p>
-      ) : tieneConfig && (
-        <p className="clon-config-status clon-config-status--warn">
-          <i className="fa-solid fa-triangle-exclamation" /> La empresa destino ya tiene configuración cargada.
-        </p>
-      )}
+      <div className="copiar-config-categorias">
+        <label>Qué copiar</label>
+        {CATEGORIAS.map(c => (
+          <div className="form-field form-field--checkbox" key={c.clave}>
+            <Checkbox inputId={c.clave} checked={incluir[c.clave]} onChange={() => toggleCategoria(c.clave)} />
+            <label htmlFor={c.clave}>
+              {c.label}
+              {tieneConfig?.[c.clave] && <span className="copiar-config-badge">ya tiene datos</span>}
+            </label>
+          </div>
+        ))}
+      </div>
 
-      <div className="clon-config-actions">
-        <Button label="Clonar configuración" icon="fa-solid fa-copy" onClick={handleClonarClick} loading={clonando} disabled={checking} />
+      {checking && <p className="copiar-config-status">Verificando configuración actual de la empresa destino…</p>}
+
+      <div className="copiar-config-actions">
+        <Button label="Copiar configuración" icon="fa-solid fa-copy" onClick={handleCopiarClick} loading={copiando} disabled={checking} />
       </div>
 
       <Dialog
         visible={modoDialogVisible}
         onHide={() => setModoDialogVisible(false)}
         header="Ya hay configuración cargada"
-        style={{ width: '460px' }}
+        style={{ width: '480px' }}
         modal
         draggable={false}
         resizable={false}
       >
-        <p>La empresa destino ya tiene conceptos y/o diseños de recibo cargados. ¿Cómo querés proceder?</p>
-        <ul className="clon-config-modo-lista">
+        <p>
+          La empresa destino ya tiene {categoriasEnConflicto.map(c => c.label).join(', ')} cargado{categoriasEnConflicto.length > 1 ? 's' : ''}.
+          ¿Cómo querés proceder con esas categorías?
+        </p>
+        <ul className="copiar-config-modo-lista">
           <li><strong>Reemplazar:</strong> borra la configuración actual del destino y la reemplaza por la del origen.</li>
           <li><strong>Combinar:</strong> agrega solo lo que falte, sin tocar lo que ya está cargado.</li>
         </ul>
         <div className="dialog-footer-btns mt-2">
-          <Button label="Cancelar" icon="fa-solid fa-xmark" className="p-button-text" onClick={() => setModoDialogVisible(false)} disabled={clonando} />
-          <Button label="Combinar" icon="fa-solid fa-object-ungroup" className="p-button-outlined" onClick={() => ejecutarClon('combinar')} loading={clonando} />
-          <Button label="Reemplazar" icon="fa-solid fa-triangle-exclamation" className="p-button-danger" onClick={() => ejecutarClon('reemplazar')} loading={clonando} />
+          <Button label="Cancelar" icon="fa-solid fa-xmark" className="p-button-text" onClick={() => setModoDialogVisible(false)} disabled={copiando} />
+          <Button label="Combinar" icon="fa-solid fa-object-ungroup" className="p-button-outlined" onClick={() => ejecutarCopia('combinar')} loading={copiando} />
+          <Button label="Reemplazar" icon="fa-solid fa-triangle-exclamation" className="p-button-danger" onClick={() => ejecutarCopia('reemplazar')} loading={copiando} />
         </div>
       </Dialog>
     </div>

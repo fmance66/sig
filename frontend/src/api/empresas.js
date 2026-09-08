@@ -12,7 +12,7 @@ export const getLogoUrl    = (id, version) => `${client.defaults.baseURL}/empres
 export const uploadLogo    = (id, file)   => client.put(`/empresas/${id}/logo`, file, { headers: { 'Content-Type': file.type } });
 export const deleteLogo    = (id)         => client.delete(`/empresas/${id}/logo`);
 
-// Clonado de configuración (conceptos + diseño de recibo/libro) entre empresas —
-// ver ConfiguracionClonTab.jsx.
-export const tieneConfiguracion   = (id)                => client.get(`/empresas/${id}/tiene-configuracion`);
-export const clonarConfiguracion  = (id, origen, modo)  => client.post(`/empresas/${id}/clonar-configuracion`, { origen, modo });
+// Copiado de configuración (conceptos + diseño de recibo/libro) entre empresas —
+// ver CopiarConfiguracionPage.jsx. `incluir`: { conceptos, formulariosRecibo, formulariosLibro }.
+export const tieneConfiguracion   = (id)                        => client.get(`/empresas/${id}/tiene-configuracion`);
+export const copiarConfiguracion  = (id, origen, modo, incluir) => client.post(`/empresas/${id}/copiar-configuracion`, { origen, modo, incluir });

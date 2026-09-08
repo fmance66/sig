@@ -1,5 +1,5 @@
 const Empresa = require('../models/empresas');
-const EmpresaClon = require('../models/empresaClon');
+const EmpresaCopia = require('../models/empresaCopia');
 
 async function list(req, res) {
   try {
@@ -105,7 +105,7 @@ async function deleteLogo(req, res) {
 
 async function tieneConfiguracion(req, res) {
   try {
-    const tiene = await EmpresaClon.tieneConfiguracion(req.params.id);
+    const tiene = await EmpresaCopia.tieneConfiguracion(req.params.id);
     res.json({ estado: 'ok', resultado: { tieneConfiguracion: tiene } });
   } catch (err) {
     console.error(err);
@@ -113,20 +113,20 @@ async function tieneConfiguracion(req, res) {
   }
 }
 
-async function clonarConfiguracion(req, res) {
+async function copiarConfiguracion(req, res) {
   try {
-    const { origen, modo } = req.body;
+    const { origen, modo, incluir } = req.body;
     if (!origen) return res.status(400).json({ estado: 'error', mensaje: 'origen es requerido' });
-    await EmpresaClon.clonarConfiguracion({ origen, destino: req.params.id, modo });
-    res.json({ estado: 'ok', mensaje: 'Configuración clonada' });
+    await EmpresaCopia.copiarConfiguracion({ origen, destino: req.params.id, modo, incluir });
+    res.json({ estado: 'ok', mensaje: 'Configuración copiada' });
   } catch (err) {
     if (err.status) return res.status(err.status).json({ estado: 'error', mensaje: err.message });
     console.error(err);
-    res.status(500).json({ estado: 'error', mensaje: 'Error al clonar la configuración' });
+    res.status(500).json({ estado: 'error', mensaje: 'Error al copiar la configuración' });
   }
 }
 
 module.exports = {
   list, getOne, create, update, remove, getLogo, uploadLogo, deleteLogo,
-  tieneConfiguracion, clonarConfiguracion,
+  tieneConfiguracion, copiarConfiguracion,
 };

@@ -50,7 +50,7 @@ import DisenoLibroSueldosPage from './pages/sueldos/informes/DisenoLibroSueldosP
 import InformesPersonalizadosPage from './pages/sueldos/informes/InformesPersonalizadosPage';
 import DisenoInformesPersonalizadosPage from './pages/sueldos/informes/DisenoInformesPersonalizadosPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
-import ClonarConfiguracionPage from './pages/configuracion/ClonarConfiguracionPage';
+import CopiarConfiguracionPage from './pages/configuracion/CopiarConfiguracionPage';
 import CopiaSeguridadPage from './pages/configuracion/CopiaSeguridadPage';
 import ConveniosPage from './pages/configuracion/ConveniosPage';
 import ObrasSocialesPage from './pages/configuracion/ObrasSocialesPage';
@@ -140,7 +140,7 @@ export default function App() {
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}
           <Route path="configuracion/empresas" element={<EmpresasPage />} />
-          <Route path="configuracion/empresas/clonar-configuracion" element={<ClonarConfiguracionPage />} />
+          <Route path="configuracion/empresas/copiar-configuracion" element={<CopiarConfiguracionPage />} />
           <Route path="configuracion/empresas/backup" element={<CopiaSeguridadPage />} />
           <Route path="configuracion/convenios" element={<ConveniosPage />} />
           <Route path="configuracion/obras-sociales" element={<ObrasSocialesPage />} />

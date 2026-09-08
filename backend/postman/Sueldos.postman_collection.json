@@ -155,10 +155,10 @@
               }
             },
             {
-              "name": "POST Clonar Configuracion",
+              "name": "POST Copiar Configuracion",
               "request": {
                 "method": "POST",
-                "url": "{{base_url}}/empresas/7/clonar-configuracion",
+                "url": "{{base_url}}/empresas/7/copiar-configuracion",
                 "header": [
                   {
                     "key": "Content-Type",
@@ -167,7 +167,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"origen\": 1,\n  \"modo\": \"combinar\"\n}"
+                  "raw": "{\n  \"origen\": 1,\n  \"modo\": \"combinar\",\n  \"incluir\": { \"conceptos\": true, \"formulariosRecibo\": true, \"formulariosLibro\": false }\n}"
                 }
               }
             }

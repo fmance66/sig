@@ -102,44 +102,61 @@
 
 /* .tab-empty-msg: ver styles/global-tables.css */
 
-/* Tab de clonado de configuración */
-.clon-config-tab {
-  min-height: 200px;
-}
-
-.clon-config-intro {
+/* Página de copiado de configuración */
+.copiar-config-intro {
   font-size: 0.8rem;
   color: #64748b;
   margin: 0 0 0.9rem;
 }
 
-.clon-config-status {
+.copiar-config-status {
   font-size: 0.8rem;
   color: #64748b;
   margin: 0.75rem 0 0;
 }
 
-.clon-config-status--warn {
-  color: #b45309;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.clon-config-actions {
+.copiar-config-actions {
   display: flex;
   justify-content: flex-end;
   margin-top: 1rem;
 }
 
-.clon-config-modo-lista {
+.copiar-config-categorias {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.copiar-config-categorias > label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.2rem;
+}
+
+.copiar-config-categorias .form-field--checkbox {
+  padding-top: 0;
+}
+
+.copiar-config-badge {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #b45309;
+  background: #fef3c7;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+}
+
+.copiar-config-modo-lista {
   font-size: 0.82rem;
   color: #374151;
   padding-left: 1.1rem;
   margin: 0.5rem 0 0;
 }
 
-.clon-config-modo-lista li {
+.copiar-config-modo-lista li {
   margin-bottom: 0.4rem;
 }
 
