@@ -46,4 +46,17 @@ async function global(req, res) {
   }
 }
 
-module.exports = { resumen, global };
+async function resumenContabilidad(req, res) {
+  try {
+    const empresa = Number(req.query.empresa);
+    if (!empresa) return res.status(400).json({ estado: 'error', mensaje: 'empresa es requerida' });
+
+    const resultado = await Dashboard.getResumenContabilidad(empresa);
+    res.json({ estado: 'ok', resultado });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ estado: 'error', mensaje: 'Error al obtener estadísticas de contabilidad' });
+  }
+}
+
+module.exports = { resumen, global, resumenContabilidad };

@@ -33,5 +33,7 @@ frontend/dist-ssr/
 .copilot-commit-message-instructions.md
 
 # Documentación original (Word, binarios pesados, no aportan al diff de Copilot)
+frontend/docs/original/**/*.docx
 frontend/docs/original/*.docx
+~$*.docx
 backend/docs/recibos-sueldo*.pdf

@@ -52,6 +52,11 @@ import DisenoInformesPersonalizadosPage from './pages/sueldos/informes/DisenoInf
 import LsdConceptosPage from './pages/sueldos/exportacion/LsdConceptosPage';
 import LsdLiquidacionPage from './pages/sueldos/exportacion/LsdLiquidacionPage';
 import LsdTopesPage from './pages/sueldos/exportacion/LsdTopesPage';
+import PlanDeCuentasPage from './pages/contabilidad/PlanDeCuentasPage';
+import ListadoCuentasPage from './pages/contabilidad/ListadoCuentasPage';
+import CentrosDeCostoPage from './pages/contabilidad/CentrosDeCostoPage';
+import LeyendasPage from './pages/contabilidad/LeyendasPage';
+import EjerciciosPage from './pages/contabilidad/EjerciciosPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import CopiarConfiguracionPage from './pages/configuracion/CopiarConfiguracionPage';
 import CopiaSeguridadPage from './pages/configuracion/CopiaSeguridadPage';
@@ -144,6 +149,12 @@ export default function App() {
           <Route path="sueldos/exportacion/lsd-conceptos" element={<LsdConceptosPage />} />
           <Route path="sueldos/exportacion/lsd-liquidacion" element={<LsdLiquidacionPage />} />
           <Route path="sueldos/exportacion/lsd-topes" element={<LsdTopesPage />} />
+          {/* contabilidad */}
+          <Route path="contabilidad/plan-cuentas" element={<PlanDeCuentasPage />} />
+          <Route path="contabilidad/cuentas" element={<ListadoCuentasPage />} />
+          <Route path="contabilidad/centros-costo" element={<CentrosDeCostoPage />} />
+          <Route path="contabilidad/leyendas" element={<LeyendasPage />} />
+          <Route path="contabilidad/ejercicios" element={<EjerciciosPage />} />
           {/* ayuda */}
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}

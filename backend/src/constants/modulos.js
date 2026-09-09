@@ -1,5 +1,4 @@
 // Módulos sobre los que se puede otorgar permiso (Ver/Crear/Editar/Eliminar).
-// 'contabilidad'/'iva' no están acá porque hoy no tienen rutas de backend que
-// gatear (menús vacíos en frontend/src/layout/modules.js) — se suman cuando
-// se implementen.
-module.exports = ['sueldos', 'configuracion', 'seguridad'];
+// 'iva' no está acá porque hoy no tiene rutas de backend que gatear (menú
+// vacío en frontend/src/layout/modules.js) — se suma cuando se implemente.
+module.exports = ['sueldos', 'configuracion', 'seguridad', 'contabilidad'];

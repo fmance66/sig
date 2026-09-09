@@ -116,7 +116,39 @@ async function getUltimoPeriodoPorEmpresa() {
   }));
 }
 
+// Panorama del módulo Contabilidad para una empresa: tamaño del plan de cuentas
+// (total e imputables), cuentas por naturaleza (para el gráfico), y cantidad de
+// ejercicios/centros de costo/leyendas cargados.
+async function getResumenContabilidad(empresa) {
+  const [cuentas, porNaturaleza, ejercicios, centrosCosto, leyendas] = await Promise.all([
+    pool.query(
+      `SELECT count(*) AS total, count(*) FILTER (WHERE imputable) AS imputables
+       FROM cnt_cuenta WHERE empresa = $1`,
+      [empresa]
+    ),
+    pool.query(
+      `SELECT COALESCE(naturaleza, 'Sin clasificar') AS naturaleza, count(*) AS cantidad
+       FROM cnt_cuenta WHERE empresa = $1 GROUP BY naturaleza ORDER BY naturaleza`,
+      [empresa]
+    ),
+    pool.query('SELECT count(*) AS total FROM cnt_ejercicio WHERE empresa = $1', [empresa]),
+    pool.query('SELECT count(*) AS total FROM cnt_centro_de_costo WHERE empresa = $1', [empresa]),
+    pool.query('SELECT count(*) AS total FROM cnt_leyenda WHERE empresa = $1', [empresa]),
+  ]);
+
+  return {
+    cuentas: {
+      total: Number(cuentas.rows[0].total),
+      imputables: Number(cuentas.rows[0].imputables),
+    },
+    cuentasPorNaturaleza: porNaturaleza.rows.map(r => ({ naturaleza: r.naturaleza, cantidad: Number(r.cantidad) })),
+    ejercicios: Number(ejercicios.rows[0].total),
+    centrosCosto: Number(centrosCosto.rows[0].total),
+    leyendas: Number(leyendas.rows[0].total),
+  };
+}
+
 module.exports = {
   getEmpleadosResumen, getEmpleadosPorConvenio, getMasaSalarialPorPeriodo, getUltimoPeriodo,
-  getEmpleadosPorEmpresa, getUltimoPeriodoPorEmpresa,
+  getEmpleadosPorEmpresa, getUltimoPeriodoPorEmpresa, getResumenContabilidad,
 };

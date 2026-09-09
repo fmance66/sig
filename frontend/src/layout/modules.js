@@ -3,7 +3,34 @@ export const MODULES = [
     id: 'contabilidad',
     label: 'Contabilidad',
     icon: 'fa-solid fa-book-open',
-    menu: [],
+    menu: [
+      {
+        label: 'Cuentas',
+        icon: 'fa-solid fa-sitemap',
+        items: [
+          { label: 'Plan de Cuentas', icon: 'fa-solid fa-sitemap', path: '/contabilidad/plan-cuentas' },
+          { label: 'Listado de Cuentas', icon: 'fa-solid fa-list', path: '/contabilidad/cuentas' },
+          { separator: true },
+          { label: 'Centros de Costo', icon: 'fa-solid fa-layer-group', path: '/contabilidad/centros-costo' },
+          { label: 'Leyendas', icon: 'fa-solid fa-quote-right', path: '/contabilidad/leyendas' },
+        ],
+      },
+      {
+        label: 'Ejercicios',
+        icon: 'fa-solid fa-table-cells',
+        items: [
+          { label: 'Ejercicios', icon: 'fa-solid fa-table-cells', path: '/contabilidad/ejercicios' },
+        ],
+      },
+      {
+        label: 'Tablas Comunes',
+        icon: 'fa-solid fa-database',
+        items: [
+          { label: 'Moneda', icon: 'fa-solid fa-coins', path: '/configuracion/comunes/monedas' },
+          { label: 'Proyectos', icon: 'fa-solid fa-diagram-project', path: '/configuracion/comunes/proyectos' },
+        ],
+      },
+    ],
   },
   {
     id: 'sueldos',

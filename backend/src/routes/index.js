@@ -5,10 +5,18 @@ const { requireAuth, requireModulo, requireModuloEscritura } = require('../middl
 
 const { createCatalogoModel }      = require('../models/catalogo');
 const { createCatalogoController } = require('../controllers/catalogo');
-const { createCatalogoRouter }     = require('./catalogo');
+const { createCatalogoRouter, createCatalogoRouterCompuesto } = require('./catalogo');
 
-function catalogo(tableName, columns, numericColumns, nombreEntidad, options) {
-  const model      = createCatalogoModel(tableName, columns, numericColumns, options);
+// Con idColumn compuesto (array, ej. ['id','empresa'] como sld_concepto) arma rutas
+// /:id/:empresa y filtra el listado por esas mismas columnas vía query (?empresa=X),
+// salvo que se pase filtroParams explícito.
+function catalogo(tableName, columns, numericColumns, nombreEntidad, options = {}) {
+  const model = createCatalogoModel(tableName, columns, numericColumns, options);
+  if (Array.isArray(options.idColumn)) {
+    const filtroParams = options.filtroParams ?? options.idColumn.filter(c => c !== 'id');
+    const controller = createCatalogoController(model, nombreEntidad, { idParams: options.idColumn, filtroParams });
+    return createCatalogoRouterCompuesto(controller, options.idColumn);
+  }
   const controller = createCatalogoController(model, nombreEntidad);
   return createCatalogoRouter(controller);
 }
@@ -149,6 +157,18 @@ function formularioRouter(tableName, parametroTable, extraColumns = []) {
 
 mod('/informes/formularios-recibo', 'sueldos', formularioRouter('sld_formulario_recibo', 'sld_formulario_recibo_parametro', ['activo', 'modelo_fijo']));
 mod('/informes/formularios-libro', 'sueldos', formularioRouter('sld_formulario_libro', 'sld_formulario_libro_parametro'));
+
+mod('/contabilidad/cuentas', 'contabilidad', require('./cuentas'));
+
+mod('/contabilidad/centros-costo', 'contabilidad', catalogo('cnt_centro_de_costo',
+  ['descripcion', 'orden'], ['orden'], 'centro de costo', { idColumn: ['id', 'empresa'] }));
+
+mod('/contabilidad/leyendas', 'contabilidad', require('./leyendas'));
+
+mod('/contabilidad/ejercicios', 'contabilidad', catalogo('cnt_ejercicio',
+  ['descripcion', 'fecha_desde', 'fecha_hasta', 'estado', 'codificacion', 'ordenamiento',
+   'leyenda_asiento', 'leyenda_cuenta', 'secuencia'],
+  ['secuencia'], 'ejercicio', { idColumn: ['id', 'empresa'] }));
 
 mod('/usuarios', 'seguridad', require('./usuarios'));
 mod('/grupos',   'seguridad', require('./grupos'));

@@ -1,0 +1,9 @@
+/* Estilos compartidos por las páginas del módulo Contabilidad.
+   Reutiliza las clases utilitarias ya globales (page-title, table-toolbar,
+   form-grid, form-field, sub-tab, sub-form, tab-empty-msg, dialog-footer-btns,
+   acciones-col — ver styles/global-tables.css — y form-row-12/form-field--checkbox
+   de conceptos.css) y agrega solo lo específico de este módulo. */
+
+.page-contabilidad {
+  padding: 0 1.25rem 1.25rem;
+}

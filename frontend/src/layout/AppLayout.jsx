@@ -10,8 +10,8 @@ import './AppLayout.css';
 const ALL_MODULES = [...MODULES, ...ADMIN_MODULES];
 
 // Módulos de nivel superior que tienen un permiso asociado (ver constants/modulos.js
-// en el backend). 'ayuda'/'contabilidad'/'iva' no gatean nada — sin datos sensibles.
-const PERMISO_MODULOS = ['sueldos', 'configuracion'];
+// en el backend). 'ayuda'/'iva' no gatean nada — sin datos sensibles.
+const PERMISO_MODULOS = ['sueldos', 'configuracion', 'contabilidad'];
 
 export default function AppLayout() {
   const [activeModuleId, setActiveModuleId] = useState(null);
