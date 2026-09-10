@@ -7,3 +7,19 @@
 .page-contabilidad {
   padding: 0 1.25rem 1.25rem;
 }
+
+/* Barra de totales Debe/Haber del diálogo de Asiento — verde si balancea,
+   roja si no (mismo criterio de color que los demás mensajes de validación). */
+.asiento-totales {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+.asiento-totales--error {
+  color: #dc2626;
+}

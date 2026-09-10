@@ -12,8 +12,9 @@ const CATEGORIAS = [
   { clave: 'conceptos', label: 'Conceptos (fórmulas, aportes y asignaciones automáticas)' },
   { clave: 'formulariosRecibo', label: 'Diseño de Recibo' },
   { clave: 'formulariosLibro', label: 'Diseño de Libro' },
+  { clave: 'contabilidad', label: 'Plan de Cuentas (Cuentas, Centros de Costo, Asientos Modelo)' },
 ];
-const INCLUIR_TODO = { conceptos: true, formulariosRecibo: true, formulariosLibro: true };
+const INCLUIR_TODO = { conceptos: true, formulariosRecibo: true, formulariosLibro: true, contabilidad: true };
 
 // Copia conceptos (fórmulas, aportes) y diseño de recibo/libro de una empresa a otra —
 // para que una empresa nueva no arranque con todo vacío (ver memoria
@@ -97,8 +98,9 @@ export default function CopiarConfiguracionPage() {
       </div>
 
       <p className="copiar-config-intro">
-        Copia conceptos (fórmulas, aportes) y/o diseño de recibo/libro de una empresa hacia otra.
-        No copia empleados, recibos ni ningún otro dato transaccional.
+        Copia conceptos (fórmulas, aportes), diseño de recibo/libro y/o plan de cuentas de una
+        empresa hacia otra. No copia empleados, recibos, ejercicios, asientos ni ningún otro
+        dato transaccional.
       </p>
 
       <div className="form-grid">

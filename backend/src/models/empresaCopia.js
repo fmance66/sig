@@ -21,11 +21,15 @@ async function tieneConfiguracion(empresa) {
     `SELECT
        EXISTS(SELECT 1 FROM sld_concepto WHERE empresa = $1) AS conceptos,
        EXISTS(SELECT 1 FROM sld_formulario_recibo WHERE empresa = $1) AS formularios_recibo,
-       EXISTS(SELECT 1 FROM sld_formulario_libro WHERE empresa = $1) AS formularios_libro`,
+       EXISTS(SELECT 1 FROM sld_formulario_libro WHERE empresa = $1) AS formularios_libro,
+       EXISTS(SELECT 1 FROM cnt_cuenta WHERE empresa = $1) AS contabilidad`,
     [empresa]
   );
   const r = rows[0];
-  return { conceptos: r.conceptos, formulariosRecibo: r.formularios_recibo, formulariosLibro: r.formularios_libro };
+  return {
+    conceptos: r.conceptos, formulariosRecibo: r.formularios_recibo, formulariosLibro: r.formularios_libro,
+    contabilidad: r.contabilidad,
+  };
 }
 
 async function copiarConceptos(client, origen, destino) {
@@ -135,6 +139,59 @@ async function copiarFormularios(client, origen, destino, tabla, parametroTabla,
   }
 }
 
+// Plan de Cuentas (Cuentas, Centros de Costo, Prorrateo, Asientos Modelo) —
+// NO copia cnt_ejercicio/cnt_asiento/cnt_leyenda (dato transaccional, no
+// configuración; mismo criterio que el propio legacy en "Exportación de
+// Tablas", donde esas filas no tienen tilde de selección).
+//
+// cnt_cuenta se auto-referencia por id_padre: se inserta primero sin id_padre
+// (para no depender del orden en que aparecen las filas) y en un segundo paso
+// se completa id_padre ya con todas las filas presentes en el destino.
+async function copiarContabilidad(client, origen, destino) {
+  await client.query(
+    `INSERT INTO cnt_cuenta
+       (id, empresa, descripcion, saldo, naturaleza, imputable, monetaria, tipo, jerarquia, nivel, leyenda, orden, id_padre)
+     SELECT id, $2, descripcion, saldo, naturaleza, imputable, monetaria, tipo, jerarquia, nivel, leyenda, orden, NULL
+     FROM cnt_cuenta WHERE empresa = $1
+     ON CONFLICT (id, empresa) DO NOTHING`,
+    [origen, destino]
+  );
+  await client.query(
+    `UPDATE cnt_cuenta AS dest SET id_padre = src.id_padre
+       FROM cnt_cuenta AS src
+      WHERE src.empresa = $1 AND dest.empresa = $2 AND dest.id = src.id AND src.id_padre IS NOT NULL`,
+    [origen, destino]
+  );
+
+  await client.query(
+    `INSERT INTO cnt_centro_de_costo (id, empresa, descripcion, orden)
+     SELECT id, $2, descripcion, orden FROM cnt_centro_de_costo WHERE empresa = $1
+     ON CONFLICT (id, empresa) DO NOTHING`,
+    [origen, destino]
+  );
+
+  await client.query(
+    `INSERT INTO cnt_prorrateo (cuenta, centro_de_costo, empresa, porcentaje)
+     SELECT cuenta, centro_de_costo, $2, porcentaje FROM cnt_prorrateo WHERE empresa = $1
+     ON CONFLICT (cuenta, centro_de_costo, empresa) DO NOTHING`,
+    [origen, destino]
+  );
+
+  await client.query(
+    `INSERT INTO cnt_asiento_modelo (id, empresa, descripcion, leyenda)
+     SELECT id, $2, descripcion, leyenda FROM cnt_asiento_modelo WHERE empresa = $1
+     ON CONFLICT (id, empresa) DO NOTHING`,
+    [origen, destino]
+  );
+
+  await client.query(
+    `INSERT INTO cnt_modelo_movimiento (modelo, linea, empresa, cuenta, saldo, leyenda)
+     SELECT modelo, linea, $2, cuenta, saldo, leyenda FROM cnt_modelo_movimiento WHERE empresa = $1
+     ON CONFLICT (modelo, linea, empresa) DO NOTHING`,
+    [origen, destino]
+  );
+}
+
 const CAMPOS_FORMULARIO_RECIBO = [
   'nombre', 'descripcion', 'orientacion', 'pagina', 'margen_superior', 'margen_inferior',
   'margen_izquierdo', 'margen_derecho', 'formula_archivo', 'columnas', 'filas', 'copias',
@@ -157,7 +214,8 @@ async function copiarConfiguracion({ origen, destino, modo, incluir = {} }) {
   const incluirConceptos = incluir.conceptos !== false;
   const incluirFormulariosRecibo = incluir.formulariosRecibo !== false;
   const incluirFormulariosLibro = incluir.formulariosLibro !== false;
-  if (!incluirConceptos && !incluirFormulariosRecibo && !incluirFormulariosLibro) {
+  const incluirContabilidad = incluir.contabilidad !== false;
+  if (!incluirConceptos && !incluirFormulariosRecibo && !incluirFormulariosLibro && !incluirContabilidad) {
     throw Object.assign(new Error('Elegí al menos una categoría para copiar'), { status: 400 });
   }
 
@@ -169,9 +227,16 @@ async function copiarConfiguracion({ origen, destino, modo, incluir = {} }) {
       if (incluirConceptos) await client.query('DELETE FROM sld_concepto WHERE empresa = $1', [destino]);
       if (incluirFormulariosRecibo) await client.query('DELETE FROM sld_formulario_recibo WHERE empresa = $1', [destino]);
       if (incluirFormulariosLibro) await client.query('DELETE FROM sld_formulario_libro WHERE empresa = $1', [destino]);
+      if (incluirContabilidad) {
+        // cnt_centro_de_costo/cnt_asiento_modelo cascadean a cnt_prorrateo/cnt_modelo_movimiento.
+        await client.query('DELETE FROM cnt_asiento_modelo WHERE empresa = $1', [destino]);
+        await client.query('DELETE FROM cnt_centro_de_costo WHERE empresa = $1', [destino]);
+        await client.query('DELETE FROM cnt_cuenta WHERE empresa = $1', [destino]);
+      }
     }
 
     if (incluirConceptos) await copiarConceptos(client, origen, destino);
+    if (incluirContabilidad) await copiarContabilidad(client, origen, destino);
 
     // En modo combinar, si el destino ya tiene un formulario "activo" (el que arma el PDF
     // real), un formulario copiado también activo violaría el índice único parcial

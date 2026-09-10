@@ -95,7 +95,9 @@ mod('/motivos-ausentismo', 'sueldos', catalogo('sld_motivo_ausentismo',
 mod('/feriados', 'sueldos', catalogo('sld_feriado',
   ['descripcion'], [], 'feriado', { idColumn: 'fecha' }));
 
-mod('/monedas', 'configuracion', catalogo('bas_moneda',
+// GET abierto a cualquier usuario logueado: además de Configuración, lo lee el
+// diálogo de Asiento (módulo contabilidad) para poblar el combo de Moneda.
+router.use('/monedas', requireModuloEscritura('configuracion'), catalogo('bas_moneda',
   ['nombre', 'simbolo', 'simbolos', 'cotizacion', 'color', 'icono', 'orden'],
   ['cotizacion', 'orden'], 'moneda'));
 
@@ -105,7 +107,8 @@ mod('/localidades', 'configuracion', catalogo('bas_localidad',
 mod('/paises', 'configuracion', catalogo('bas_pais',
   ['pais'], [], 'país', { idColumn: 'codigo' }));
 
-mod('/proyectos', 'configuracion', catalogo('bas_proyecto',
+// Ídem /monedas: también lo lee el diálogo de Asiento para el combo de Proyecto.
+router.use('/proyectos', requireModuloEscritura('configuracion'), catalogo('bas_proyecto',
   ['descripcion', 'grupo', 'fecha', 'fecha_fin', 'horas', 'valor_hora', 'presupuesto',
    'ejecutado', 'avance', 'moneda', 'observaciones', 'alias', 'color', 'orden', 'visible', 'id_padre'],
   ['horas', 'valor_hora', 'presupuesto', 'ejecutado', 'avance', 'orden'], 'proyecto'));
@@ -169,6 +172,16 @@ mod('/contabilidad/ejercicios', 'contabilidad', catalogo('cnt_ejercicio',
   ['descripcion', 'fecha_desde', 'fecha_hasta', 'estado', 'codificacion', 'ordenamiento',
    'leyenda_asiento', 'leyenda_cuenta', 'secuencia'],
   ['secuencia'], 'ejercicio', { idColumn: ['id', 'empresa'] }));
+
+mod('/contabilidad/asientos', 'contabilidad', require('./asientos'));
+
+const asientoModeloRouter = catalogo('cnt_asiento_modelo', ['descripcion', 'leyenda'], [], 'asiento modelo', { idColumn: ['id', 'empresa'] });
+const asientoModeloLineasController = require('../controllers/asientoModelo');
+asientoModeloRouter.get('/:id/:empresa/lineas', asientoModeloLineasController.getLineas);
+asientoModeloRouter.put('/:id/:empresa/lineas', asientoModeloLineasController.setLineas);
+mod('/contabilidad/asientos-modelo', 'contabilidad', asientoModeloRouter);
+
+mod('/contabilidad/informes', 'contabilidad', require('./informesContables'));
 
 mod('/usuarios', 'seguridad', require('./usuarios'));
 mod('/grupos',   'seguridad', require('./grupos'));

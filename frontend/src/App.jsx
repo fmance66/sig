@@ -57,6 +57,17 @@ import ListadoCuentasPage from './pages/contabilidad/ListadoCuentasPage';
 import CentrosDeCostoPage from './pages/contabilidad/CentrosDeCostoPage';
 import LeyendasPage from './pages/contabilidad/LeyendasPage';
 import EjerciciosPage from './pages/contabilidad/EjerciciosPage';
+import ListadoAsientosPage from './pages/contabilidad/ListadoAsientosPage';
+import UnionAsientosPage from './pages/contabilidad/UnionAsientosPage';
+import RenumeracionAsientosPage from './pages/contabilidad/RenumeracionAsientosPage';
+import ListadoAsientosModeloPage from './pages/contabilidad/ListadoAsientosModeloPage';
+import AsientosDesbalanceadosPage from './pages/contabilidad/AsientosDesbalanceadosPage';
+import InformeMayorCuentasPage from './pages/contabilidad/InformeMayorCuentasPage';
+import InformeBalanceGeneralPage from './pages/contabilidad/InformeBalanceGeneralPage';
+import InformeBalanceSumasSaldosPage from './pages/contabilidad/InformeBalanceSumasSaldosPage';
+import InformeLibroDiarioAcumuladoPage from './pages/contabilidad/InformeLibroDiarioAcumuladoPage';
+import InformeLibroCentrosCostoPage from './pages/contabilidad/InformeLibroCentrosCostoPage';
+import InformeBalanceCentrosCostoPage from './pages/contabilidad/InformeBalanceCentrosCostoPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import CopiarConfiguracionPage from './pages/configuracion/CopiarConfiguracionPage';
 import CopiaSeguridadPage from './pages/configuracion/CopiaSeguridadPage';
@@ -155,6 +166,17 @@ export default function App() {
           <Route path="contabilidad/centros-costo" element={<CentrosDeCostoPage />} />
           <Route path="contabilidad/leyendas" element={<LeyendasPage />} />
           <Route path="contabilidad/ejercicios" element={<EjerciciosPage />} />
+          <Route path="contabilidad/asientos" element={<ListadoAsientosPage />} />
+          <Route path="contabilidad/union-asientos" element={<UnionAsientosPage />} />
+          <Route path="contabilidad/asientos-renumeracion" element={<RenumeracionAsientosPage />} />
+          <Route path="contabilidad/asientos-modelo" element={<ListadoAsientosModeloPage />} />
+          <Route path="contabilidad/asientos-desbalanceados" element={<AsientosDesbalanceadosPage />} />
+          <Route path="contabilidad/informes/mayor-cuentas" element={<InformeMayorCuentasPage />} />
+          <Route path="contabilidad/informes/balance-general" element={<InformeBalanceGeneralPage />} />
+          <Route path="contabilidad/informes/balance-sumas-saldos" element={<InformeBalanceSumasSaldosPage />} />
+          <Route path="contabilidad/informes/libro-diario-acumulado" element={<InformeLibroDiarioAcumuladoPage />} />
+          <Route path="contabilidad/informes/libro-centros-costo" element={<InformeLibroCentrosCostoPage />} />
+          <Route path="contabilidad/informes/balance-centros-costo" element={<InformeBalanceCentrosCostoPage />} />
           {/* ayuda */}
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}

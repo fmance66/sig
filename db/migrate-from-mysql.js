@@ -908,8 +908,16 @@ function processDump(inputFile, empresaNum, empleadoIdMap) {
 }
 
 // ---------------------------------------------------------------------------
-// Main
+// Exports para scripts de migración puntuales (p.ej. migrate-contabilidad.js)
+// que reutilizan el parser de dumps MySQL sin pasar por el CLI de --all.
 // ---------------------------------------------------------------------------
+module.exports = { parseValueTokens, splitTuples, extractMysqlColumns };
+
+// ---------------------------------------------------------------------------
+// Main (solo al ejecutar este archivo directamente, no al hacer require())
+// ---------------------------------------------------------------------------
+if (require.main === module) {
+
 const BACKUP_DIR = path.join(__dirname, 'mysql', 'data');
 const DATA_DIR   = path.join(__dirname, 'postgresql', 'data');
 
@@ -982,4 +990,6 @@ if (process.argv[2] === '--all') {
   } else {
     process.stdout.write(Buffer.from(sql, 'latin1'));
   }
+}
+
 }

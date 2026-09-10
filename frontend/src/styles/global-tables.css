@@ -43,6 +43,29 @@
   background: #f3f4f6;
 }
 
+/* Toolbar de filtros de búsqueda (Ejercicio/Cuenta/Leyenda de Asientos, Período/
+   Legajo/Convenio de Contribuciones, etc.) — varios campos + botones Buscar/Limpiar. */
+.filtros-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: flex-end;
+  margin: 0.5rem 0 0.9rem;
+}
+
+.filtros-toolbar .form-field {
+  min-width: 140px;
+}
+
+.filtros-toolbar .form-field label {
+  font-size: 0.76rem;
+}
+
+.filtros-toolbar .p-button {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+}
+
 /* Toolbar de la tabla (buscador + botón "Agregar") */
 .table-toolbar {
   display: flex;
@@ -57,7 +80,8 @@
 }
 
 /* Centrar el mensaje "No hay ... registrados/as" cuando la tabla está vacía. */
-.p-datatable-emptymessage > td {
+.p-datatable-emptymessage > td,
+.p-treetable-emptymessage > td {
   text-align: center;
   color: #6b7280;
 }
@@ -87,13 +111,26 @@
   padding: 0;
 }
 
-/* Ícono ">" para expandir filas (Column expander). */
+/* Ícono ">" para expandir filas (Column expander en DataTable). */
 .p-datatable .p-row-toggler {
   width: 1.6rem;
   height: 1.6rem;
 }
 
 .p-datatable .p-row-toggler-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+/* Ícono de expandir/contraer nodo en TreeTable (Plan de Cuentas) — es un
+   componente distinto de DataTable, con sus propias clases p-treetable-toggler*,
+   no las p-row-toggler* de arriba. */
+.p-treetable .p-treetable-toggler {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.p-treetable .p-treetable-toggler-icon {
   width: 0.75rem;
   height: 0.75rem;
 }
@@ -144,9 +181,12 @@
   padding-right: 3rem;
 }
 
-/* Tamaño de letra compacto de toda tabla DataTable */
+/* Tamaño de letra compacto de toda tabla DataTable/TreeTable (Plan de
+   Cuentas usa TreeTable, que tiene sus propias clases p-treetable-*). */
 .p-datatable .p-datatable-tbody > tr > td,
-.p-datatable .p-datatable-thead > tr > th {
+.p-datatable .p-datatable-thead > tr > th,
+.p-treetable .p-treetable-tbody > tr > td,
+.p-treetable .p-treetable-thead > tr > th {
   font-size: 0.8rem;
   padding: 0.4rem 0.75rem;
 }

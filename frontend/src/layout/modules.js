@@ -23,6 +23,32 @@ export const MODULES = [
         ],
       },
       {
+        label: 'Asientos',
+        icon: 'fa-solid fa-scale-balanced',
+        items: [
+          { label: 'Listado de Asientos', icon: 'fa-solid fa-file-invoice', path: '/contabilidad/asientos' },
+          { label: 'Unión de Asientos', icon: 'fa-solid fa-code-merge', path: '/contabilidad/union-asientos' },
+          { separator: true },
+          { label: 'Renumeración de Asientos', icon: 'fa-solid fa-arrow-down-1-9', path: '/contabilidad/asientos-renumeracion' },
+          { label: 'Asientos Modelo', icon: 'fa-solid fa-copy', path: '/contabilidad/asientos-modelo' },
+          { label: 'Asientos Desbalanceados', icon: 'fa-solid fa-scale-unbalanced', path: '/contabilidad/asientos-desbalanceados' },
+        ],
+      },
+      {
+        label: 'Informes',
+        icon: 'fa-solid fa-chart-column',
+        items: [
+          { label: 'Mayor de Cuentas', icon: 'fa-solid fa-book', path: '/contabilidad/informes/mayor-cuentas' },
+          { label: 'Balance General', icon: 'fa-solid fa-sitemap', path: '/contabilidad/informes/balance-general' },
+          { label: 'Balance de Sumas y Saldos', icon: 'fa-solid fa-scale-balanced', path: '/contabilidad/informes/balance-sumas-saldos' },
+          { label: 'Libro Diario', icon: 'fa-solid fa-file-invoice', path: '/contabilidad/asientos' },
+          { label: 'Libro Diario Acumulado', icon: 'fa-solid fa-layer-group', path: '/contabilidad/informes/libro-diario-acumulado' },
+          { separator: true },
+          { label: 'Libro de Centros de Costo', icon: 'fa-solid fa-layer-group', path: '/contabilidad/informes/libro-centros-costo' },
+          { label: 'Balance de Centros de Costo', icon: 'fa-solid fa-scale-balanced', path: '/contabilidad/informes/balance-centros-costo' },
+        ],
+      },
+      {
         label: 'Tablas Comunes',
         icon: 'fa-solid fa-database',
         items: [

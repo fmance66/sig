@@ -34,7 +34,10 @@
                 "method": "POST",
                 "url": "{{base_url}}/auth/login",
                 "header": [
-                  { "key": "Content-Type", "value": "application/json" }
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
                 "body": {
                   "mode": "raw",
@@ -136,7 +139,9 @@
                 ],
                 "body": {
                   "mode": "file",
-                  "file": { "src": "" }
+                  "file": {
+                    "src": ""
+                  }
                 }
               }
             },
@@ -167,7 +172,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"origen\": 1,\n  \"modo\": \"combinar\",\n  \"incluir\": { \"conceptos\": true, \"formulariosRecibo\": true, \"formulariosLibro\": false }\n}"
+                  "raw": "{\n  \"origen\": 1,\n  \"modo\": \"combinar\",\n  \"incluir\": {\n    \"conceptos\": true,\n    \"formulariosRecibo\": true,\n    \"formulariosLibro\": false,\n    \"contabilidad\": true\n  }\n}"
                 }
               }
             }
@@ -196,7 +201,9 @@
                 ],
                 "body": {
                   "mode": "file",
-                  "file": { "src": "" }
+                  "file": {
+                    "src": ""
+                  }
                 }
               }
             }
@@ -231,7 +238,12 @@
               "request": {
                 "method": "PUT",
                 "url": "{{base_url}}/lsd/topes/202609",
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"minimo\": 144363.55,\n  \"maximo\": 4691748.47,\n  \"origen\": \"MANUAL\"\n}"
@@ -245,14 +257,22 @@
           "item": [
             {
               "name": "GET Usuarios",
-              "request": { "method": "GET", "url": "{{base_url}}/usuarios" }
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/usuarios"
+              }
             },
             {
               "name": "POST Usuario",
               "request": {
                 "method": "POST",
                 "url": "{{base_url}}/usuarios",
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"usuario\": \"nuevo\",\n  \"nombre\": \"Usuario Nuevo\",\n  \"password\": \"clave123\"\n}"
@@ -264,7 +284,12 @@
               "request": {
                 "method": "PUT",
                 "url": "{{base_url}}/usuarios/2",
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"nombre\": \"Nombre actualizado\"\n}"
@@ -273,18 +298,29 @@
             },
             {
               "name": "DELETE Usuario",
-              "request": { "method": "DELETE", "url": "{{base_url}}/usuarios/2" }
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/usuarios/2"
+              }
             },
             {
               "name": "GET Grupos",
-              "request": { "method": "GET", "url": "{{base_url}}/grupos" }
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/grupos"
+              }
             },
             {
               "name": "POST Grupo",
               "request": {
                 "method": "POST",
                 "url": "{{base_url}}/grupos",
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"nombre\": \"Nuevo grupo\",\n  \"descripcion\": \"\",\n  \"orden\": 2\n}"
@@ -293,14 +329,22 @@
             },
             {
               "name": "GET Usuarios de un Grupo",
-              "request": { "method": "GET", "url": "{{base_url}}/grupos/1/usuarios" }
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/grupos/1/usuarios"
+              }
             },
             {
               "name": "PUT Usuarios de un Grupo",
               "request": {
                 "method": "PUT",
                 "url": "{{base_url}}/grupos/1/usuarios",
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"usuarioIds\": [1, 2]\n}"
@@ -309,14 +353,22 @@
             },
             {
               "name": "GET Permisos de un Grupo",
-              "request": { "method": "GET", "url": "{{base_url}}/grupos/1/permisos" }
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/grupos/1/permisos"
+              }
             },
             {
               "name": "PUT Permisos de un Grupo",
               "request": {
                 "method": "PUT",
                 "url": "{{base_url}}/grupos/1/permisos",
-                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"permisos\": [\n    { \"modulo\": \"sueldos\", \"ver\": true, \"crear\": true, \"editar\": true, \"eliminar\": true }\n  ]\n}"
@@ -325,11 +377,17 @@
             },
             {
               "name": "GET Sesiones",
-              "request": { "method": "GET", "url": "{{base_url}}/sesiones" }
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/sesiones"
+              }
             },
             {
               "name": "DELETE Sesión",
-              "request": { "method": "DELETE", "url": "{{base_url}}/sesiones/{{sid}}" }
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/sesiones/{{sid}}"
+              }
             }
           ]
         },
@@ -3933,6 +3991,516 @@
                   }
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "Cuentas",
+          "item": [
+            {
+              "name": "GET Cuentas",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/cuentas?empresa=1"
+              }
+            },
+            {
+              "name": "GET Árbol de Cuentas",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/cuentas/arbol?empresa=1"
+              }
+            },
+            {
+              "name": "GET Cuenta por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/cuentas/11010001/1"
+              }
+            },
+            {
+              "name": "POST Cuenta",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/cuentas",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"99999999\",\n  \"empresa\": 1,\n  \"descripcion\": \"Cuenta de prueba\",\n  \"saldo\": \"DEBE\",\n  \"naturaleza\": \"PATRIMONIAL\",\n  \"imputable\": true,\n  \"monetaria\": false,\n  \"tipo\": \"\",\n  \"orden\": 999,\n  \"id_padre\": null\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Cuenta",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/cuentas/99999999/1",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descripcion\": \"Cuenta de prueba editada\",\n  \"saldo\": \"DEBE\",\n  \"naturaleza\": \"PATRIMONIAL\",\n  \"imputable\": true,\n  \"monetaria\": false,\n  \"tipo\": \"\",\n  \"orden\": 999,\n  \"id_padre\": null\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Cuenta",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/contabilidad/cuentas/99999999/1"
+              }
+            },
+            {
+              "name": "GET Centros de Costo de una Cuenta",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/cuentas/11010001/1/centros-costo"
+              }
+            },
+            {
+              "name": "PUT Centros de Costo de una Cuenta",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/cuentas/11010001/1/centros-costo",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"centro_de_costo\": \"CC1\",\n    \"porcentaje\": 100\n  }\n]"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Centros de Costo",
+          "item": [
+            {
+              "name": "GET Centros de Costo",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/centros-costo?empresa=1"
+              }
+            },
+            {
+              "name": "GET Centro de Costo por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/centros-costo/CC1/1"
+              }
+            },
+            {
+              "name": "POST Centro de Costo",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/centros-costo",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"CC1\",\n  \"empresa\": 1,\n  \"descripcion\": \"Centro de prueba\",\n  \"orden\": 1\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Centro de Costo",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/centros-costo/CC1/1",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descripcion\": \"Centro de prueba editado\",\n  \"orden\": 1\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Centro de Costo",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/contabilidad/centros-costo/CC1/1"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Leyendas",
+          "item": [
+            {
+              "name": "GET Leyendas",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/leyendas?empresa=1"
+              }
+            },
+            {
+              "name": "GET Leyenda por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/leyendas/1/1"
+              }
+            },
+            {
+              "name": "POST Leyenda",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/leyendas",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empresa\": 1,\n  \"leyenda\": \"Leyenda de prueba\",\n  \"orden\": 1\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Leyenda",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/leyendas/1/1",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"leyenda\": \"Leyenda editada\",\n  \"orden\": 1\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Leyenda",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/contabilidad/leyendas/1/1"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ejercicios",
+          "item": [
+            {
+              "name": "GET Ejercicios",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/ejercicios?empresa=1"
+              }
+            },
+            {
+              "name": "GET Ejercicio por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/ejercicios/2027/1"
+              }
+            },
+            {
+              "name": "POST Ejercicio",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/ejercicios",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"2028\",\n  \"empresa\": 1,\n  \"descripcion\": \"2028\",\n  \"fecha_desde\": \"2027-02-01\",\n  \"fecha_hasta\": \"2028-01-31\",\n  \"estado\": \"ABIERTO\",\n  \"codificacion\": \"JERARQUIA\",\n  \"ordenamiento\": \"MOVIMIENTO\",\n  \"leyenda_asiento\": true,\n  \"leyenda_cuenta\": false,\n  \"secuencia\": 1\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Ejercicio",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/ejercicios/2028/1",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descripcion\": \"2028 editado\",\n  \"fecha_desde\": \"2027-02-01\",\n  \"fecha_hasta\": \"2028-01-31\",\n  \"estado\": \"ABIERTO\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Ejercicio",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/contabilidad/ejercicios/2028/1"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Asientos",
+          "item": [
+            {
+              "name": "GET Asientos",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/asientos?empresa=1&ejercicio=2027"
+              }
+            },
+            {
+              "name": "GET Asientos (filtrado por cuenta/leyenda)",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/asientos?empresa=1&ejercicio=2027&cuenta=11010001&leyenda=venta"
+              }
+            },
+            {
+              "name": "GET Asientos Desbalanceados",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/asientos/desbalanceados?empresa=1&ejercicio=2027"
+              }
+            },
+            {
+              "name": "GET Movimientos de un Asiento",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/asientos/2027/1/1/movimientos"
+              }
+            },
+            {
+              "name": "POST Asiento",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/asientos",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ejercicio\": \"2027\",\n  \"empresa\": 1,\n  \"fecha\": \"2026-09-09\",\n  \"leyenda\": \"Asiento de prueba\",\n  \"tipo\": \"MANUAL\",\n  \"moneda\": null,\n  \"cotizacion\": 1,\n  \"proyecto\": null,\n  \"movimientos\": [\n    {\n      \"cuenta\": \"11010001\",\n      \"debe\": 1000,\n      \"haber\": 0,\n      \"leyenda\": \"Asiento de prueba\"\n    },\n    {\n      \"cuenta\": \"11020001\",\n      \"debe\": 0,\n      \"haber\": 1000,\n      \"leyenda\": \"Asiento de prueba\"\n    }\n  ]\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Asiento",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/asientos/2027/1/1",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fecha\": \"2026-09-09\",\n  \"leyenda\": \"Asiento de prueba editado\",\n  \"tipo\": \"MANUAL\",\n  \"moneda\": null,\n  \"cotizacion\": 1,\n  \"proyecto\": null,\n  \"movimientos\": [\n    {\n      \"cuenta\": \"11010001\",\n      \"debe\": 500,\n      \"haber\": 0,\n      \"leyenda\": \"Asiento de prueba editado\"\n    },\n    {\n      \"cuenta\": \"11020001\",\n      \"debe\": 0,\n      \"haber\": 500,\n      \"leyenda\": \"Asiento de prueba editado\"\n    }\n  ]\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Asiento",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/contabilidad/asientos/2027/1/1"
+              }
+            },
+            {
+              "name": "PUT Unión de Asientos",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/asientos/union",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ejercicio\": \"2027\",\n  \"empresa\": 1,\n  \"numeros\": [\n    1,\n    2\n  ],\n  \"fecha\": \"2026-09-09\",\n  \"leyenda\": \"Leyenda unificada\",\n  \"unirLeyendas\": true\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Renumeración de Asientos",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/asientos/renumerar",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ejercicio\": \"2027\",\n  \"empresa\": 1,\n  \"numeroInicial\": 100,\n  \"incremento\": 10,\n  \"orden\": \"fecha\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Informes Contables",
+          "item": [
+            {
+              "name": "GET Mayor de Cuentas",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/informes/mayor-cuentas?empresa=1&ejercicio=2027"
+              }
+            },
+            {
+              "name": "GET Balance General",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/informes/balance-general?empresa=1&ejercicio=2027"
+              }
+            },
+            {
+              "name": "GET Balance de Sumas y Saldos",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/informes/balance-sumas-saldos?empresa=1&ejercicio=2027"
+              }
+            },
+            {
+              "name": "GET Libro Diario Acumulado",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/informes/libro-diario-acumulado?empresa=1&ejercicio=2027&periodo=mensual"
+              }
+            },
+            {
+              "name": "GET Libro de Centros de Costo",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/informes/libro-centros-costo?empresa=1&ejercicio=2027"
+              }
+            },
+            {
+              "name": "GET Balance de Centros de Costo",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/informes/balance-centros-costo?empresa=1&ejercicio=2027"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Asientos Modelo",
+          "item": [
+            {
+              "name": "GET Asientos Modelo",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/asientos-modelo?empresa=1"
+              }
+            },
+            {
+              "name": "GET Asiento Modelo por ID",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/asientos-modelo/MOD1/1"
+              }
+            },
+            {
+              "name": "POST Asiento Modelo",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/asientos-modelo",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"MOD1\",\n  \"empresa\": 1,\n  \"descripcion\": \"Modelo de prueba\",\n  \"leyenda\": \"Leyenda del modelo\"\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Asiento Modelo",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/asientos-modelo/MOD1/1",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"descripcion\": \"Modelo editado\",\n  \"leyenda\": \"Leyenda del modelo\"\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Asiento Modelo",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/contabilidad/asientos-modelo/MOD1/1"
+              }
+            },
+            {
+              "name": "GET Líneas de un Asiento Modelo",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/asientos-modelo/MOD1/1/lineas"
+              }
+            },
+            {
+              "name": "PUT Líneas de un Asiento Modelo",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/asientos-modelo/MOD1/1/lineas",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"cuenta\": \"11010001\",\n    \"saldo\": \"DEBE\",\n    \"leyenda\": \"\"\n  },\n  {\n    \"cuenta\": \"11020001\",\n    \"saldo\": \"HABER\",\n    \"leyenda\": \"\"\n  }\n]"
+                }
+              }
             }
           ]
         }
