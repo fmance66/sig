@@ -47,9 +47,16 @@ function createCatalogoModel(tableName, columns, numericColumns = [], options = 
   }
 
   async function create(data) {
-    const extraCols = columns.filter(c => data[c] !== undefined);
+    // Clave simple con nombre distinto de 'id' (ej. 'fecha', 'periodo'): el
+    // controller/frontend siempre mandan la PK como `id` (ver idSelect más
+    // arriba, que hace el camino inverso en las lecturas) — sin este fallback,
+    // data[idCols[0]] queda undefined y se intenta insertar la PK en NULL.
+    const idData = idCols.length === 1 && idCols[0] !== 'id' && data[idCols[0]] === undefined
+      ? { ...data, [idCols[0]]: data.id }
+      : data;
+    const extraCols = columns.filter(c => idData[c] !== undefined);
     const cols = [...idCols, ...extraCols];
-    const vals = [...idCols.map(c => normalize(c, data[c])), ...extraCols.map(c => normalize(c, data[c]))];
+    const vals = [...idCols.map(c => normalize(c, idData[c])), ...extraCols.map(c => normalize(c, idData[c]))];
     const ph   = cols.map((_, i) => `$${i + 1}`);
     const { rows } = await pool.query(
       `INSERT INTO ${tableName} (${cols.join(',')}) VALUES (${ph.join(',')}) RETURNING ${selectCols}`, vals

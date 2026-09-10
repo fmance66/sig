@@ -57,6 +57,10 @@ import ListadoCuentasPage from './pages/contabilidad/ListadoCuentasPage';
 import CentrosDeCostoPage from './pages/contabilidad/CentrosDeCostoPage';
 import LeyendasPage from './pages/contabilidad/LeyendasPage';
 import EjerciciosPage from './pages/contabilidad/EjerciciosPage';
+import AsientoAperturaPage from './pages/contabilidad/AsientoAperturaPage';
+import AsientoCierrePage from './pages/contabilidad/AsientoCierrePage';
+import CoeficientesPage from './pages/contabilidad/CoeficientesPage';
+import AjusteInflacionPage from './pages/contabilidad/AjusteInflacionPage';
 import ListadoAsientosPage from './pages/contabilidad/ListadoAsientosPage';
 import UnionAsientosPage from './pages/contabilidad/UnionAsientosPage';
 import RenumeracionAsientosPage from './pages/contabilidad/RenumeracionAsientosPage';
@@ -179,6 +183,10 @@ export default function App() {
           <Route path="contabilidad/centros-costo" element={<CentrosDeCostoPage />} />
           <Route path="contabilidad/leyendas" element={<LeyendasPage />} />
           <Route path="contabilidad/ejercicios" element={<EjerciciosPage />} />
+          <Route path="contabilidad/ejercicios/asiento-apertura" element={<AsientoAperturaPage />} />
+          <Route path="contabilidad/ejercicios/asiento-cierre" element={<AsientoCierrePage />} />
+          <Route path="contabilidad/ejercicios/coeficientes" element={<CoeficientesPage />} />
+          <Route path="contabilidad/ejercicios/ajuste-inflacion" element={<AjusteInflacionPage />} />
           <Route path="contabilidad/asientos" element={<ListadoAsientosPage />} />
           <Route path="contabilidad/union-asientos" element={<UnionAsientosPage />} />
           <Route path="contabilidad/asientos-renumeracion" element={<RenumeracionAsientosPage />} />

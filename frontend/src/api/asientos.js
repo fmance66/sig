@@ -1,7 +1,7 @@
 import client from './client';
 
-export const getAsientos = ({ empresa, ejercicio, cuenta, leyenda }) =>
-  client.get('/contabilidad/asientos', { params: { empresa, ejercicio, cuenta, leyenda } });
+export const getAsientos = ({ empresa, ejercicio, cuenta, leyenda, tipo }) =>
+  client.get('/contabilidad/asientos', { params: { empresa, ejercicio, cuenta, leyenda, tipo } });
 
 export const getMovimientos = (ejercicio, numero, empresa) =>
   client.get(`/contabilidad/asientos/${ejercicio}/${numero}/${empresa}/movimientos`);

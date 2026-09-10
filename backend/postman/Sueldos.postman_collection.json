@@ -4266,6 +4266,66 @@
           ]
         },
         {
+          "name": "Coeficientes",
+          "item": [
+            {
+              "name": "GET Coeficientes",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/coeficientes"
+              }
+            },
+            {
+              "name": "GET Coeficiente por período",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/coeficientes/2025-12-01"
+              }
+            },
+            {
+              "name": "POST Coeficiente",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/coeficientes",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"id\": \"2026-01-01\",\n  \"indice\": 10350.0\n}"
+                }
+              }
+            },
+            {
+              "name": "PUT Coeficiente",
+              "request": {
+                "method": "PUT",
+                "url": "{{base_url}}/contabilidad/coeficientes/2026-01-01",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"indice\": 10360.5\n}"
+                }
+              }
+            },
+            {
+              "name": "DELETE Coeficiente",
+              "request": {
+                "method": "DELETE",
+                "url": "{{base_url}}/contabilidad/coeficientes/2026-01-01"
+              }
+            }
+          ]
+        },
+        {
           "name": "Asientos",
           "item": [
             {
@@ -4280,6 +4340,13 @@
               "request": {
                 "method": "GET",
                 "url": "{{base_url}}/contabilidad/asientos?empresa=1&ejercicio=2027&cuenta=11010001&leyenda=venta"
+              }
+            },
+            {
+              "name": "GET Asientos (filtrado por tipo, ej. Apertura/Cierre)",
+              "request": {
+                "method": "GET",
+                "url": "{{base_url}}/contabilidad/asientos?empresa=1&ejercicio=2027&tipo=APERTURA"
               }
             },
             {
@@ -4368,6 +4435,45 @@
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"ejercicio\": \"2027\",\n  \"empresa\": 1,\n  \"numeroInicial\": 100,\n  \"incremento\": 10,\n  \"orden\": \"fecha\"\n}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ajuste por Inflación",
+          "item": [
+            {
+              "name": "POST Preview Ajuste por Inflación",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/ajuste-inflacion/preview",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empresa\": 1,\n  \"ejercicio\": \"2026\",\n  \"fechaCierre\": \"2026-01-31\",\n  \"fechaDesde\": \"2025-02-01\",\n  \"fechaHasta\": \"2026-01-31\",\n  \"tiposExcluir\": [\"AJUSTE\"]\n}"
+                }
+              }
+            },
+            {
+              "name": "POST Generar Asiento de Ajuste por Inflación",
+              "request": {
+                "method": "POST",
+                "url": "{{base_url}}/contabilidad/ajuste-inflacion/generar",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"empresa\": 1,\n  \"ejercicio\": \"2026\",\n  \"fechaCierre\": \"2026-01-31\",\n  \"fechaDesde\": \"2025-02-01\",\n  \"fechaHasta\": \"2026-01-31\",\n  \"tiposExcluir\": [\"AJUSTE\"],\n  \"cuentaContrapartida\": \"41040004\",\n  \"fecha\": \"2026-01-31\",\n  \"leyenda\": \"Ajuste por inflación\"\n}"
                 }
               }
             }

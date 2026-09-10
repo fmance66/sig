@@ -11,7 +11,7 @@ function normalizeMonto(val) {
 // Trae los headers de un ejercicio con el saldo (SUM(debe)) calculado al vuelo —
 // no se persiste en cnt_asiento para no arrastrar el bug de caches desincronizados
 // que ya se vio antes en el proyecto (ver normalize() 0->null en otros modelos).
-async function list(ejercicio, empresa, { cuenta, leyenda } = {}) {
+async function list(ejercicio, empresa, { cuenta, leyenda, tipo } = {}) {
   const params = [ejercicio, empresa];
   const filtros = [];
   if (cuenta) {
@@ -22,6 +22,10 @@ async function list(ejercicio, empresa, { cuenta, leyenda } = {}) {
     params.push(`%${leyenda}%`);
     const idx = params.length;
     filtros.push(`(a.leyenda ILIKE $${idx} OR EXISTS (SELECT 1 FROM cnt_movimiento m3 WHERE m3.ejercicio = a.ejercicio AND m3.numero = a.numero AND m3.empresa = a.empresa AND m3.leyenda ILIKE $${idx}))`);
+  }
+  if (tipo) {
+    params.push(tipo);
+    filtros.push(`a.tipo = $${params.length}`);
   }
   const where = ['a.ejercicio = $1', 'a.empresa = $2', ...filtros].join(' AND ');
   const { rows } = await pool.query(

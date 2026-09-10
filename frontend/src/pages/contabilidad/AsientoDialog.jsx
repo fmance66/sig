@@ -28,7 +28,10 @@ const EMPTY_LINEA = { cuenta: null, debe: null, haber: null, leyenda: '' };
 
 // Modal de alta/edición de un asiento — Ejercicio y Empresa vienen fijos del
 // filtro activo de ListadoAsientosPage, no son editables acá.
-export default function AsientoDialog({ visible, onHide, onSaved, empresa, ejercicio, asiento, movimientosIniciales, cuentas, toast }) {
+// `tipoFijo` lo usan las pantallas de Asiento de Apertura/Cierre (ver
+// AsientoTipoPage.jsx): fuerza el tipo y oculta el combo, porque esas
+// pantallas ya filtran por ese tipo y no tendría sentido dejarlo cambiar.
+export default function AsientoDialog({ visible, onHide, onSaved, empresa, ejercicio, asiento, movimientosIniciales, cuentas, toast, tipoFijo }) {
   const editMode = !!asiento;
   const [form, setForm] = useState(EMPTY_FORM);
   const [movimientos, setMovimientos] = useState([]);
@@ -45,19 +48,19 @@ export default function AsientoDialog({ visible, onHide, onSaved, empresa, ejerc
       setForm({
         fecha: toDate(asiento.fecha),
         leyenda: asiento.leyenda ?? '',
-        tipo: asiento.tipo ?? 'MANUAL',
+        tipo: asiento.tipo ?? tipoFijo ?? 'MANUAL',
         moneda: asiento.moneda ?? null,
         cotizacion: asiento.cotizacion ?? 1,
         proyecto: asiento.proyecto ?? null,
       });
       loadMovimientos(asiento.numero);
     } else {
-      setForm(EMPTY_FORM);
+      setForm({ ...EMPTY_FORM, tipo: tipoFijo ?? EMPTY_FORM.tipo });
       setMovimientos(movimientosIniciales ?? []);
     }
     monedasApi.getMonedas().then(res => setMonedas(res.data.resultado)).catch(() => setMonedas([]));
     proyectosApi.getProyectos().then(res => setProyectos(res.data.resultado)).catch(() => setProyectos([]));
-  }, [visible, asiento, movimientosIniciales]);
+  }, [visible, asiento, movimientosIniciales, tipoFijo]);
 
   async function loadMovimientos(numero) {
     setLoadingMovimientos(true);
@@ -182,7 +185,7 @@ export default function AsientoDialog({ visible, onHide, onSaved, empresa, ejerc
         </div>
         <div className="form-field">
           <label>Tipo</label>
-          <Dropdown value={form.tipo} options={TIPO_OPTIONS} onChange={e => handleFieldChange('tipo', e.value)} />
+          <Dropdown value={form.tipo} options={TIPO_OPTIONS} onChange={e => handleFieldChange('tipo', e.value)} disabled={!!tipoFijo} />
         </div>
         <div className="form-field form-field--full">
           <label>Leyenda <span className="required">*</span></label>

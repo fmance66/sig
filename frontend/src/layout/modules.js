@@ -20,6 +20,12 @@ export const MODULES = [
         icon: 'fa-solid fa-table-cells',
         items: [
           { label: 'Ejercicios', icon: 'fa-solid fa-table-cells', path: '/contabilidad/ejercicios' },
+          { separator: true },
+          { label: 'Asiento de Apertura', icon: 'fa-solid fa-door-open', path: '/contabilidad/ejercicios/asiento-apertura' },
+          { label: 'Asiento de Cierre', icon: 'fa-solid fa-door-closed', path: '/contabilidad/ejercicios/asiento-cierre' },
+          { separator: true },
+          { label: 'Coeficientes', icon: 'fa-solid fa-percent', path: '/contabilidad/ejercicios/coeficientes' },
+          { label: 'Ajuste por Inflación', icon: 'fa-solid fa-arrow-trend-up', path: '/contabilidad/ejercicios/ajuste-inflacion' },
         ],
       },
       {

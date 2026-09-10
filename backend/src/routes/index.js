@@ -175,6 +175,12 @@ mod('/contabilidad/ejercicios', 'contabilidad', catalogo('cnt_ejercicio',
 
 mod('/contabilidad/asientos', 'contabilidad', require('./asientos'));
 
+mod('/contabilidad/coeficientes', 'contabilidad', catalogo('cnt_coeficiente',
+  ['indice', 'indice_cierre', 'coeficiente'], ['indice', 'indice_cierre', 'coeficiente'],
+  'coeficiente', { idColumn: 'periodo' }));
+
+mod('/contabilidad/ajuste-inflacion', 'contabilidad', require('./ajusteInflacion'));
+
 const asientoModeloRouter = catalogo('cnt_asiento_modelo', ['descripcion', 'leyenda'], [], 'asiento modelo', { idColumn: ['id', 'empresa'] });
 const asientoModeloLineasController = require('../controllers/asientoModelo');
 asientoModeloRouter.get('/:id/:empresa/lineas', asientoModeloLineasController.getLineas);

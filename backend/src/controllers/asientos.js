@@ -2,10 +2,10 @@ const model = require('../models/asientos');
 
 async function list(req, res) {
   try {
-    const { empresa, ejercicio, cuenta, leyenda } = req.query;
+    const { empresa, ejercicio, cuenta, leyenda, tipo } = req.query;
     if (!empresa) return res.status(400).json({ estado: 'error', mensaje: 'empresa es requerida' });
     if (!ejercicio) return res.status(400).json({ estado: 'error', mensaje: 'ejercicio es requerido' });
-    const data = await model.list(ejercicio, empresa, { cuenta, leyenda });
+    const data = await model.list(ejercicio, empresa, { cuenta, leyenda, tipo });
     res.json({ estado: 'ok', registros: data.length, resultado: data });
   } catch (err) {
     console.error(err);
