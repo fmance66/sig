@@ -199,17 +199,11 @@ export default function App() {
           <Route path="contabilidad/informes/libro-centros-costo" element={<InformeLibroCentrosCostoPage />} />
           <Route path="contabilidad/informes/balance-centros-costo" element={<InformeBalanceCentrosCostoPage />} />
           {/* iva */}
-          <Route path="iva/compras/comprobante" element={<ListadoComprobantesIvaPage modulo="COMPRA" autoOpen />} />
           <Route path="iva/compras/comprobantes" element={<ListadoComprobantesIvaPage modulo="COMPRA" />} />
-          <Route path="iva/compras/proveedor" element={<ListadoPersonasPage modulo="COMPRA" />} />
           <Route path="iva/compras/proveedores" element={<ListadoPersonasPage modulo="COMPRA" />} />
-          <Route path="iva/compras/item" element={<ListadoItemsPage modulo="COMPRA" />} />
           <Route path="iva/compras/items" element={<ListadoItemsPage modulo="COMPRA" />} />
-          <Route path="iva/ventas/comprobante" element={<ListadoComprobantesIvaPage modulo="VENTA" autoOpen />} />
           <Route path="iva/ventas/comprobantes" element={<ListadoComprobantesIvaPage modulo="VENTA" />} />
-          <Route path="iva/ventas/cliente" element={<ListadoPersonasPage modulo="VENTA" />} />
           <Route path="iva/ventas/clientes" element={<ListadoPersonasPage modulo="VENTA" />} />
-          <Route path="iva/ventas/item" element={<ListadoItemsPage modulo="VENTA" />} />
           <Route path="iva/ventas/items" element={<ListadoItemsPage modulo="VENTA" />} />
           <Route path="iva/periodos" element={<PeriodosPage />} />
           <Route path="iva/informes/libro" element={<InformeLibroIvaPage />} />

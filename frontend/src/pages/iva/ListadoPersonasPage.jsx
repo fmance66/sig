@@ -19,6 +19,7 @@ export default function ListadoPersonasPage({ modulo }) {
   const { empresa } = useEmpresa();
   const etiqueta = modulo === 'VENTA' ? 'Cliente' : 'Proveedor';
   const etiquetaPlural = modulo === 'VENTA' ? 'Clientes' : 'Proveedores';
+  const icono = modulo === 'VENTA' ? 'fa-user-tie' : 'fa-truck-field';
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading]   = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -101,7 +102,7 @@ export default function ListadoPersonasPage({ modulo }) {
 
       <div className="page-header-row">
         <BotonVolver />
-        <h2 className="page-title"><i className="fa-solid fa-address-card" /> Listado de {etiquetaPlural}</h2>
+        <h2 className="page-title"><i className={`fa-solid ${icono}`} /> {etiquetaPlural}</h2>
       </div>
 
       <DataTable

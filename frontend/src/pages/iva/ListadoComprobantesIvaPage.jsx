@@ -18,11 +18,9 @@ import './iva.css';
 const money = v => v === null || v === undefined ? '—' : Number(v).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const EMPTY_FILTRO = { periodo: null, persona: null, provincia: '', rubro: '', condicionVenta: null };
 
-// Compartido por "Listado de Comprobantes de Compra" (modulo COMPRA) y
-// "Listado de Comprobantes de Venta" (modulo VENTA). `autoOpen` es usado por
-// los ítems de menú "Comprobante de Compra/Venta" (alta directa): en vez de
-// una pantalla propia, abren este listado con el modal de alta ya disparado.
-export default function ListadoComprobantesIvaPage({ modulo, autoOpen = false }) {
+// Compartido por "Comprobante de Compra" (modulo COMPRA) y
+// "Comprobante de Venta" (modulo VENTA).
+export default function ListadoComprobantesIvaPage({ modulo }) {
   const { empresa } = useEmpresa();
   const etiqueta = modulo === 'VENTA' ? 'venta' : 'compra';
   const etiquetaTitulo = modulo === 'VENTA' ? 'Comprobantes de Venta' : 'Comprobantes de Compra';
@@ -38,7 +36,6 @@ export default function ListadoComprobantesIvaPage({ modulo, autoOpen = false })
   const [dialogVisible, setDialogVisible] = useState(false);
   const [comprobanteRef, setComprobanteRef] = useState(null);
   const toast = useRef(null);
-  const autoOpenDone = useRef(false);
 
   useEffect(() => {
     if (!empresa) return;
@@ -48,13 +45,6 @@ export default function ListadoComprobantesIvaPage({ modulo, autoOpen = false })
     buscar(EMPTY_FILTRO);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [empresa?.id, modulo]);
-
-  useEffect(() => {
-    if (autoOpen && !autoOpenDone.current) {
-      autoOpenDone.current = true;
-      openNew();
-    }
-  }, [autoOpen]);
 
   async function buscar(f = filtro) {
     if (!empresa) return;
@@ -116,7 +106,7 @@ export default function ListadoComprobantesIvaPage({ modulo, autoOpen = false })
 
       <div className="page-header-row">
         <BotonVolver />
-        <h2 className="page-title"><i className="fa-solid fa-list" /> Listado de {etiquetaTitulo}</h2>
+        <h2 className="page-title"><i className="fa-solid fa-file-invoice-dollar" /> {etiquetaTitulo}</h2>
       </div>
 
       <div className="filtros-toolbar">

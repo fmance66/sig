@@ -103,7 +103,7 @@ export default function ListadoItemsPage({ modulo }) {
 
       <div className="page-header-row">
         <BotonVolver />
-        <h2 className="page-title"><i className="fa-solid fa-boxes-stacked" /> Listado de {etiquetaTitulo}</h2>
+        <h2 className="page-title"><i className="fa-solid fa-box" /> {etiquetaTitulo}</h2>
       </div>
 
       <DataTable
