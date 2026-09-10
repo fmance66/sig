@@ -68,6 +68,19 @@ import InformeBalanceSumasSaldosPage from './pages/contabilidad/InformeBalanceSu
 import InformeLibroDiarioAcumuladoPage from './pages/contabilidad/InformeLibroDiarioAcumuladoPage';
 import InformeLibroCentrosCostoPage from './pages/contabilidad/InformeLibroCentrosCostoPage';
 import InformeBalanceCentrosCostoPage from './pages/contabilidad/InformeBalanceCentrosCostoPage';
+import ImpuestosPage from './pages/iva/ImpuestosPage';
+import CondicionVentaPage from './pages/iva/CondicionVentaPage';
+import ModalidadesPage from './pages/iva/ModalidadesPage';
+import PuntosVentaPage from './pages/iva/PuntosVentaPage';
+import TipoComprobantePage from './pages/iva/TipoComprobantePage';
+import ModeloComprobantePage from './pages/iva/ModeloComprobantePage';
+import ListadoPersonasPage from './pages/iva/ListadoPersonasPage';
+import ListadoItemsPage from './pages/iva/ListadoItemsPage';
+import PeriodosPage from './pages/iva/PeriodosPage';
+import ListadoComprobantesIvaPage from './pages/iva/ListadoComprobantesIvaPage';
+import InformeLibroIvaPage from './pages/iva/InformeLibroIvaPage';
+import InformeResumenIvaPage from './pages/iva/InformeResumenIvaPage';
+import InformeDeclaracionJuradaIvaPage from './pages/iva/InformeDeclaracionJuradaIvaPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import CopiarConfiguracionPage from './pages/configuracion/CopiarConfiguracionPage';
 import CopiaSeguridadPage from './pages/configuracion/CopiaSeguridadPage';
@@ -177,6 +190,29 @@ export default function App() {
           <Route path="contabilidad/informes/libro-diario-acumulado" element={<InformeLibroDiarioAcumuladoPage />} />
           <Route path="contabilidad/informes/libro-centros-costo" element={<InformeLibroCentrosCostoPage />} />
           <Route path="contabilidad/informes/balance-centros-costo" element={<InformeBalanceCentrosCostoPage />} />
+          {/* iva */}
+          <Route path="iva/compras/comprobante" element={<ListadoComprobantesIvaPage modulo="COMPRA" autoOpen />} />
+          <Route path="iva/compras/comprobantes" element={<ListadoComprobantesIvaPage modulo="COMPRA" />} />
+          <Route path="iva/compras/proveedor" element={<ListadoPersonasPage modulo="COMPRA" />} />
+          <Route path="iva/compras/proveedores" element={<ListadoPersonasPage modulo="COMPRA" />} />
+          <Route path="iva/compras/item" element={<ListadoItemsPage modulo="COMPRA" />} />
+          <Route path="iva/compras/items" element={<ListadoItemsPage modulo="COMPRA" />} />
+          <Route path="iva/ventas/comprobante" element={<ListadoComprobantesIvaPage modulo="VENTA" autoOpen />} />
+          <Route path="iva/ventas/comprobantes" element={<ListadoComprobantesIvaPage modulo="VENTA" />} />
+          <Route path="iva/ventas/cliente" element={<ListadoPersonasPage modulo="VENTA" />} />
+          <Route path="iva/ventas/clientes" element={<ListadoPersonasPage modulo="VENTA" />} />
+          <Route path="iva/ventas/item" element={<ListadoItemsPage modulo="VENTA" />} />
+          <Route path="iva/ventas/items" element={<ListadoItemsPage modulo="VENTA" />} />
+          <Route path="iva/periodos" element={<PeriodosPage />} />
+          <Route path="iva/informes/libro" element={<InformeLibroIvaPage />} />
+          <Route path="iva/informes/resumen" element={<InformeResumenIvaPage />} />
+          <Route path="iva/informes/ddjj" element={<InformeDeclaracionJuradaIvaPage />} />
+          <Route path="iva/tablas/impuestos" element={<ImpuestosPage />} />
+          <Route path="iva/tablas/condicion-venta" element={<CondicionVentaPage />} />
+          <Route path="iva/tablas/modalidades" element={<ModalidadesPage />} />
+          <Route path="iva/tablas/tipo-comprobante" element={<TipoComprobantePage />} />
+          <Route path="iva/tablas/modelo-comprobante" element={<ModeloComprobantePage />} />
+          <Route path="iva/tablas/punto-venta" element={<PuntosVentaPage />} />
           {/* ayuda */}
           <Route path="ayuda" element={<AyudaPage />} />
           {/* configuracion */}

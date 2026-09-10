@@ -1,0 +1,159 @@
+/* Estilos compartidos por las páginas del módulo I.V.A.
+   Reutiliza las clases utilitarias ya globales (table-toolbar, form-grid,
+   form-field, sub-tab, sub-form, tab-empty-msg, dialog-footer-btns,
+   acciones-col, filtros-toolbar, total-registros — ver styles/global-tables.css)
+   y agrega solo lo específico de este módulo (siguiendo la misma convención
+   de EmpleadosPage.css/conceptos.css: page-title, form-row-12 y
+   form-field--checkbox se redefinen acá porque no son parte del global). */
+
+.page-iva {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.page-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.75rem;
+}
+
+.page-title i {
+  color: #3b82f6;
+}
+
+.form-field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 1.5rem;
+}
+
+.form-field--checkbox label {
+  padding-top: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Fila con proporciones libres (grid de 12 columnas) dentro del form-grid de 2 columnas */
+.form-row-12 {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem 1.25rem;
+}
+
+.form-row-12 .form-field--checkbox {
+  padding-top: 1.5rem;
+}
+
+.form-row-12 .form-field--checkbox label {
+  text-align: center;
+}
+
+/* Label + botón en la misma línea, arriba del campo (no se usa por ahora en
+   IVA pero se deja disponible por convención del proyecto). */
+.form-field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+/* Tabs de los modales grandes (Tipo/Letras, Modelo/Impuestos, Comprobante) */
+.iva-tabs .p-tabview-nav {
+  font-size: 0.82rem;
+}
+
+.iva-tabs .p-tabview-nav li .p-tabview-nav-link {
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+}
+
+.iva-tabs .p-tabview-panels {
+  padding: 0.75rem 0 0 0;
+}
+
+/* Franja fija arriba de las tabs del Comprobante: combo de Proveedor/Cliente
+   grande + identificación (Tipo/Letra/Punto/Número/Fecha/Período). */
+.comprobante-persona-row {
+  margin-bottom: 0.75rem;
+}
+
+.comprobante-persona-row .form-field label {
+  font-size: 0.85rem;
+}
+
+.comprobante-id-row {
+  grid-template-columns: repeat(12, 1fr);
+}
+
+/* Resumen Neto/IVA/Total de la pestaña Importes — mismo criterio visual que
+   asiento-totales (Contabilidad) y recibo-totales (Sueldos). */
+.comprobante-totales {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  max-width: 320px;
+  margin-left: auto;
+}
+
+.comprobante-totales .total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #374151;
+}
+
+.comprobante-totales .total-row--main {
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.ddjj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.ddjj-card {
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+}
+
+.ddjj-card-label {
+  font-size: 0.78rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ddjj-card-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #374151;
+  margin-top: 0.3rem;
+}
+
+.ddjj-card--saldo .ddjj-card-value {
+  color: #2a78d6;
+}
+
+/* Filas clickeables del Listado de Comprobantes (abren el modal de edición) */
+.comprobantes-tabla .p-datatable-tbody > tr {
+  cursor: pointer;
+}

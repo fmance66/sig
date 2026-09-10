@@ -4503,6 +4503,791 @@
               }
             }
           ]
+        },
+        {
+          "name": "I.V.A.",
+          "item": [
+            {
+              "name": "Condiciones de Venta",
+              "item": [
+                {
+                  "name": "GET Condiciones de Venta",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/condiciones-venta?empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Condicion de Venta por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/condiciones-venta/CONTADO/5"
+                  }
+                },
+                {
+                  "name": "POST Condicion de Venta",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/condiciones-venta",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"CONTADO\",\n  \"empresa\": 5,\n  \"descripcion\": \"Contado\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Condicion de Venta",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/condiciones-venta/CONTADO/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Contado\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Condicion de Venta",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/condiciones-venta/CONTADO/5"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Modalidades",
+              "item": [
+                {
+                  "name": "GET Modalidades",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/modalidades?empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Modalidad por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/modalidades/CONTADO/5"
+                  }
+                },
+                {
+                  "name": "POST Modalidad",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/modalidades",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"CONTADO\",\n  \"empresa\": 5,\n  \"descripcion\": \"Contado\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Modalidad",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/modalidades/CONTADO/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Contado\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Modalidad",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/modalidades/CONTADO/5"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Rubros",
+              "item": [
+                {
+                  "name": "GET Rubros",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/rubros?empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Rubro por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/rubros/GENERAL/5"
+                  }
+                },
+                {
+                  "name": "POST Rubro",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/rubros",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"GENERAL\",\n  \"empresa\": 5,\n  \"descripcion\": \"General\",\n  \"concepto\": \"PRODSERV\",\n  \"modulo\": \"VENTA\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Rubro",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/rubros/GENERAL/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"General\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Rubro",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/rubros/GENERAL/5"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Impuestos",
+              "item": [
+                {
+                  "name": "GET Impuestos",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/impuestos?empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Impuesto por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/impuestos/IVA21/5"
+                  }
+                },
+                {
+                  "name": "POST Impuesto",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/impuestos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"IVA21\",\n  \"empresa\": 5,\n  \"nombre\": \"IVA 21%\",\n  \"tipo\": \"IVA\",\n  \"alicuota\": 21,\n  \"calculo\": \"IMPUESTO\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Impuesto",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/impuestos/IVA21/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"nombre\": \"IVA 21%\",\n  \"alicuota\": 21,\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Impuesto",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/impuestos/IVA21/5"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Tipos de Comprobante",
+              "item": [
+                {
+                  "name": "GET Tipos de Comprobante",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/tipos-comprobante?empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Tipo de Comprobante por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/tipos-comprobante/FACA/5"
+                  }
+                },
+                {
+                  "name": "POST Tipo de Comprobante",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/tipos-comprobante",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"FACA\",\n  \"empresa\": 5,\n  \"descripcion\": \"Factura A\",\n  \"documento\": \"FACTURA\",\n  \"saldo\": \"SUMA\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Tipo de Comprobante",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/tipos-comprobante/FACA/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Factura A\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Tipo de Comprobante",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/tipos-comprobante/FACA/5"
+                  }
+                },
+                {
+                  "name": "GET Letras de Tipo de Comprobante",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/tipos-comprobante/FACA/5/letras"
+                  }
+                },
+                {
+                  "name": "PUT Letras de Tipo de Comprobante",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/tipos-comprobante/FACA/5/letras",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"items\": [\n    {\n      \"letra\": \"A\",\n      \"punto\": 1,\n      \"tipo_afip\": \"001\"\n    }\n  ]\n}"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Tipos AFIP",
+              "item": [
+                {
+                  "name": "GET Tipos AFIP",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/tipos-afip"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Modelos de Comprobante",
+              "item": [
+                {
+                  "name": "GET Modelos de Comprobante",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/modelos-comprobante?empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Modelo de Comprobante por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/modelos-comprobante/MODELO1/5"
+                  }
+                },
+                {
+                  "name": "POST Modelo de Comprobante",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/modelos-comprobante",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"MODELO1\",\n  \"empresa\": 5,\n  \"descripcion\": \"Modelo General\",\n  \"modulo\": \"VENTA\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Modelo de Comprobante",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/modelos-comprobante/MODELO1/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Modelo General\",\n  \"orden\": 1\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Modelo de Comprobante",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/modelos-comprobante/MODELO1/5"
+                  }
+                },
+                {
+                  "name": "GET Impuestos de un Modelo",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/modelos-comprobante/MODELO1/5/impuestos"
+                  }
+                },
+                {
+                  "name": "PUT Impuestos de un Modelo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/modelos-comprobante/MODELO1/5/impuestos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"items\": [\n    {\n      \"impuesto\": \"IVA21\",\n      \"alicuota\": 21,\n      \"columna\": 1,\n      \"fila\": 1\n    }\n  ]\n}"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Puntos de Venta",
+              "item": [
+                {
+                  "name": "GET Puntos de Venta",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/puntos-venta?empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Punto de Venta por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/puntos-venta/1/5"
+                  }
+                },
+                {
+                  "name": "POST Punto de Venta",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/puntos-venta",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"punto\": 1,\n  \"empresa\": 5,\n  \"nombre\": \"Casa Central\",\n  \"activo\": true\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Punto de Venta",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/puntos-venta/1/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"nombre\": \"Casa Central\",\n  \"activo\": true\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Punto de Venta",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/puntos-venta/1/5"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Personas",
+              "item": [
+                {
+                  "name": "GET Personas",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/personas?modulo=VENTA&empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Persona por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/personas/VENTA/CLI001/5"
+                  }
+                },
+                {
+                  "name": "POST Persona",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/personas",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"modulo\": \"VENTA\",\n  \"id\": \"CLI001\",\n  \"empresa\": 5,\n  \"razon_social\": \"Cliente de Prueba\",\n  \"condicion_iva\": \"RI\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Persona",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/personas/VENTA/CLI001/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"razon_social\": \"Cliente de Prueba\",\n  \"condicion_iva\": \"RI\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Persona",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/personas/VENTA/CLI001/5"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Items",
+              "item": [
+                {
+                  "name": "GET Items",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/items?modulo=VENTA&empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Item por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/items/VENTA/ITEM1/5"
+                  }
+                },
+                {
+                  "name": "POST Item",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/items",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"modulo\": \"VENTA\",\n  \"id\": \"ITEM1\",\n  \"empresa\": 5,\n  \"descripcion\": \"Item de Prueba\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Item",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/items/VENTA/ITEM1/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"descripcion\": \"Item de Prueba\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Item",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/items/VENTA/ITEM1/5"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Periodos",
+              "item": [
+                {
+                  "name": "GET Periodos",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/periodos?empresa=5"
+                  }
+                },
+                {
+                  "name": "GET Periodo por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/periodos/09%2F2026/5"
+                  }
+                },
+                {
+                  "name": "POST Periodo",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/periodos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"periodo\": \"09/2026\",\n  \"empresa\": 5,\n  \"fecha_desde\": \"2026-09-01\",\n  \"fecha_hasta\": \"2026-09-30\",\n  \"estado\": \"ABIERTA\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Periodo",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/periodos/09%2F2026/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"estado\": \"CERRADA\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Periodo",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/periodos/09%2F2026/5"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Comprobantes",
+              "item": [
+                {
+                  "name": "GET Comprobantes",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/comprobantes?modulo=COMPRA&empresa=5&periodo=09%2F2026"
+                  }
+                },
+                {
+                  "name": "GET Comprobante por ID",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/comprobantes/COMPRA/FACA/1/CLI001/5"
+                  }
+                },
+                {
+                  "name": "POST Comprobante",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/comprobantes",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"modulo\": \"COMPRA\",\n  \"tipo\": \"FACA\",\n  \"comprobante\": \"1\",\n  \"persona\": \"CLI001\",\n  \"empresa\": 5,\n  \"fecha\": \"2026-09-10\",\n  \"periodo\": \"09/2026\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Comprobante",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/comprobantes/COMPRA/FACA/1/CLI001/5",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"observaciones\": \"Editado\"\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "DELETE Comprobante",
+                  "request": {
+                    "method": "DELETE",
+                    "url": "{{base_url}}/iva/comprobantes/COMPRA/FACA/1/CLI001/5"
+                  }
+                },
+                {
+                  "name": "PUT Impuestos de un Comprobante",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/comprobantes/COMPRA/FACA/1/CLI001/5/impuestos",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"items\": [\n    {\n      \"impuesto\": \"IVA21\",\n      \"alicuota\": 21,\n      \"importe\": 2100\n    }\n  ]\n}"
+                    }
+                  }
+                },
+                {
+                  "name": "PUT Items de un Comprobante",
+                  "request": {
+                    "method": "PUT",
+                    "url": "{{base_url}}/iva/comprobantes/COMPRA/FACA/1/CLI001/5/items",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"items\": [\n    {\n      \"item\": \"ITEM1\",\n      \"cantidad\": 1,\n      \"precio\": 10000,\n      \"importe\": 10000\n    }\n  ]\n}"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Informes I.V.A.",
+              "item": [
+                {
+                  "name": "GET Libro I.V.A.",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/informes/libro?modulo=COMPRA&empresa=5&periodo=09%2F2026"
+                  }
+                },
+                {
+                  "name": "GET Resumen por Condicion de I.V.A.",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/informes/resumen?modulo=COMPRA&empresa=5&periodo=09%2F2026"
+                  }
+                },
+                {
+                  "name": "GET Declaracion Jurada de I.V.A.",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/informes/ddjj?empresa=5&periodo=09%2F2026"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     }

@@ -183,6 +183,52 @@ mod('/contabilidad/asientos-modelo', 'contabilidad', asientoModeloRouter);
 
 mod('/contabilidad/informes', 'contabilidad', require('./informesContables'));
 
+mod('/iva/condiciones-venta', 'iva', catalogo('iva_condicion_venta',
+  ['descripcion', 'orden'], ['orden'], 'condición de venta', { idColumn: ['id', 'empresa'] }));
+
+mod('/iva/modalidades', 'iva', catalogo('iva_modalidad',
+  ['descripcion', 'orden'], ['orden'], 'modalidad', { idColumn: ['id', 'empresa'] }));
+
+mod('/iva/rubros', 'iva', catalogo('bas_rubro',
+  ['descripcion', 'concepto', 'modulo', 'alias', 'color', 'orden', 'visible', 'id_padre'],
+  ['orden'], 'rubro', { idColumn: ['id', 'empresa'] }));
+
+// fe_tributo/id_afip (Facturación Electrónica, fase futura) quedan afuera a propósito.
+mod('/iva/impuestos', 'iva', catalogo('iva_impuesto',
+  ['nombre', 'tipo', 'alicuota', 'importe', 'formula_alicuota', 'formula_importe', 'calculo',
+   'alias', 'color', 'columna', 'shortcut', 'orden', 'grupo', 'provincia', 'ddjj_iva', 'aplicacion'],
+  ['alicuota', 'importe', 'columna', 'orden'], 'impuesto', { idColumn: ['id', 'empresa'] }));
+
+mod('/iva/tipos-comprobante', 'iva', require('./tipoComprobanteIva'));
+mod('/iva/tipos-afip', 'iva', require('./tiposAfipIva'));
+
+mod('/iva/modelos-comprobante', 'iva', require('./modeloComprobanteIva'));
+
+// punto/periodo no son 'id': filtroParams explícito para que el listado se filtre
+// solo por ?empresa= (el default de catalogo() dejaría punto/periodo como filtro
+// obligatorio también, ver comentario del helper más arriba).
+mod('/iva/puntos-venta', 'iva', catalogo('iva_punto_de_venta',
+  ['nombre', 'rubro', 'rubro_auto', 'condicion', 'condicion_auto', 'activo'],
+  [], 'punto de venta', { idColumn: ['punto', 'empresa'], filtroParams: ['empresa'] }));
+
+mod('/iva/personas', 'iva', catalogo('iva_persona',
+  ['razon_social', 'nombre_comercial', 'tipo_documento', 'numero_documento', 'condicion_iva',
+   'numero_ib', 'grupo', 'direccion', 'localidad', 'provincia', 'pais', 'cpa', 'orden',
+   'observaciones', 'tipo', 'letra', 'punto', 'modelo', 'moneda', 'rubro', 'condicion_venta'],
+  ['punto', 'orden'], 'proveedor/cliente', { idColumn: ['modulo', 'id', 'empresa'] }));
+
+mod('/iva/items', 'iva', catalogo('iva_item',
+  ['descripcion', 'grupo', 'unidad', 'ivainc', 'alicuota', 'rubro', 'calcular', 'orden'],
+  ['alicuota', 'orden'], 'ítem', { idColumn: ['modulo', 'id', 'empresa'] }));
+
+mod('/iva/periodos', 'iva', catalogo('iva_liquidacion',
+  ['fecha_desde', 'fecha_hasta', 'prorrateo', 'estado', 'modulo_activo'],
+  ['prorrateo'], 'período', { idColumn: ['periodo', 'empresa'], filtroParams: ['empresa'] }));
+
+mod('/iva/comprobantes', 'iva', require('./comprobantesIva'));
+
+mod('/iva/informes', 'iva', require('./informesIva'));
+
 mod('/usuarios', 'seguridad', require('./usuarios'));
 mod('/grupos',   'seguridad', require('./grupos'));
 mod('/sesiones', 'seguridad', require('./sesiones'));

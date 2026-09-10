@@ -148,7 +148,49 @@ async function getResumenContabilidad(empresa) {
   };
 }
 
+// Panorama del módulo I.V.A. para una empresa: cantidad de comprobantes y total
+// facturado del período actual (por módulo COMPRA/VENTA), y cantidad de proveedores/
+// clientes cargados. "Período actual" = el que está en estado ACTIVA en iva_liquidacion
+// (o, si no hay ninguno marcado así, el más reciente por fecha_desde) — no hay otro
+// indicador de "período en curso" en el esquema de esta fase.
+async function getResumenIva(empresa) {
+  const { rows: activo } = await pool.query(
+    `SELECT periodo FROM iva_liquidacion WHERE empresa = $1 AND estado = 'ACTIVA'
+     ORDER BY fecha_desde DESC NULLS LAST LIMIT 1`,
+    [empresa]
+  );
+  let periodoActual = activo[0]?.periodo ?? null;
+  if (!periodoActual) {
+    const { rows: reciente } = await pool.query(
+      `SELECT periodo FROM iva_liquidacion WHERE empresa = $1
+       ORDER BY fecha_desde DESC NULLS LAST LIMIT 1`,
+      [empresa]
+    );
+    periodoActual = reciente[0]?.periodo ?? null;
+  }
+
+  const [comprobantes, personas] = await Promise.all([
+    pool.query(
+      `SELECT modulo, count(*) AS cantidad, COALESCE(SUM(total), 0) AS total
+       FROM iva_comprobante WHERE empresa = $1 AND periodo = $2 GROUP BY modulo`,
+      [empresa, periodoActual]
+    ),
+    pool.query(
+      'SELECT modulo, count(*) AS cantidad FROM iva_persona WHERE empresa = $1 GROUP BY modulo',
+      [empresa]
+    ),
+  ]);
+
+  return {
+    periodoActual,
+    comprobantesPorModulo: comprobantes.rows.map(r => ({
+      modulo: r.modulo, cantidad: Number(r.cantidad), total: Number(r.total) || 0,
+    })),
+    personasPorModulo: personas.rows.map(r => ({ modulo: r.modulo, cantidad: Number(r.cantidad) })),
+  };
+}
+
 module.exports = {
   getEmpleadosResumen, getEmpleadosPorConvenio, getMasaSalarialPorPeriodo, getUltimoPeriodo,
-  getEmpleadosPorEmpresa, getUltimoPeriodoPorEmpresa, getResumenContabilidad,
+  getEmpleadosPorEmpresa, getUltimoPeriodoPorEmpresa, getResumenContabilidad, getResumenIva,
 };

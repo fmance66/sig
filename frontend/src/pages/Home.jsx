@@ -5,6 +5,7 @@ import GlobalDashboard from './GlobalDashboard';
 import EmpresaDashboard from './EmpresaDashboard';
 import SueldosDashboard from './SueldosDashboard';
 import ContabilidadDashboard from './ContabilidadDashboard';
+import IvaDashboard from './IvaDashboard';
 import './Home.css';
 
 const ALL_MODULES = [...MODULES, ...ADMIN_MODULES];
@@ -48,6 +49,11 @@ export default function Home() {
   // Estado 3: módulo Contabilidad elegido → estadísticas acotadas a ese módulo.
   if (moduleId === 'contabilidad') {
     return <ContabilidadDashboard empresa={empresa} />;
+  }
+
+  // Estado 3: módulo I.V.A. elegido → estadísticas acotadas a ese módulo.
+  if (moduleId === 'iva') {
+    return <IvaDashboard empresa={empresa} />;
   }
 
   // Estado 2: empresa elegida, sin módulo (o un módulo con menú propio pero

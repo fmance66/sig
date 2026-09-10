@@ -59,4 +59,17 @@ async function resumenContabilidad(req, res) {
   }
 }
 
-module.exports = { resumen, global, resumenContabilidad };
+async function resumenIva(req, res) {
+  try {
+    const empresa = Number(req.query.empresa);
+    if (!empresa) return res.status(400).json({ estado: 'error', mensaje: 'empresa es requerida' });
+
+    const resultado = await Dashboard.getResumenIva(empresa);
+    res.json({ estado: 'ok', resultado });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ estado: 'error', mensaje: 'Error al obtener estadísticas de I.V.A.' });
+  }
+}
+
+module.exports = { resumen, global, resumenContabilidad, resumenIva };
