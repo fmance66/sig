@@ -6,6 +6,8 @@ import './DashboardShared.css';
 
 const COLOR_ACTIVOS = '#2a78d6';
 const COLOR_INACTIVOS = '#c3c2b7';
+const COLOR_CUENTAS = '#2a9d6d';
+const COLOR_COMPROBANTES_IVA = '#eb6834';
 
 // Estado 1: todavía no hay empresa elegida → panorama de todo el sistema
 // (todas las empresas, todos los módulos con datos).
@@ -39,7 +41,7 @@ export default function GlobalDashboard() {
     );
   }
 
-  const { empresas, totales, empleadosPorEmpresa, masaSalarialPorEmpresa } = data;
+  const { empresas, totales, empleadosPorEmpresa, masaSalarialPorEmpresa, cuentasPorEmpresa, comprobantesIvaPorEmpresa } = data;
 
   const empleadosChart = {
     labels: empleadosPorEmpresa.map(e => e.razonSocial),
@@ -86,6 +88,45 @@ export default function GlobalDashboard() {
     },
   };
 
+  const cuentasChartHeight = Math.max(200, cuentasPorEmpresa.length * 32 + 40);
+  const comprobantesIvaChartHeight = Math.max(200, comprobantesIvaPorEmpresa.length * 32 + 40);
+
+  const cuentasChart = {
+    labels: cuentasPorEmpresa.map(e => e.razonSocial),
+    datasets: [{ data: cuentasPorEmpresa.map(e => e.cuentas), backgroundColor: COLOR_CUENTAS, borderRadius: 3, maxBarThickness: 16 }],
+  };
+
+  const comprobantesIvaChart = {
+    labels: comprobantesIvaPorEmpresa.map(e => e.razonSocial),
+    datasets: [{ data: comprobantesIvaPorEmpresa.map(e => e.comprobantes), backgroundColor: COLOR_COMPROBANTES_IVA, borderRadius: 3, maxBarThickness: 16 }],
+  };
+
+  const cuentasOptions = {
+    indexAxis: 'y',
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `${ctx.raw} cuenta${ctx.raw === 1 ? '' : 's'}` } },
+    },
+    scales: {
+      x: { beginAtZero: true, ticks: { precision: 0, color: '#64748b', font: { size: 11 } }, grid: { color: '#e2e8f0' } },
+      y: { grid: { display: false }, ticks: { color: '#374151', font: { size: 11 }, autoSkip: false } },
+    },
+  };
+
+  const comprobantesIvaOptions = {
+    indexAxis: 'y',
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `${ctx.raw} comprobante${ctx.raw === 1 ? '' : 's'}` } },
+    },
+    scales: {
+      x: { beginAtZero: true, ticks: { precision: 0, color: '#64748b', font: { size: 11 } }, grid: { color: '#e2e8f0' } },
+      y: { grid: { display: false }, ticks: { color: '#374151', font: { size: 11 }, autoSkip: false } },
+    },
+  };
+
   return (
     <div className="dashboard">
       <div className="dashboard-header">
@@ -112,10 +153,17 @@ export default function GlobalDashboard() {
           </div>
         </div>
         <div className="kpi-card">
-          <i className="fa-solid fa-user-slash kpi-icon kpi-icon-muted" />
+          <i className="fa-solid fa-sitemap kpi-icon" />
           <div className="kpi-body">
-            <span className="kpi-value">{totales.inactivos}</span>
-            <span className="kpi-label">Empleados inactivos (todas las empresas)</span>
+            <span className="kpi-value">{totales.cuentas}</span>
+            <span className="kpi-label">Cuentas contables (todas las empresas)</span>
+          </div>
+        </div>
+        <div className="kpi-card">
+          <i className="fa-solid fa-percent kpi-icon kpi-icon-muted" />
+          <div className="kpi-body">
+            <span className="kpi-value">{totales.comprobantesIva}</span>
+            <span className="kpi-label">Comprobantes de I.V.A. (todas las empresas)</span>
           </div>
         </div>
       </div>
@@ -139,6 +187,26 @@ export default function GlobalDashboard() {
             </div>
           ) : (
             <p className="chart-empty">Todavía no hay recibos liquidados en el sistema.</p>
+          )}
+        </div>
+        <div className="chart-card">
+          <h3 className="chart-title">Cuentas contables por empresa</h3>
+          {cuentasPorEmpresa.some(e => e.cuentas > 0) ? (
+            <div className="chart-wrap" style={{ height: cuentasChartHeight }}>
+              <Chart type="bar" data={cuentasChart} options={cuentasOptions} />
+            </div>
+          ) : (
+            <p className="chart-empty">Todavía no hay cuentas cargadas en el sistema.</p>
+          )}
+        </div>
+        <div className="chart-card">
+          <h3 className="chart-title">Comprobantes de I.V.A. por empresa</h3>
+          {comprobantesIvaPorEmpresa.some(e => e.comprobantes > 0) ? (
+            <div className="chart-wrap" style={{ height: comprobantesIvaChartHeight }}>
+              <Chart type="bar" data={comprobantesIvaChart} options={comprobantesIvaOptions} />
+            </div>
+          ) : (
+            <p className="chart-empty">Todavía no hay comprobantes de I.V.A. cargados en el sistema.</p>
           )}
         </div>
       </div>

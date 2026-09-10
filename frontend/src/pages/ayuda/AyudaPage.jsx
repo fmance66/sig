@@ -87,12 +87,22 @@ export default function AyudaPage() {
             <ModuleCard
               icon="fa-solid fa-book-open"
               title="Contabilidad"
-              badge="En desarrollo"
+              items={[
+                'Plan de cuentas, centros de costo y leyendas',
+                'Ejercicios contables',
+                'Asientos: carga, unión, renumeración y asientos modelo',
+                'Informes: Mayor de Cuentas, Balance General, Balance de Sumas y Saldos, Libro Diario',
+              ]}
             />
             <ModuleCard
               icon="fa-solid fa-percent"
               title="I.V.A."
-              badge="En desarrollo"
+              items={[
+                'Comprobantes de compra y venta',
+                'Proveedores y clientes',
+                'Períodos de liquidación',
+                'Informes: Libro de I.V.A., Resumen I.V.A., Declaración Jurada',
+              ]}
             />
           </div>
         </Section>

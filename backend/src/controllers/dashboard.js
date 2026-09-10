@@ -21,23 +21,29 @@ async function resumen(req, res) {
 
 async function global(req, res) {
   try {
-    const [empleadosPorEmpresa, masaSalarialPorEmpresa] = await Promise.all([
+    const [empleadosPorEmpresa, masaSalarialPorEmpresa, cuentasPorEmpresa, comprobantesIvaPorEmpresa] = await Promise.all([
       Dashboard.getEmpleadosPorEmpresa(),
       Dashboard.getUltimoPeriodoPorEmpresa(),
+      Dashboard.getCuentasPorEmpresa(),
+      Dashboard.getComprobantesIvaPorEmpresa(),
     ]);
 
     const totales = empleadosPorEmpresa.reduce(
       (acc, e) => ({ activos: acc.activos + e.activos, inactivos: acc.inactivos + e.inactivos }),
       { activos: 0, inactivos: 0 }
     );
+    const totalCuentas = cuentasPorEmpresa.reduce((acc, e) => acc + e.cuentas, 0);
+    const totalComprobantesIva = comprobantesIvaPorEmpresa.reduce((acc, e) => acc + e.comprobantes, 0);
 
     res.json({
       estado: 'ok',
       resultado: {
         empresas: empleadosPorEmpresa.length,
-        totales,
+        totales: { ...totales, cuentas: totalCuentas, comprobantesIva: totalComprobantesIva },
         empleadosPorEmpresa,
         masaSalarialPorEmpresa,
+        cuentasPorEmpresa,
+        comprobantesIvaPorEmpresa,
       },
     });
   } catch (err) {

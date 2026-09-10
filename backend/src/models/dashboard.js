@@ -116,6 +116,38 @@ async function getUltimoPeriodoPorEmpresa() {
   }));
 }
 
+// Cuentas del plan por empresa (todas las empresas, para el panorama global).
+async function getCuentasPorEmpresa() {
+  const { rows } = await pool.query(
+    `SELECT emp.id AS empresa_id, emp.razon_social, count(c.id) AS cuentas
+     FROM sys_empresa emp
+     LEFT JOIN cnt_cuenta c ON c.empresa = emp.id
+     GROUP BY emp.id, emp.razon_social
+     ORDER BY emp.razon_social`
+  );
+  return rows.map(r => ({
+    empresaId: r.empresa_id,
+    razonSocial: r.razon_social,
+    cuentas: Number(r.cuentas),
+  }));
+}
+
+// Comprobantes de I.V.A. por empresa, todos los períodos (para el panorama global).
+async function getComprobantesIvaPorEmpresa() {
+  const { rows } = await pool.query(
+    `SELECT emp.id AS empresa_id, emp.razon_social, count(cp.empresa) AS comprobantes
+     FROM sys_empresa emp
+     LEFT JOIN iva_comprobante cp ON cp.empresa = emp.id
+     GROUP BY emp.id, emp.razon_social
+     ORDER BY emp.razon_social`
+  );
+  return rows.map(r => ({
+    empresaId: r.empresa_id,
+    razonSocial: r.razon_social,
+    comprobantes: Number(r.comprobantes),
+  }));
+}
+
 // Panorama del módulo Contabilidad para una empresa: tamaño del plan de cuentas
 // (total e imputables), cuentas por naturaleza (para el gráfico), y cantidad de
 // ejercicios/centros de costo/leyendas cargados.
@@ -193,4 +225,5 @@ async function getResumenIva(empresa) {
 module.exports = {
   getEmpleadosResumen, getEmpleadosPorConvenio, getMasaSalarialPorPeriodo, getUltimoPeriodo,
   getEmpleadosPorEmpresa, getUltimoPeriodoPorEmpresa, getResumenContabilidad, getResumenIva,
+  getCuentasPorEmpresa, getComprobantesIvaPorEmpresa,
 };
