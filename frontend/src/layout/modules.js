@@ -48,14 +48,6 @@ export const MODULES = [
           { label: 'Balance de Centros de Costo', icon: 'fa-solid fa-scale-balanced', path: '/contabilidad/informes/balance-centros-costo' },
         ],
       },
-      {
-        label: 'Tablas Comunes',
-        icon: 'fa-solid fa-database',
-        items: [
-          { label: 'Moneda', icon: 'fa-solid fa-coins', path: '/configuracion/comunes/monedas' },
-          { label: 'Proyectos', icon: 'fa-solid fa-diagram-project', path: '/configuracion/comunes/proyectos' },
-        ],
-      },
     ],
   },
   {
