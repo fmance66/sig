@@ -288,9 +288,9 @@ export const MODULES = [
         label: 'Compras',
         icon: 'fa-solid fa-cart-arrow-down',
         items: [
-          { label: 'Comprobante de Compra', icon: 'fa-solid fa-file-invoice-dollar', path: '/iva/compras/comprobantes' },
+          { label: 'Comprobantes de Compra', icon: 'fa-solid fa-file-invoice-dollar', path: '/iva/compras/comprobantes' },
           { separator: true },
-          { label: 'Proveedor', icon: 'fa-solid fa-truck-field', path: '/iva/compras/proveedores' },
+          { label: 'Proveedores', icon: 'fa-solid fa-truck-field', path: '/iva/compras/proveedores' },
           { separator: true },
           { label: 'Ítems de Compra', icon: 'fa-solid fa-box', path: '/iva/compras/items' },
         ],
@@ -299,9 +299,9 @@ export const MODULES = [
         label: 'Ventas',
         icon: 'fa-solid fa-cash-register',
         items: [
-          { label: 'Comprobante de Venta', icon: 'fa-solid fa-file-invoice-dollar', path: '/iva/ventas/comprobantes' },
+          { label: 'Comprobantes de Venta', icon: 'fa-solid fa-file-invoice-dollar', path: '/iva/ventas/comprobantes' },
           { separator: true },
-          { label: 'Cliente', icon: 'fa-solid fa-user-tie', path: '/iva/ventas/clientes' },
+          { label: 'Clientes', icon: 'fa-solid fa-user-tie', path: '/iva/ventas/clientes' },
           { separator: true },
           { label: 'Ítems de Venta', icon: 'fa-solid fa-box', path: '/iva/ventas/items' },
         ],
@@ -323,8 +323,8 @@ export const MODULES = [
         ],
       },
       {
-        label: 'Tablas Comunes',
-        icon: 'fa-solid fa-globe',
+        label: 'Tablas del Módulo',
+        icon: 'fa-solid fa-table',
         items: [
           { label: 'Impuestos', icon: 'fa-solid fa-percent', path: '/iva/tablas/impuestos' },
           { label: 'Condición de Venta', icon: 'fa-solid fa-handshake', path: '/iva/tablas/condicion-venta' },

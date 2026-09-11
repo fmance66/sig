@@ -51,11 +51,15 @@ function normalize(col, val) {
 async function list({ modulo, empresa, periodo, tipo, persona, fechaDesde, fechaHasta, anulado, texto } = {}) {
   const { rows } = await pool.query(
     `SELECT ${HEADER_SELECT},
-            -- pisa c.razon_social (arriba, a menudo NULL: el legacy solo la completa si
-            -- difiere del nombre registrado en iva_persona) con el nombre real de la
-            -- persona cuando el header no trae uno propio. El frontend lee row.razon_social
-            -- tal cual en listado y detalle, así que el nombre de columna se mantiene.
-            COALESCE(NULLIF(c.razon_social, ''), p.razon_social) AS razon_social,
+            -- pisa c.razon_social (arriba, a menudo NULL o solo espacios — visto en
+            -- comprobantes de Consumidor Final de Thompson y French, el legacy solo la
+            -- completa si difiere del nombre registrado en iva_persona) con el nombre
+            -- real de la persona cuando el header no trae uno propio. TRIM antes de
+            -- NULLIF: un valor "todo espacios" no es NULL ni '' así que sin el TRIM
+            -- quedaba pisando el nombre real con una cadena en blanco. El frontend lee
+            -- row.razon_social tal cual en listado y detalle, así que el nombre de
+            -- columna se mantiene.
+            COALESCE(NULLIF(TRIM(c.razon_social), ''), p.razon_social) AS razon_social,
             p.numero_documento AS persona_numero_documento,
             tc.descripcion AS tipo_descripcion
      FROM iva_comprobante c
@@ -69,7 +73,7 @@ async function list({ modulo, empresa, periodo, tipo, persona, fechaDesde, fecha
        AND ($6::date IS NULL OR c.fecha >= $6)
        AND ($7::date IS NULL OR c.fecha <= $7)
        AND ($8::boolean IS NULL OR c.anulado = $8)
-       AND ($9::text IS NULL OR COALESCE(NULLIF(c.razon_social, ''), p.razon_social) ILIKE '%'||$9||'%' OR c.comprobante ILIKE '%'||$9||'%')
+       AND ($9::text IS NULL OR COALESCE(NULLIF(TRIM(c.razon_social), ''), p.razon_social) ILIKE '%'||$9||'%' OR c.comprobante ILIKE '%'||$9||'%')
      ORDER BY c.fecha DESC NULLS LAST, c.comprobante DESC`,
     [modulo || null, empresa ? Number(empresa) : null, periodo || null, tipo || null, persona || null,
       fechaDesde || null, fechaHasta || null, anulado === undefined || anulado === '' ? null : anulado === 'true' || anulado === true,
@@ -81,7 +85,7 @@ async function list({ modulo, empresa, periodo, tipo, persona, fechaDesde, fecha
 async function getHeader(modulo, tipo, comprobante, persona, empresa) {
   const { rows } = await pool.query(
     `SELECT ${HEADER_SELECT},
-            COALESCE(NULLIF(c.razon_social, ''), p.razon_social) AS razon_social,
+            COALESCE(NULLIF(TRIM(c.razon_social), ''), p.razon_social) AS razon_social,
             tc.descripcion AS tipo_descripcion
      FROM iva_comprobante c
      LEFT JOIN iva_persona p ON p.modulo = c.modulo AND p.id = c.persona AND p.empresa = c.empresa
