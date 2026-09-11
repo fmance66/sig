@@ -85,6 +85,7 @@ import ListadoComprobantesIvaPage from './pages/iva/ListadoComprobantesIvaPage';
 import InformeLibroIvaPage from './pages/iva/InformeLibroIvaPage';
 import InformeResumenIvaPage from './pages/iva/InformeResumenIvaPage';
 import InformeDeclaracionJuradaIvaPage from './pages/iva/InformeDeclaracionJuradaIvaPage';
+import ListadoFormulasAsientoPage from './pages/iva/ListadoFormulasAsientoPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import CopiarConfiguracionPage from './pages/configuracion/CopiarConfiguracionPage';
 import CopiaSeguridadPage from './pages/configuracion/CopiaSeguridadPage';
@@ -209,6 +210,7 @@ export default function App() {
           <Route path="iva/informes/libro" element={<InformeLibroIvaPage />} />
           <Route path="iva/informes/resumen" element={<InformeResumenIvaPage />} />
           <Route path="iva/informes/ddjj" element={<InformeDeclaracionJuradaIvaPage />} />
+          <Route path="iva/formulas-asiento" element={<ListadoFormulasAsientoPage />} />
           <Route path="iva/tablas/impuestos" element={<ImpuestosPage />} />
           <Route path="iva/tablas/condicion-venta" element={<CondicionVentaPage />} />
           <Route path="iva/tablas/modalidades" element={<ModalidadesPage />} />

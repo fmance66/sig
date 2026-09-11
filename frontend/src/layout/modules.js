@@ -334,6 +334,17 @@ export const MODULES = [
           { label: 'Punto de Venta', icon: 'fa-solid fa-store', path: '/iva/tablas/punto-venta' },
         ],
       },
+      {
+        label: 'Fórmulas de Asiento',
+        icon: 'fa-solid fa-flask',
+        items: [
+          { label: 'Fórmula de Asiento de Venta', icon: 'fa-solid fa-cash-register', path: '/iva/formulas-asiento?grupo=IVA_VENTA' },
+          { label: 'Fórmula de Asiento de Compra', icon: 'fa-solid fa-cart-arrow-down', path: '/iva/formulas-asiento?grupo=IVA_COMPRA' },
+          { separator: true },
+          { label: 'Fórmula de Asiento de Cobro', icon: 'fa-solid fa-hand-holding-dollar', path: '/iva/formulas-asiento?grupo=COBRO' },
+          { label: 'Fórmula de Asiento de Pago', icon: 'fa-solid fa-money-bill-transfer', path: '/iva/formulas-asiento?grupo=PAGO' },
+        ],
+      },
     ],
   },
 ];

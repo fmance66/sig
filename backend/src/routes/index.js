@@ -235,6 +235,11 @@ mod('/iva/comprobantes', 'iva', require('./comprobantesIva'));
 
 mod('/iva/informes', 'iva', require('./informesIva'));
 
+// Fórmulas de Asiento (venta/compra/pagos/cobro): cnt_modelo_asiento vive en
+// Contabilidad (no es una tabla iva_*), pero por ahora solo lo consumen estas
+// 4 pantallas de IVA — ver comentario en 010_contabilidad_formula_asiento.sql.
+mod('/iva/formulas-asiento', 'iva', require('./formulaAsiento'));
+
 mod('/usuarios', 'seguridad', require('./usuarios'));
 mod('/grupos',   'seguridad', require('./grupos'));
 mod('/sesiones', 'seguridad', require('./sesiones'));
