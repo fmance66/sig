@@ -46,6 +46,8 @@ export default function ListadoComprobantesIvaPage({ modulo }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [empresa?.id, modulo]);
 
+  useEffect(() => { setVisibleCount(comprobantes.length); }, [comprobantes]);
+
   async function buscar(f = filtro) {
     if (!empresa) return;
     setLoading(true);

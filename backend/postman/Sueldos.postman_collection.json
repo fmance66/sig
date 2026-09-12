@@ -5270,6 +5270,20 @@
                     "method": "DELETE",
                     "url": "{{base_url}}/iva/periodos/09%2F2026/5"
                   }
+                },
+                {
+                  "name": "POST Contabilizar Asientos",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/periodos/09%2F2026/5/contabilizar"
+                  }
+                },
+                {
+                  "name": "POST Recalcular Comprobantes",
+                  "request": {
+                    "method": "POST",
+                    "url": "{{base_url}}/iva/periodos/09%2F2026/5/recalcular"
+                  }
                 }
               ]
             },
@@ -5389,6 +5403,41 @@
                   "request": {
                     "method": "GET",
                     "url": "{{base_url}}/iva/informes/ddjj?empresa=5&periodo=09%2F2026"
+                  }
+                },
+                {
+                  "name": "GET Informe de Comprobantes",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/informes/comprobantes?modulo=COMPRA&empresa=5&periodo=09%2F2026"
+                  }
+                },
+                {
+                  "name": "GET Informe de Rubros",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/informes/rubros?modulo=COMPRA&empresa=5&periodo=09%2F2026"
+                  }
+                },
+                {
+                  "name": "GET Informe de Provincias",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/informes/provincias?modulo=COMPRA&empresa=5&periodo=09%2F2026"
+                  }
+                },
+                {
+                  "name": "GET Informe de Items",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/informes/items?modulo=COMPRA&empresa=5&periodo=09%2F2026"
+                  }
+                },
+                {
+                  "name": "GET Informe de Items por Comprobante",
+                  "request": {
+                    "method": "GET",
+                    "url": "{{base_url}}/iva/informes/items-por-comprobante?modulo=COMPRA&empresa=5&periodo=09%2F2026"
                   }
                 }
               ]

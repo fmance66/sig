@@ -37,6 +37,7 @@ export default function HistorialesEmpleadoPage() {
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
   useEffect(() => { camposApi.getAll().then(res => setCampos(res.data.resultado)).catch(() => {}); }, []);
+  useEffect(() => { setVisibleCount(historiales.length); }, [historiales]);
 
   async function load() {
     setLoading(true);

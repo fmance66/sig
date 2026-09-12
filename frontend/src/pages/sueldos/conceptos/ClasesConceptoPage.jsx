@@ -33,6 +33,7 @@ export default function ClasesConceptoPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setVisibleCount(clases.length); }, [clases]);
 
   async function load() {
     setLoading(true);

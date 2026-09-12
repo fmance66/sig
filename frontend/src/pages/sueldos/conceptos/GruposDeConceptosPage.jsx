@@ -34,6 +34,7 @@ export default function GruposDeConceptosPage() {
 
   useEffect(() => { load(); }, []);
   useEffect(() => { setConceptosPorGrupo({}); setExpandedRows(null); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(grupos.length); }, [grupos]);
 
   async function load() {
     setLoading(true);

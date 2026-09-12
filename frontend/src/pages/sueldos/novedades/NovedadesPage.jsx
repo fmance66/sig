@@ -37,6 +37,7 @@ export default function NovedadesPage() {
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
   useEffect(() => { tiposApi.getAll().then(res => setTipos(res.data.resultado)).catch(() => {}); }, []);
+  useEffect(() => { setVisibleCount(novedades.length); }, [novedades]);
 
   async function load() {
     setLoading(true);

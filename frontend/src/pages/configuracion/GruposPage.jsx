@@ -32,6 +32,7 @@ export default function GruposPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setVisibleCount(grupos.length); }, [grupos]);
 
   async function load() {
     setLoading(true);

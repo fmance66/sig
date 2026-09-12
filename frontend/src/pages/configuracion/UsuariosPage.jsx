@@ -30,6 +30,7 @@ export default function UsuariosPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setVisibleCount(usuarios.length); }, [usuarios]);
 
   async function load() {
     setLoading(true);

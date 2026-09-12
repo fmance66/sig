@@ -54,6 +54,7 @@ export default function JornadaLaboralPage() {
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(jornadas.length); }, [jornadas]);
 
   async function load() {
     setLoading(true);

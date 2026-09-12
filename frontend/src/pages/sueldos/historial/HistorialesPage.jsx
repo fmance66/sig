@@ -32,6 +32,7 @@ export default function HistorialesPage() {
 
   useEffect(() => { load(); }, []);
   useEffect(() => { camposApi.getAll().then(res => setCampos(res.data.resultado)).catch(() => {}); }, []);
+  useEffect(() => { setVisibleCount(historiales.length); }, [historiales]);
 
   async function load() {
     setLoading(true);

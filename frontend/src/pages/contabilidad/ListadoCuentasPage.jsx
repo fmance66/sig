@@ -24,6 +24,7 @@ export default function ListadoCuentasPage() {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(cuentas.length); }, [cuentas]);
 
   async function load() {
     setLoading(true);

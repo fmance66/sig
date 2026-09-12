@@ -28,6 +28,7 @@ export default function LeyendasPage() {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(leyendas.length); }, [leyendas]);
 
   async function load() {
     setLoading(true);

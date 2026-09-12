@@ -28,6 +28,7 @@ export default function ModalidadesPage() {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(registros.length); }, [registros]);
 
   async function load() {
     setLoading(true);

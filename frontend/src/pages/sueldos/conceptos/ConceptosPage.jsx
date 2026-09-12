@@ -95,6 +95,8 @@ export default function ConceptosPage() {
     return conceptos.filter(c => c.columna === columnaFiltro);
   }, [conceptos, columnaFiltro]);
 
+  useEffect(() => { setVisibleCount(registrosFiltrados.length); }, [registrosFiltrados]);
+
   function openNew() {
     setForm(EMPTY_FORM);
     setEditMode(false);

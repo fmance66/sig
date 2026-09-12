@@ -89,6 +89,7 @@ export default function EmpleadosPage() {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id, mostrarInactivos]);
+  useEffect(() => { setVisibleCount(empleados.length); }, [empleados]);
 
   async function load() {
     setLoading(true);

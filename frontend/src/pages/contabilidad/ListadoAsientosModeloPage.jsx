@@ -24,6 +24,7 @@ export default function ListadoAsientosModeloPage() {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(modelos.length); }, [modelos]);
 
   async function load() {
     setLoading(true);

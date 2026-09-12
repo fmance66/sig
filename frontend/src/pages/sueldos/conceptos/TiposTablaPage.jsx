@@ -64,6 +64,7 @@ export default function TiposTablaPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setVisibleCount(tipos.length); }, [tipos]);
 
   async function load() {
     setLoading(true);

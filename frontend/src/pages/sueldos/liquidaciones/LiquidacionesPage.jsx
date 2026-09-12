@@ -67,6 +67,7 @@ export default function LiquidacionesPage() {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(liquidaciones.length); }, [liquidaciones]);
 
   async function load() {
     setLoading(true);

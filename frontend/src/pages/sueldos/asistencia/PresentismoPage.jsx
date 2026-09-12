@@ -36,6 +36,7 @@ export default function PresentismoPage() {
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(presentismos.length); }, [presentismos]);
 
   async function load() {
     setLoading(true);

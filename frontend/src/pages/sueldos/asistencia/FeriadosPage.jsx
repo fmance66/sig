@@ -28,6 +28,7 @@ export default function FeriadosPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setVisibleCount(feriados.length); }, [feriados]);
 
   async function load() {
     setLoading(true);

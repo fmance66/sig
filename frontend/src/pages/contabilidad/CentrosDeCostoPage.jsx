@@ -27,6 +27,7 @@ export default function CentrosDeCostoPage() {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(centros.length); }, [centros]);
 
   async function load() {
     setLoading(true);

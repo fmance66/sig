@@ -37,6 +37,7 @@ export default function EmpresasPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setVisibleCount(empresas.length); }, [empresas]);
 
   async function load() {
     setLoading(true);

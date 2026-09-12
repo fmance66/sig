@@ -31,6 +31,7 @@ export default function ListadoFormulasAsientoPage() {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id, grupo]);
+  useEffect(() => { setVisibleCount(modelos.length); }, [modelos]);
 
   async function load() {
     setLoading(true);

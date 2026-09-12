@@ -29,6 +29,7 @@ export default function ListadoPersonasPage({ modulo }) {
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id, modulo]);
+  useEffect(() => { setVisibleCount(registros.length); }, [registros]);
 
   async function load() {
     setLoading(true);

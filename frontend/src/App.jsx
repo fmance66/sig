@@ -85,6 +85,11 @@ import ListadoComprobantesIvaPage from './pages/iva/ListadoComprobantesIvaPage';
 import InformeLibroIvaPage from './pages/iva/InformeLibroIvaPage';
 import InformeResumenIvaPage from './pages/iva/InformeResumenIvaPage';
 import InformeDeclaracionJuradaIvaPage from './pages/iva/InformeDeclaracionJuradaIvaPage';
+import InformeComprobantesIvaPage from './pages/iva/InformeComprobantesIvaPage';
+import InformeRubrosIvaPage from './pages/iva/InformeRubrosIvaPage';
+import InformeProvinciasIvaPage from './pages/iva/InformeProvinciasIvaPage';
+import InformeItemsIvaPage from './pages/iva/InformeItemsIvaPage';
+import InformeItemsPorComprobantePage from './pages/iva/InformeItemsPorComprobantePage';
 import ListadoFormulasAsientoPage from './pages/iva/ListadoFormulasAsientoPage';
 import EmpresasPage from './pages/configuracion/EmpresasPage';
 import CopiarConfiguracionPage from './pages/configuracion/CopiarConfiguracionPage';
@@ -210,6 +215,11 @@ export default function App() {
           <Route path="iva/informes/libro" element={<InformeLibroIvaPage />} />
           <Route path="iva/informes/resumen" element={<InformeResumenIvaPage />} />
           <Route path="iva/informes/ddjj" element={<InformeDeclaracionJuradaIvaPage />} />
+          <Route path="iva/informes/comprobantes" element={<InformeComprobantesIvaPage />} />
+          <Route path="iva/informes/rubros" element={<InformeRubrosIvaPage />} />
+          <Route path="iva/informes/provincias" element={<InformeProvinciasIvaPage />} />
+          <Route path="iva/informes/items" element={<InformeItemsIvaPage />} />
+          <Route path="iva/informes/items-por-comprobante" element={<InformeItemsPorComprobantePage />} />
           <Route path="iva/formulas-asiento" element={<ListadoFormulasAsientoPage />} />
           <Route path="iva/tablas/impuestos" element={<ImpuestosPage />} />
           <Route path="iva/tablas/condicion-venta" element={<CondicionVentaPage />} />

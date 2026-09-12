@@ -39,6 +39,7 @@ export default function DisenoInformesPersonalizadosPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setVisibleCount(informes.length); }, [informes]);
 
   async function load() {
     setLoading(true);

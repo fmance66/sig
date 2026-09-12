@@ -68,6 +68,7 @@ export default function CatalogoPage({ title, icon, basePath, entityLabel, colum
   const toast = useRef(null);
 
   useEffect(() => { load(); }, [basePath]);
+  useEffect(() => { setVisibleCount(registros.length); }, [registros]);
 
   async function load() {
     setLoading(true);

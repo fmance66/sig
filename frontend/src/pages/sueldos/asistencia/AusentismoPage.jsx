@@ -37,6 +37,7 @@ export default function AusentismoPage() {
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
   useEffect(() => { if (empresa) empleadosApi.getEmpleados(empresa.id, 'activo').then(res => setEmpleados(res.data.resultado)).catch(() => {}); }, [empresa?.id]);
   useEffect(() => { motivosApi.getAll().then(res => setMotivos(res.data.resultado)).catch(() => {}); }, []);
+  useEffect(() => { setVisibleCount(ausentismos.length); }, [ausentismos]);
 
   async function load() {
     setLoading(true);

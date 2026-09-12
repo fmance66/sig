@@ -105,6 +105,7 @@ export default function DisenoFormularioPage({ api, titulo, icono, soportaActivo
   const paramFormRef = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
+  useEffect(() => { setVisibleCount(formularios.length); }, [formularios]);
 
   // Al abrir el formulario de un parámetro (nuevo o editar), el modal puede estar
   // scrolleado más abajo (la sub-tabla de parámetros) — sin esto, el form aparece

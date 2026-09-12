@@ -320,6 +320,12 @@ export const MODULES = [
           { label: 'Libro de IVA', icon: 'fa-solid fa-book', path: '/iva/informes/libro' },
           { label: 'Resumen IVA', icon: 'fa-solid fa-table-list', path: '/iva/informes/resumen' },
           { label: 'Declaración Jurada IVA', icon: 'fa-solid fa-file-contract', path: '/iva/informes/ddjj' },
+          { separator: true },
+          { label: 'Informe de Comprobantes', icon: 'fa-solid fa-file-invoice', path: '/iva/informes/comprobantes' },
+          { label: 'Informe de Rubros', icon: 'fa-solid fa-tags', path: '/iva/informes/rubros' },
+          { label: 'Informe de Provincias', icon: 'fa-solid fa-map-location-dot', path: '/iva/informes/provincias' },
+          { label: 'Informe de Ítems', icon: 'fa-solid fa-box', path: '/iva/informes/items' },
+          { label: 'Informe de Ítems por Comprobante', icon: 'fa-solid fa-list-check', path: '/iva/informes/items-por-comprobante' },
         ],
       },
       {

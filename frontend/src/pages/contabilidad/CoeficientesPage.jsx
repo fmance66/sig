@@ -38,6 +38,7 @@ export default function CoeficientesPage() {
   const toast = useRef(null);
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { setVisibleCount(coeficientes.length); }, [coeficientes]);
 
   async function load() {
     setLoading(true);
