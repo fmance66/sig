@@ -41,6 +41,8 @@ export default function PeriodosPage() {
   const [form, setForm]         = useState(EMPTY_FORM);
   const [saving, setSaving]     = useState(false);
   const [visibleCount, setVisibleCount] = useState(0);
+  const [procesando, setProcesando] = useState(null); // periodo en curso (contabilizar/recalcular)
+  const [resultado, setResultado] = useState(null); // { titulo, data } del último Contabilizar/Recalcular
   const toast = useRef(null);
 
   useEffect(() => { if (empresa) load(); }, [empresa?.id]);
@@ -135,6 +137,39 @@ export default function PeriodosPage() {
     });
   }
 
+  async function handleContabilizar(row) {
+    setProcesando(row.periodo);
+    try {
+      const res = await api.contabilizarPeriodo(row.periodo, empresa.id);
+      setResultado({ titulo: 'Contabilizar asientos', periodo: row.periodo, data: res.data.resultado });
+    } catch (err) {
+      toast.current.show({ severity: 'error', summary: 'Error', detail: err.response?.data?.mensaje || 'No se pudo contabilizar el período' });
+    } finally {
+      setProcesando(null);
+    }
+  }
+
+  function handleRecalcular(row) {
+    confirmDialog({
+      message: `¿Recalcular los asientos del período "${row.periodo}"? Se van a borrar y regenerar los asientos ya contabilizados.`,
+      header: 'Confirmar recálculo',
+      icon: 'fa-solid fa-triangle-exclamation',
+      acceptLabel: 'Recalcular',
+      rejectLabel: 'Cancelar',
+      accept: async () => {
+        setProcesando(row.periodo);
+        try {
+          const res = await api.recalcularPeriodo(row.periodo, empresa.id);
+          setResultado({ titulo: 'Recalcular comprobantes', periodo: row.periodo, data: res.data.resultado });
+        } catch (err) {
+          toast.current.show({ severity: 'error', summary: 'Error', detail: err.response?.data?.mensaje || 'No se pudo recalcular el período' });
+        } finally {
+          setProcesando(null);
+        }
+      },
+    });
+  }
+
   const estadoTemplate = (row) => {
     const icon = row.estado === 'CERRADA' ? 'fa-lock' : 'fa-lock-open';
     return <span><i className={`fa-solid ${icon}`} style={{ marginRight: '0.4rem' }} />{row.estado}</span>;
@@ -142,12 +177,19 @@ export default function PeriodosPage() {
 
   const fechaTemplate = (row, field) => row[field] ? new Date(row[field]).toLocaleDateString('es-AR') : '—';
 
-  const accionesTemplate = (row) => (
-    <div className="acciones-col">
-      <Button icon="fa-solid fa-pen" className="p-button-text p-button-sm" tooltip="Modificar" tooltipOptions={{ position: 'top' }} onClick={() => openEdit(row)} />
-      <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} onClick={() => handleDelete(row)} />
-    </div>
-  );
+  const accionesTemplate = (row) => {
+    const enCurso = procesando === row.periodo;
+    return (
+      <div className="acciones-col">
+        <Button icon="fa-solid fa-file-invoice-dollar" className="p-button-text p-button-sm" tooltip="Contabilizar asientos" tooltipOptions={{ position: 'top' }}
+          loading={enCurso} disabled={procesando && !enCurso} onClick={() => handleContabilizar(row)} />
+        <Button icon="fa-solid fa-arrows-rotate" className="p-button-text p-button-sm" tooltip="Recalcular comprobantes" tooltipOptions={{ position: 'top' }}
+          loading={enCurso} disabled={procesando && !enCurso} onClick={() => handleRecalcular(row)} />
+        <Button icon="fa-solid fa-pen" className="p-button-text p-button-sm" tooltip="Modificar" tooltipOptions={{ position: 'top' }} disabled={!!procesando} onClick={() => openEdit(row)} />
+        <Button icon="fa-solid fa-trash" className="p-button-text p-button-sm p-button-danger" tooltip="Eliminar" tooltipOptions={{ position: 'top' }} disabled={!!procesando} onClick={() => handleDelete(row)} />
+      </div>
+    );
+  };
 
   const tableHeader = (
     <div className="table-toolbar my-2">
@@ -197,7 +239,7 @@ export default function PeriodosPage() {
         <Column body={(row) => fechaTemplate(row, 'fecha_hasta')} header="Fecha Hasta" style={{ width: '120px' }} />
         <Column field="modulo_activo" header="Módulo Activo" style={{ width: '130px' }} />
         <Column body={estadoTemplate} header="Estado" style={{ width: '130px' }} />
-        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '100px', textAlign: 'center' }} />
+        <Column body={accionesTemplate} header="Acciones" alignHeader="center" style={{ width: '170px', textAlign: 'center' }} />
       </DataTable>
 
       <Dialog
@@ -239,6 +281,54 @@ export default function PeriodosPage() {
               onValueChange={e => handleFieldChange('prorrateo', e.value)} />
           </div>
         </div>
+      </Dialog>
+
+      <Dialog
+        visible={!!resultado}
+        onHide={() => setResultado(null)}
+        header={resultado ? `${resultado.titulo} — Período ${resultado.periodo}` : ''}
+        style={{ width: '650px' }}
+        modal
+        draggable={false}
+      >
+        {resultado && (
+          <div className="resultado-contabilizar">
+            <p><b>Comprobantes procesados:</b> {resultado.data.comprobantesProcesados}</p>
+
+            {resultado.data.asientosGenerados.length > 0 && (
+              <>
+                <p><b>Asientos generados:</b></p>
+                <ul>
+                  {resultado.data.asientosGenerados.map((a, i) => (
+                    <li key={i}>
+                      {a.modulo} — modelo {a.modelo}: asiento {a.ejercicio}/{a.numero}, {a.comprobantes} comprobante(s), {a.lineas} línea(s), total {a.total}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {resultado.data.comprobantesOmitidos.length > 0 && (
+              <>
+                <p><b>Comprobantes omitidos:</b></p>
+                <ul>
+                  {resultado.data.comprobantesOmitidos.map((o, i) => (
+                    <li key={i}>{o.comprobante} ({o.modulo} / {o.tipo}): {o.motivo}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {resultado.data.errores.length > 0 && (
+              <>
+                <p style={{ color: 'var(--red-500)' }}><b>Errores:</b></p>
+                <ul style={{ color: 'var(--red-500)' }}>
+                  {resultado.data.errores.map((e, i) => <li key={i}>{e}</li>)}
+                </ul>
+              </>
+            )}
+          </div>
+        )}
       </Dialog>
     </div>
   );

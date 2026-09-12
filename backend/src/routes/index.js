@@ -227,9 +227,15 @@ mod('/iva/items', 'iva', catalogo('iva_item',
   ['descripcion', 'grupo', 'unidad', 'ivainc', 'alicuota', 'rubro', 'calcular', 'orden'],
   ['alicuota', 'orden'], 'ítem', { idColumn: ['modulo', 'id', 'empresa'] }));
 
-mod('/iva/periodos', 'iva', catalogo('iva_liquidacion',
+const periodosIvaRouter = catalogo('iva_liquidacion',
   ['fecha_desde', 'fecha_hasta', 'prorrateo', 'estado', 'modulo_activo'],
-  ['prorrateo'], 'período', { idColumn: ['periodo', 'empresa'], filtroParams: ['empresa'] }));
+  ['prorrateo'], 'período', { idColumn: ['periodo', 'empresa'], filtroParams: ['empresa'] });
+// "Contabilizar asientos"/"Recalcular comprobantes" (ver backend/src/lib/contabilizarIva.js):
+// se cuelgan del mismo router del catálogo en vez de armar uno propio.
+const contabilizarIvaController = require('../controllers/contabilizarIva');
+periodosIvaRouter.post('/:periodo/:empresa/contabilizar', contabilizarIvaController.contabilizar);
+periodosIvaRouter.post('/:periodo/:empresa/recalcular', contabilizarIvaController.recalcular);
+mod('/iva/periodos', 'iva', periodosIvaRouter);
 
 mod('/iva/comprobantes', 'iva', require('./comprobantesIva'));
 
