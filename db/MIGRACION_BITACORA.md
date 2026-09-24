@@ -824,3 +824,52 @@ dump, fuerza `unidad_visible` a `'FALSE'` en el INSERT generado. Verificado rege
 dump de Thompson y French: 64/64 conceptos en esa condición quedaron con `unidad_visible =
 FALSE`, sin afectar la regla de la sección 16 (son mutuamente excluyentes: una fórmula con
 símbolo "días" nunca tiene el símbolo en blanco).
+
+## 18. Bug: `migrate-from-mysql.js --all` dejó de encontrar los dumps (backups archivados por fecha) + reconciliación de migraciones ya plegadas en el reset completo (2026-09-24)
+
+**Síntoma**: al repetir la migración con el backup `db/mysql/data/2026-09-24/` siguiendo la
+sección 6, `node db/migrate-from-mysql.js --all` imprimía `Procesando 0 dumps...` y no
+generaba ningún `*_pg.sql`.
+
+**Causa**: en algún momento se empezó a archivar cada backup en su propia subcarpeta por
+fecha (`db/mysql/data/AAAA-MM-DD/archivo.sql`) para no perder las versiones anteriores, pero
+`BACKUP_DIR` seguía apuntando a `db/mysql/data/` a secas — el `readdirSync` no bajaba a las
+subcarpetas, así que nunca encontraba nada que matchee el patrón de nombre de archivo. Los
+otros scripts puntuales (`migrate-contabilidad.js`, `migrate-iva.js`, etc.) sí apuntan a una
+subcarpeta de fecha explícita porque son migraciones de una sola vez, pero `migrate-from-mysql.js`
+es el que se espera repetir con cada backup nuevo.
+
+**Fix**: `BACKUP_DIR` ahora se calcula tomando la subcarpeta de fecha más reciente de
+`db/mysql/data/` (`dateDirs.sort()` + último elemento, funciona porque el formato
+`AAAA-MM-DD` ordena alfabéticamente igual que cronológicamente), con fallback a
+`db/mysql/data/` plano si no hay subcarpetas. Imprime `Usando backup: <ruta>` al arrancar
+para que quede explícito cuál se usó.
+
+**Reset completo — qué migraciones de `db/postgresql/migrations/` hay que saltear**: al
+recrear la base desde cero (`docker compose down -v` → `up -d` → `01_schema.sql`), las
+migraciones `004_liquidacion_por_empresa.sql` y `005_contabilidad_base.sql` ya están
+cubiertas por `01_schema.sql` (004 hace un `ALTER TABLE ... ADD COLUMN empresa` sin
+`IF NOT EXISTS` que falla con "column already exists" porque `01_schema.sql` ya crea
+`sld_liquidacion`/`sld_recibo` con esa columna, y su backfill de datos es innecesario porque
+el `migrate-from-mysql.js` actual ya escribe `empresa` directo en los INSERTs). Se resolvió
+insertando `004_liquidacion_por_empresa.sql` a mano en `schema_migrations` (sin ejecutar su
+SQL) y dejando que `db/migrate.js` siga normalmente desde 005 en adelante — 005 sí corre
+sin error porque usa `CREATE TABLE IF NOT EXISTS`. Los demás (006 a 012) **no** están
+plegados en `01_schema.sql` todavía y corren de verdad en cada reset.
+
+**Contabilidad/IVA/fórmulas de asiento no se recargan solas**: esas tablas (`cnt_*`, `iva_*`)
+las crean las migraciones pero las llena un lote de scripts aparte
+(`migrate-contabilidad.js`, `migrate-contabilidad-coeficientes.js`,
+`migrate-contabilidad-asientos.js`, `migrate-formula-asiento.js`, `migrate-iva.js`), todos
+apuntando a propósito al backup histórico `2026-09-02` (no al backup nuevo — fue una
+migración puntual de datos legacy, no algo que se actualice con cada backup). Hay que
+volver a correrlos y cargar sus `*_pg.sql` después de `db/migrate.js` para que un reset
+completo deje esos módulos con datos, no vacíos.
+
+**Importante — pérdida de datos real en un reset completo**: estos 5 scripts reconstruyen el
+estado de Contabilidad/IVA tal como estaba el 2026-09-02. Cualquier asiento o comprobante
+cargado **a través de la app** después de esa fecha (por ejemplo vía "Contabilizar asientos"
+de IVA, sección `project_contabilizar_asientos_iva`) no tiene fuente para reconstruirse y se
+pierde con el `docker compose down -v`. Mismo criterio que la sección de "Restore completo
+vs ALTER+backfill" del memory: antes de un reset completo, confirmar que no hay datos
+app-native recientes que valga la pena resguardar con un `pg_dump` puntual de esas tablas.

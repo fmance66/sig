@@ -918,7 +918,15 @@ module.exports = { parseValueTokens, splitTuples, extractMysqlColumns };
 // ---------------------------------------------------------------------------
 if (require.main === module) {
 
-const BACKUP_DIR = path.join(__dirname, 'mysql', 'data');
+// Los backups se archivan en subcarpetas por fecha (db/mysql/data/AAAA-MM-DD/),
+// una por cada exportación. Se usa siempre la más reciente.
+const DATA_ROOT = path.join(__dirname, 'mysql', 'data');
+const dateDirs = fs.existsSync(DATA_ROOT)
+  ? fs.readdirSync(DATA_ROOT).filter(f =>
+      /^\d{4}-\d{2}-\d{2}$/.test(f) && fs.statSync(path.join(DATA_ROOT, f)).isDirectory()
+    ).sort()
+  : [];
+const BACKUP_DIR = dateDirs.length ? path.join(DATA_ROOT, dateDirs[dateDirs.length - 1]) : DATA_ROOT;
 const DATA_DIR   = path.join(__dirname, 'postgresql', 'data');
 
 // Los ids numéricos (de empresa y de empleado) se asignan por posición
@@ -928,6 +936,7 @@ const DATA_DIR   = path.join(__dirname, 'postgresql', 'data');
 const allDumps = fs.existsSync(BACKUP_DIR)
   ? fs.readdirSync(BACKUP_DIR).filter(f => /\d{4}-\d{2}-\d{2}_\d{2}-\d{2}\.sql$/.test(f)).sort()
   : [];
+console.error(`Usando backup: ${BACKUP_DIR}`);
 const empresaNumByFile      = assignEmpresaNumbers(allDumps);
 const empleadoIdMapsByFile  = buildEmpleadoIdMaps(BACKUP_DIR, allDumps);
 
