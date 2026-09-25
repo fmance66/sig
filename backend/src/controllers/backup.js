@@ -50,7 +50,7 @@ async function generar(req, res) {
     }
     const buf = Buffer.concat(chunks);
     res.set('Content-Type', 'application/sql');
-    res.set('Content-Disposition', `attachment; filename="sueldos_backup_${timestamp()}.sql"`);
+    res.set('Content-Disposition', `attachment; filename="sig_backup_${timestamp()}.sql"`);
     res.send(buf);
   });
 }

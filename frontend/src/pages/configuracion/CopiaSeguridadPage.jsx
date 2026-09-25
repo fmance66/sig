@@ -33,7 +33,7 @@ export default function CopiaSeguridadPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `sueldos_backup_${timestamp()}.sql`;
+      a.download = `sig_backup_${timestamp()}.sql`;
       a.click();
       URL.revokeObjectURL(url);
       toast.current.show({ severity: 'success', summary: 'OK', detail: 'Copia de seguridad generada' });
