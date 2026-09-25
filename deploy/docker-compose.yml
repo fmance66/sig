@@ -1,0 +1,40 @@
+# Compose de producción local. Usa la imagen ya construida (sueldos-app), no el código fuente.
+name: sueldos
+
+services:
+  db:
+    image: postgres:16
+    container_name: sueldos_prod_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sueldos
+      POSTGRES_PASSWORD: sueldos123
+      POSTGRES_DB: sueldos
+    volumes:
+      - datos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sueldos -d sueldos"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    image: sueldos-app:latest
+    container_name: sueldos_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: sueldos
+      DB_USER: sueldos
+      DB_PASSWORD: sueldos123
+      FRONTEND_URL: http://localhost:3001
+      SESSION_SECRET: ${SESSION_SECRET:?falta SESSION_SECRET en el archivo .env}
+    ports:
+      - "127.0.0.1:3001:3001"
+
+volumes:
+  datos:

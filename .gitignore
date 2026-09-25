@@ -37,3 +37,7 @@ frontend/docs/original/**/*.docx
 frontend/docs/original/*.docx
 ~$*.docx
 backend/docs/recibos-sueldo*.pdf
+
+# Paquete de instalación generado por deploy/empaquetar.ps1 (imágenes + dump con datos reales)
+deploy/paquete/
+deploy/.build/

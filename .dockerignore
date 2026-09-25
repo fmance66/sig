@@ -1,0 +1,9 @@
+# Lista blanca: el repo tiene dumps con datos reales (db/mysql, db/postgresql/data)
+# que no deben terminar en la imagen.
+*
+!backend/package.json
+!backend/src
+!frontend/dist
+!deploy/.build/backend/node_modules
+!db/migrate.js
+!db/postgresql/migrations

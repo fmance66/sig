@@ -3,9 +3,21 @@ const { spawn } = require('child_process');
 // La base corre en el contenedor Docker de db/docker-compose.yml, no en este
 // proceso — por eso pg_dump/psql se ejecutan con "docker exec" en vez de
 // invocarlos directo (el host no tiene por qué tener los binarios de Postgres).
+// En la imagen Docker de producción (PG_DIRECTO=1) el propio contenedor de la app
+// trae los binarios y la base es otro contenedor, así que se conecta por red.
 const CONTAINER = process.env.DB_CONTAINER || 'sueldos_db';
 const DB_USER   = process.env.DB_USER      || 'sueldos';
 const DB_NAME   = process.env.DB_NAME      || 'sueldos';
+const DIRECTO   = process.env.PG_DIRECTO === '1';
+
+function ejecutar(bin, args, { interactivo = false } = {}) {
+  if (DIRECTO) {
+    return spawn(bin, ['-h', process.env.DB_HOST || 'localhost', '-p', String(process.env.DB_PORT || 5432), ...args], {
+      env: { ...process.env, PGPASSWORD: process.env.DB_PASSWORD || 'sueldos123' },
+    });
+  }
+  return spawn('docker', ['exec', ...(interactivo ? ['-i'] : []), CONTAINER, bin, ...args]);
+}
 
 function timestamp() {
   const d = new Date();
@@ -14,7 +26,7 @@ function timestamp() {
 }
 
 async function generar(req, res) {
-  const proc = spawn('docker', ['exec', CONTAINER, 'pg_dump', '-U', DB_USER, '-d', DB_NAME, '--clean', '--if-exists']);
+  const proc = ejecutar('pg_dump', ['-U', DB_USER, '-d', DB_NAME, '--clean', '--if-exists']);
   const chunks = [];
   let stderr = '';
   let respondido = false;
@@ -49,7 +61,7 @@ async function restaurar(req, res) {
     return res.status(400).json({ estado: 'error', mensaje: 'El archivo de copia de seguridad está vacío o no es válido' });
   }
 
-  const proc = spawn('docker', ['exec', '-i', CONTAINER, 'psql', '-U', DB_USER, '-d', DB_NAME, '-v', 'ON_ERROR_STOP=1']);
+  const proc = ejecutar('psql', ['-U', DB_USER, '-d', DB_NAME, '-v', 'ON_ERROR_STOP=1'], { interactivo: true });
   let stderr = '';
   let respondido = false;
 

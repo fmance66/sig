@@ -33,7 +33,7 @@ app.use(session({
 
 app.use('/api', require('./routes'));
 
-// Solo aplica al modo "todo en un proceso" (instalación local, ver DESPLIEGUE.md).
+// Solo aplica al modo "todo en un proceso" (instalación local con Docker, ver deploy/README.md).
 // En Render el frontend se despliega aparte (Vercel) y este build no existe.
 const frontendDist = path.join(__dirname, '..', '..', 'frontend', 'dist');
 if (fs.existsSync(path.join(frontendDist, 'index.html'))) {
