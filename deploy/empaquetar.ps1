@@ -42,8 +42,8 @@ New-Item -ItemType Directory -Force $build | Out-Null
 Copy-Item (Join-Path $raiz "backend\package.json"), (Join-Path $raiz "backend\package-lock.json") $build
 Npm $build @("ci", "--omit=dev", "--no-audit", "--no-fund")
 
-Paso "Construyendo imagen sueldos-app"
-docker build -t sueldos-app:latest $raiz
+Paso "Construyendo imagen sig-app"
+docker build -t sig-app:latest $raiz
 Chequear "Fallo docker build."
 
 Paso "Descargando postgres:16 (para que la otra PC no necesite internet)"
@@ -53,8 +53,8 @@ Chequear "Fallo docker pull postgres:16."
 if (Test-Path $Salida) { Remove-Item -Recurse -Force $Salida }
 New-Item -ItemType Directory -Force $Salida | Out-Null
 
-Paso "Exportando imagenes a sueldos-app.tar (tarda un rato)"
-docker save -o (Join-Path $Salida "sueldos-app.tar") sueldos-app:latest postgres:16
+Paso "Exportando imagenes a sig-app.tar (tarda un rato)"
+docker save -o (Join-Path $Salida "sig-app.tar") sig-app:latest postgres:16
 Chequear "Fallo docker save."
 
 Copy-Item (Join-Path $PSScriptRoot "docker-compose.yml") $Salida
@@ -65,7 +65,7 @@ if ($ConDatos) {
     Paso "Exportando datos de la base local (sueldos_db)"
     docker exec sueldos_db pg_dump -U sueldos -d sueldos -F c -f /tmp/sueldos.dump
     Chequear "Fallo pg_dump. Esta corriendo el contenedor sueldos_db?"
-    docker cp sueldos_db:/tmp/sueldos.dump (Join-Path $Salida "sueldos.dump")
+    docker cp sueldos_db:/tmp/sueldos.dump (Join-Path $Salida "sig.dump")
     Chequear "No se pudo copiar el dump."
     docker exec sueldos_db rm /tmp/sueldos.dump | Out-Null
 
@@ -81,4 +81,4 @@ if ($ConDatos) {
 $tam = [math]::Round(((Get-ChildItem $Salida | Measure-Object Length -Sum).Sum / 1MB))
 Paso "Listo: $Salida ($tam MB)"
 Write-Host "Copiar esa carpeta a la otra PC y hacer doble clic en INSTALAR.bat." -ForegroundColor Green
-if ($ConDatos) { Write-Host "Incluye datos de sueldos: pasarla por USB o red local, no por canales publicos." -ForegroundColor Yellow }
+if ($ConDatos) { Write-Host "Incluye datos reales (sueldos, contabilidad, IVA): pasarla por USB o red local, no por canales publicos." -ForegroundColor Yellow }

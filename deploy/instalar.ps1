@@ -2,9 +2,9 @@
 # Solo requiere Docker Desktop. Se ejecuta con doble clic en INSTALAR.bat.
 #
 # Los datos viven en un volumen de Docker: actualizar la app no los toca. El dump
-# (sueldos.dump) solo se restaura si la base esta vacia, salvo -ForzarRestauracion.
+# (sig.dump) solo se restaura si la base esta vacia, salvo -ForzarRestauracion.
 param(
-    [string]$Destino = "C:\Sueldos",
+    [string]$Destino = "C:\SIG",
     [switch]$ForzarRestauracion
 )
 
@@ -42,8 +42,26 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Paso "Cargando imagenes (tarda un rato)"
-docker load -i (Join-Path $paquete "sueldos-app.tar")
+docker load -i (Join-Path $paquete "sig-app.tar")
 Chequear "Fallo docker load."
+
+# Instalaciones hechas cuando el sistema se llamaba "Sueldos": se bajan sus contenedores
+# (ocupan el puerto 3001) y se copian sus datos al volumen nuevo. El volumen viejo
+# sueldos_datos no se borra, queda como respaldo.
+$volViejo = docker volume ls -q --filter "name=^sueldos_datos$"
+$volNuevo = docker volume ls -q --filter "name=^sig_datos$"
+if ($volViejo -and -not $volNuevo) {
+    Paso "Migrando la instalacion anterior (Sueldos) a SIG"
+    cmd /c "docker rm -f sueldos_app sueldos_prod_db >nul 2>&1"
+    cmd /c "docker network rm sueldos_default >nul 2>&1"
+    docker volume create sig_datos | Out-Null
+    Chequear "No se pudo crear el volumen sig_datos."
+    docker run --rm -v sueldos_datos:/desde -v sig_datos:/hacia postgres:16 cp -a /desde/. /hacia/
+    Chequear "No se pudieron copiar los datos de la instalacion anterior."
+    $escritorio = [Environment]::GetFolderPath("Desktop")
+    Remove-Item (Join-Path $escritorio "Sueldos.url") -ErrorAction SilentlyContinue
+    if ((Test-Path "C:\Sueldos") -and ($Destino -ne "C:\Sueldos")) { Remove-Item -Recurse -Force "C:\Sueldos" }
+}
 
 Paso "Preparando $Destino"
 New-Item -ItemType Directory -Force $Destino | Out-Null
@@ -64,33 +82,33 @@ try {
 } finally {
     Pop-Location
 }
-EsperarSano "sueldos_prod_db"
+EsperarSano "sig_db"
 
-$dump = Join-Path $paquete "sueldos.dump"
+$dump = Join-Path $paquete "sig.dump"
 if (Test-Path $dump) {
-    $tablas = docker exec sueldos_prod_db psql -U sueldos -d sueldos -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public'"
+    $tablas = docker exec sig_db psql -U sueldos -d sueldos -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public'"
     Chequear "No se pudo consultar la base."
     if ([int]$tablas -eq 0 -or $ForzarRestauracion) {
-        Paso "Restaurando datos desde sueldos.dump"
-        docker cp $dump sueldos_prod_db:/tmp/sueldos.dump
+        Paso "Restaurando datos desde sig.dump"
+        docker cp $dump sig_db:/tmp/sig.dump
         Chequear "No se pudo copiar el dump al contenedor."
-        docker exec sueldos_prod_db pg_restore -U sueldos -d sueldos --clean --if-exists --no-owner /tmp/sueldos.dump
+        docker exec sig_db pg_restore -U sueldos -d sueldos --clean --if-exists --no-owner /tmp/sig.dump
         # pg_restore devuelve != 0 tambien por avisos menores; no cortamos, pero avisamos.
         if ($LASTEXITCODE -ne 0) { Write-Host "pg_restore termino con avisos, revisar los mensajes de arriba." -ForegroundColor Yellow }
-        docker exec sueldos_prod_db rm /tmp/sueldos.dump | Out-Null
+        docker exec sig_db rm /tmp/sig.dump | Out-Null
     } else {
-        Write-Host "La base ya tiene datos: no se restaura sueldos.dump (usar -ForzarRestauracion para pisarlos)." -ForegroundColor Yellow
+        Write-Host "La base ya tiene datos: no se restaura sig.dump (usar -ForzarRestauracion para pisarlos)." -ForegroundColor Yellow
     }
 }
 
 Paso "Aplicando migraciones pendientes"
-docker exec sueldos_app node /app/db/migrate.js
+docker exec sig_app node /app/db/migrate.js
 if ($LASTEXITCODE -ne 0) { Write-Host "Las migraciones fallaron, revisar los mensajes de arriba." -ForegroundColor Yellow }
 
 Paso "Creando acceso directo en el escritorio"
 $escritorio = [Environment]::GetFolderPath("Desktop")
-[IO.File]::WriteAllText((Join-Path $escritorio "Sueldos.url"), "[InternetShortcut]`r`nURL=http://localhost:3001`r`n", [Text.Encoding]::ASCII)
+[IO.File]::WriteAllText((Join-Path $escritorio "SIG.url"), "[InternetShortcut]`r`nURL=http://localhost:3001`r`n", [Text.Encoding]::ASCII)
 
 Paso "Listo"
-Write-Host "Abrir 'Sueldos' en el escritorio o http://localhost:3001" -ForegroundColor Green
+Write-Host "Abrir 'SIG' en el escritorio o http://localhost:3001" -ForegroundColor Green
 Write-Host "La app arranca sola junto con Docker Desktop (dejar activado 'Start Docker Desktop when you sign in')."

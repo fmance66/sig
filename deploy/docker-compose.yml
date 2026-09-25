@@ -1,10 +1,11 @@
-# Compose de producción local. Usa la imagen ya construida (sueldos-app), no el código fuente.
-name: sueldos
+# Compose de producción local. Usa la imagen ya construida (sig-app), no el código fuente.
+# La base/usuario de Postgres siguen llamándose "sueldos", igual que en desarrollo.
+name: sig
 
 services:
   db:
     image: postgres:16
-    container_name: sueldos_prod_db
+    container_name: sig_db
     restart: unless-stopped
     environment:
       POSTGRES_USER: sueldos
@@ -19,8 +20,8 @@ services:
       retries: 20
 
   app:
-    image: sueldos-app:latest
-    container_name: sueldos_app
+    image: sig-app:latest
+    container_name: sig_app
     restart: unless-stopped
     depends_on:
       db:
